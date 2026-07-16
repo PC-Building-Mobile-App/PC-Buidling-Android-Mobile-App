@@ -19,6 +19,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.javax.inject)
+    implementation(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
