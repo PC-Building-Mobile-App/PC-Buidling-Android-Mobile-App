@@ -45,5 +45,5 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     AppTheme {
         Greeting("PC Builder")
-    }
-}
+//    }
+//}
