@@ -20,7 +20,9 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = TextPrimary,
     error = ErrorRed,
     surfaceVariant = SurfaceVariantDark,
-    outline = BorderSubtle
+    outline = BorderSubtle,
+    surfaceContainer = NavBarSurface,
+    onSurfaceVariant = NavInactive,
 )
 
 @Composable
