@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.iti.presentation.R
 
 enum class TopLevelRoute(
-    val route: Any,
+    val route: Route,
     val label: String,
     @DrawableRes val selectedIcon: Int,
     @DrawableRes val unselectedIcon: Int,

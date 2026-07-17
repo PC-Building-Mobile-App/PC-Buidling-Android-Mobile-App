@@ -1,40 +1,43 @@
 package com.iti.presentation.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object OnboardingRoute
+sealed interface Route : NavKey
 
 @Serializable
-data object LoginRoute
+data object OnboardingRoute : Route
 
 @Serializable
-data object RegisterRoute
+data object LoginRoute : Route
 
 @Serializable
-data object HomeRoute
+data object RegisterRoute : Route
 
 @Serializable
-data object PartsRoute
+data object HomeRoute : Route
 
 @Serializable
-data object AiAssistantRoute
+data object PartsRoute : Route
 
 @Serializable
-data object MyPcsRoute
+data object AiAssistantRoute : Route
 
 @Serializable
-data object ProfileRoute
-
-
-@Serializable
-data class PartsDetailRoute(val partId: String)
+data object MyPcsRoute : Route
 
 @Serializable
-data class BuildCategoryRoute(val category: String)
+data object ProfileRoute : Route
 
 @Serializable
-data class BuildGenerationRoute(val buildId: String)
+data class PartsDetailRoute(val partId: String) : Route
 
 @Serializable
-data class ComparisonRoute(val firstPartId: String, val secondPartId: String)
+data class BuildCategoryRoute(val category: String) : Route
+
+@Serializable
+data class BuildGenerationRoute(val buildId: String) : Route
+
+@Serializable
+data class ComparisonRoute(val firstPartId: String, val secondPartId: String) : Route

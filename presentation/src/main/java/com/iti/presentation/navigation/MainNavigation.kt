@@ -28,9 +28,9 @@ fun MainNavigation(
 ) {
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
-    val backStacks: Map<TopLevelRoute, SnapshotStateList<Any>> = remember {
+    val backStacks: Map<TopLevelRoute, SnapshotStateList<Route>> = remember {
         TopLevelRoute.entries.associate { tab ->
-            tab to mutableListOf<Any>(tab.route).toMutableStateList()
+            tab to mutableListOf<Route>(tab.route).toMutableStateList()
         }
     }
 

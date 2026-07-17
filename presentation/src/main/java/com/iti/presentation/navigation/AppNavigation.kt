@@ -37,10 +37,9 @@ private fun AuthNavigation(
     hasSeenOnboarding: Boolean,
     onAuthComplete: () -> Unit,
 ) {
-    // Determine the start destination based on whether onboarding was seen
-    val authBackStack: SnapshotStateList<Any> = remember(hasSeenOnboarding) {
+    val authBackStack: SnapshotStateList<Route> = remember(hasSeenOnboarding) {
         val startDestination = if (hasSeenOnboarding) LoginRoute else OnboardingRoute
-        mutableListOf<Any>(startDestination).toMutableStateList()
+        mutableListOf<Route>(startDestination).toMutableStateList()
     }
 
     Box(
