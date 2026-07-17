@@ -39,21 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Custom bottom navigation bar that matches the Figma design.
- *
- * Layout:
- * - Semi-transparent dark bar (76 dp) pinned to the bottom
- * - 4 standard nav items: Home, Parts, My PCs, Profile
- * - 1 floating gradient FAB in the center for AI (extends above the bar)
- * - Active-state indicator dot beneath the selected item
- * - iOS-style home indicator pill at the very bottom
- *
- * All colours come from [MaterialTheme.colorScheme] — nothing is hard-coded.
- *
- * @param currentRoute  Currently selected [TopLevelRoute].
- * @param onItemClick   Callback when any tab (including AI) is tapped.
- */
 @Composable
 fun BottomNavBar(
     currentRoute: TopLevelRoute,
@@ -62,15 +47,13 @@ fun BottomNavBar(
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
-    // ── Outer container: bar height + FAB overhang ──────────────────────
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(104.dp), // 76 dp bar + 28 dp FAB extension above
+            .height(104.dp),
         contentAlignment = Alignment.BottomCenter,
     ) {
 
-        // ── Bar background ─────────────────────────────────────────────
         val outlineColor = colorScheme.outline
         Box(
             modifier = Modifier
@@ -78,7 +61,6 @@ fun BottomNavBar(
                 .height(76.dp)
                 .background(colorScheme.surfaceContainer.copy(alpha = 0.95f))
                 .drawBehind {
-                    // Subtle top border matching Figma (0.8 px)
                     drawLine(
                         color = outlineColor,
                         start = Offset.Zero,
@@ -88,7 +70,6 @@ fun BottomNavBar(
                 },
         )
 
-        // ── Nav items row ──────────────────────────────────────────────
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +79,6 @@ fun BottomNavBar(
         ) {
             TopLevelRoute.entries.forEach { tab ->
                 if (tab == TopLevelRoute.AI) {
-                    // Reserve space for the center FAB
                     Spacer(modifier = Modifier.weight(1f))
                 } else {
                     NavItem(
@@ -111,16 +91,14 @@ fun BottomNavBar(
             }
         }
 
-        // ── Center AI FAB ──────────────────────────────────────────────
         AiFab(
             isSelected = currentRoute == TopLevelRoute.AI,
             onClick = { onItemClick(TopLevelRoute.AI) },
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = 0.dp), // sits at the very top of the 104 dp box
+                .offset(y = 0.dp),
         )
 
-        // ── Bottom home-indicator pill ─────────────────────────────────
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -135,13 +113,7 @@ fun BottomNavBar(
     }
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Private composables
-// ────────────────────────────────────────────────────────────────────────────
 
-/**
- * A single bottom-nav item (icon + label + optional active dot).
- */
 @Composable
 private fun NavItem(
     tab: TopLevelRoute,
@@ -166,14 +138,13 @@ private fun NavItem(
         modifier = modifier
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null, // remove ripple for a cleaner look
+                indication = null,
                 onClick = onClick,
             )
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        // Icon
         Icon(
             painter = painterResource(
                 id = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
@@ -185,7 +156,6 @@ private fun NavItem(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Label
         Text(
             text = tab.label,
             color = tint,
@@ -197,7 +167,6 @@ private fun NavItem(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Active indicator dot
         Box(
             modifier = Modifier
                 .size(width = 4.dp, height = dotHeight)
@@ -206,12 +175,6 @@ private fun NavItem(
     }
 }
 
-/**
- * The center floating AI button with a gradient background and glow.
- *
- * Gradient: [MaterialTheme.colorScheme.primary] → [MaterialTheme.colorScheme.secondary] at 135°.
- * Glow: colored shadow using the same primary/secondary palette.
- */
 @Composable
 private fun AiFab(
     isSelected: Boolean,
@@ -230,7 +193,6 @@ private fun AiFab(
         modifier = modifier.size(56.dp),
         contentAlignment = Alignment.Center,
     ) {
-        // Glow layer — radial gradient that fades to transparent (works on all APIs)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -249,7 +211,6 @@ private fun AiFab(
                 },
         )
 
-        // Button body
         Box(
             modifier = Modifier
                 .size(56.dp)

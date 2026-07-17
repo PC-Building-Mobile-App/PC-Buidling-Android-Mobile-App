@@ -15,26 +15,32 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 @Composable
 fun AppNavigation(
     isAuthenticated: Boolean,
+    hasSeenOnboarding: Boolean,
     onAuthComplete: () -> Unit,
 ) {
     if (isAuthenticated) {
         MainNavigation(
             onNavigateToAuth = {
                 // TODO:  Handle sign-out by flipping isAuthenticated in your ViewModel
-
             },
         )
     } else {
-        AuthNavigation(onAuthComplete = onAuthComplete)
+        AuthNavigation(
+            hasSeenOnboarding = hasSeenOnboarding,
+            onAuthComplete = onAuthComplete
+        )
     }
 }
 
 @Composable
 private fun AuthNavigation(
+    hasSeenOnboarding: Boolean,
     onAuthComplete: () -> Unit,
 ) {
-    val authBackStack: SnapshotStateList<Any> = remember {
-        mutableListOf<Any>(OnboardingRoute).toMutableStateList()
+    // Determine the start destination based on whether onboarding was seen
+    val authBackStack: SnapshotStateList<Any> = remember(hasSeenOnboarding) {
+        val startDestination = if (hasSeenOnboarding) LoginRoute else OnboardingRoute
+        mutableListOf<Any>(startDestination).toMutableStateList()
     }
 
     Box(
@@ -59,6 +65,7 @@ private fun AuthNavigation(
                         title = "Onboarding",
                         subtitle = "Tap to go to Login",
                         onAction = {
+                            // TODO: Save to DataStore/SharedPreferences that onboarding is complete
                             authBackStack.navigateSingleTop(LoginRoute)
                         },
                     )
@@ -68,8 +75,14 @@ private fun AuthNavigation(
                     // TODO: Replace with your LoginScreen composable
                     ScreenPlaceholder(
                         title = "Login",
-                        subtitle = "Tap to sign in (or swipe back for Register)",
-                        onAction = onAuthComplete,
+                        subtitle = "Tap to go to Register screen\n(Pretend there's a separate 'Sign In' button that completes auth)",
+                        onAction = {
+                            // Navigate to Register
+                            authBackStack.navigateSingleTop(RegisterRoute)
+
+                            // NOTE: If they actually successfully signed in here, you would call:
+                            // onAuthComplete()
+                        },
                     )
                 }
 
@@ -77,11 +90,13 @@ private fun AuthNavigation(
                     // TODO: Replace with your RegisterScreen composable
                     ScreenPlaceholder(
                         title = "Register",
-                        subtitle = "Tap to complete registration",
-                        onAction = onAuthComplete,
+                        subtitle = "Tap to finish registration and go to Home",
+                        onAction = {
+
+                            onAuthComplete()
+                        },
                     )
-                }
-            },
+                }            },
         )
     }
 }

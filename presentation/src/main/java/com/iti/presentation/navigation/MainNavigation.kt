@@ -1,5 +1,6 @@
 package com.iti.presentation.navigation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -167,7 +168,9 @@ internal fun ScreenPlaceholder(
     onAction: (() -> Unit)? = null,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(if (onAction != null) Modifier.clickable { onAction() } else Modifier),
         contentAlignment = Alignment.Center,
     ) {
         Text(
