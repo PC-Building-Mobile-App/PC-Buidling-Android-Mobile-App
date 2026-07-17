@@ -18,3 +18,6 @@ val TextSecondary = Color(0xFFA6A6B3)
 
 val BorderSubtle = Color(0xFFFFFFFF).copy(alpha = 0.08f)
 val InputBackground = Color(0xFFFFFFFF).copy(alpha = 0.10f)
+
+val NavBarSurface = Color(0xFF17181D)
+val NavInactive = Color(0xFF475569)
