@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PCBuilding</string>
+    <string name="new_build">New Build</string>
+    <string name="my_pcs">My PCs</string>
+    <string name="browse_builds_by_category">Browse builds by category</string>
+    <string name="generic_error_title">Something went wrong!</string>
+    <string name="retry">Try Again</string>
+    <string name="builds">%1$d builds</string>
 </resources>

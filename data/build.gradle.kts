@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.kotlinx.coroutines.core)
     ksp(libs.hilt.compiler)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
