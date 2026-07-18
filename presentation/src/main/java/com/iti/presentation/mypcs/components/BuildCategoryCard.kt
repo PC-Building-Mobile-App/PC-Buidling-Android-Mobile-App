@@ -1,4 +1,4 @@
-package com.iti.presentation.builds.components
+package com.iti.presentation.mypcs.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.builds.model.BuildCategoryUiModel
-import com.iti.presentation.builds.model.accentColor
-import com.iti.presentation.builds.model.gradient
-import com.iti.presentation.builds.model.iconRes
+import com.iti.presentation.mypcs.model.BuildCategoryUiModel
+import com.iti.presentation.mypcs.model.accentColor
+import com.iti.presentation.mypcs.model.gradient
+import com.iti.presentation.mypcs.model.iconRes
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.BorderSubtle
 import com.iti.presentation.ui.theme.CardSurface

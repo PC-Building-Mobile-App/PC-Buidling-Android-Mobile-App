@@ -1,4 +1,4 @@
-package com.iti.presentation.builds.screens
+package com.iti.presentation.mypcs.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,13 +26,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.builds.MyPcsContract.Effect
-import com.iti.presentation.builds.MyPcsContract.Event
-import com.iti.presentation.builds.MyPcsContract.State
-import com.iti.presentation.builds.components.BuildCategoryCard
-import com.iti.presentation.builds.components.NewBuildButton
-import com.iti.presentation.builds.model.BuildCategoryUiModel
-import com.iti.presentation.builds.viewmodel.MyPcsViewModel
+import com.iti.presentation.mypcs.MyPcsContract.Effect
+import com.iti.presentation.mypcs.MyPcsContract.Event
+import com.iti.presentation.mypcs.MyPcsContract.State
+import com.iti.presentation.mypcs.components.BuildCategoryCard
+import com.iti.presentation.mypcs.components.NewBuildButton
+import com.iti.presentation.mypcs.model.BuildCategoryUiModel
+import com.iti.presentation.mypcs.viewmodel.MyPcsViewModel
 import com.iti.presentation.components.ErrorScreen
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.TextSecondary

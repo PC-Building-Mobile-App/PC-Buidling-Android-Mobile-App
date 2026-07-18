@@ -1,4 +1,4 @@
-package com.iti.presentation.builds.model
+package com.iti.presentation.mypcs.model
 
 import com.iti.domain.builds.model.BuildCategoryType
 

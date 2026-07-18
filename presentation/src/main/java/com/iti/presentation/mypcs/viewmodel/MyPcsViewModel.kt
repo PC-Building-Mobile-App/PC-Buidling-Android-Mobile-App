@@ -1,12 +1,12 @@
-package com.iti.presentation.builds.viewmodel
+package com.iti.presentation.mypcs.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.iti.domain.builds.usecase.GetBuildCategoriesUseCase
 import com.iti.presentation.core.BaseViewModel
-import com.iti.presentation.builds.MyPcsContract.Effect
-import com.iti.presentation.builds.MyPcsContract.Event
-import com.iti.presentation.builds.MyPcsContract.State
-import com.iti.presentation.builds.model.toUiModel
+import com.iti.presentation.mypcs.MyPcsContract.Effect
+import com.iti.presentation.mypcs.MyPcsContract.Event
+import com.iti.presentation.mypcs.MyPcsContract.State
+import com.iti.presentation.mypcs.model.toUiModel
 import com.iti.presentation.core.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

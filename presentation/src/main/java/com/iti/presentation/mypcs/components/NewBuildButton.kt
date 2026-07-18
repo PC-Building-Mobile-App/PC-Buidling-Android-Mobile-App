@@ -1,4 +1,4 @@
-package com.iti.presentation.builds.components
+package com.iti.presentation.mypcs.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource

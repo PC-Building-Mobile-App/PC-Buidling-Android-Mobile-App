@@ -1,6 +1,6 @@
-package com.iti.presentation.builds
+package com.iti.presentation.mypcs
 
-import com.iti.presentation.builds.model.BuildCategoryUiModel
+import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.core.UiText
 
 object MyPcsContract {
