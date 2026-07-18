@@ -23,11 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.ErrorRed
-import com.iti.presentation.ui.theme.TextPrimary
-import com.iti.presentation.ui.theme.TextSecondary
-
 @Composable
 fun ErrorScreen(
     message: String,
@@ -46,35 +41,36 @@ fun ErrorScreen(
         Icon(
             imageVector = Icons.Filled.ErrorOutline,
             contentDescription = null,
-            tint = ErrorRed,
+            tint = MaterialTheme.colorScheme.error,
             modifier = Modifier.size(48.dp),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(8.dp))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
-            color = TextSecondary,
-            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center,
         )
         if (onRetry != null) {
             Spacer(Modifier.height(20.dp))
             Button(
                 onClick = onRetry,
-                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue, contentColor = TextPrimary),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary, // Use theme primary
+                    contentColor = MaterialTheme.colorScheme.onPrimary // Use contrast color
+                ),
             ) {
                 Text(retryLabel)
             }
         }
     }
 }
-
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
 private fun ErrorScreenPreview() {

@@ -43,3 +43,6 @@ val AiWorkstationGradientEnd = Color(0xFFEA580C)
 
 val DreamBuildsGradientStart = Color(0xFFFBBF24)
 val DreamBuildsGradientEnd = Color(0xFFF59E0B)
+
+val ShimmerBase = Color(0xFF262A33)
+val ShimmerHighlight = Color(0xFF343841)

@@ -2,7 +2,9 @@ package com.iti.data.builds.datasource
 
 import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.util.safeCall
+import kotlinx.coroutines.delay
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 interface BuildsRemoteDataSource {
     suspend fun getBuildCategories(): Result<List<BuildCategoryDto>>
@@ -11,6 +13,7 @@ interface BuildsRemoteDataSource {
 class BuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSource {
 
     override suspend fun getBuildCategories(): Result<List<BuildCategoryDto>> = safeCall {
+        delay(2000.milliseconds)
         mockBuildCategories
     }
 
