@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Heatsink Teeth -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M5,5h2v2H5V5z M9,5h6v2H9V5z M17,5h2v2h-2V5z"/>
+    <!-- Main RAM Body -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M3,7h18v8H3V7z M5,9v4h14V9H5z"/>
+    <!-- Contact Fingers with DIMM Notch -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M4,15h7v3H4V15z M13,15h7v3h-7V15z"/>
+</vector>
