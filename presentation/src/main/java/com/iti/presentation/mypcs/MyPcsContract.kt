@@ -13,12 +13,12 @@ object MyPcsContract {
 
     sealed interface Event {
         data object LoadBuildCategories : Event
-        data class CategoryClicked(val categoryId: String) : Event
+        data class CategoryClicked(val category: BuildCategoryUiModel) : Event
         data object NewBuildClicked : Event
     }
 
     sealed interface Effect {
-        data class NavigateToCategory(val categoryId: String) : Effect
+        data class NavigateToCategory(val category: BuildCategoryUiModel) : Effect
         data object NavigateToNewBuild : Effect
     }
 }

@@ -38,11 +38,6 @@ import com.iti.presentation.mypcs.model.accentColor
 import com.iti.presentation.mypcs.model.gradient
 import com.iti.presentation.mypcs.model.iconRes
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.BorderSubtle
-import com.iti.presentation.ui.theme.CardSurface
-import com.iti.presentation.ui.theme.IconOnGradient
-import com.iti.presentation.ui.theme.TextMuted
-import com.iti.presentation.ui.theme.TextPrimary
 
 @Composable
 fun BuildCategoryCard(
@@ -56,8 +51,8 @@ fun BuildCategoryCard(
     Box(
         modifier = modifier
             .clip(shape)
-            .background(CardSurface)
-            .border(BorderStroke(1.dp, BorderSubtle), shape)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), shape)
             .clickable(onClick = onClick)
             .height(168.dp),
     ) {
@@ -88,7 +83,7 @@ fun BuildCategoryCard(
                 Icon(
                     painter = painterResource(id = category.type.iconRes),
                     contentDescription = null,
-                    tint = IconOnGradient,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(22.dp),
                 )
             }
@@ -100,7 +95,7 @@ fun BuildCategoryCard(
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontSize = 14.sp
                 ),
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -112,7 +107,7 @@ fun BuildCategoryCard(
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 11.sp
                 ),
-                color = TextMuted,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
