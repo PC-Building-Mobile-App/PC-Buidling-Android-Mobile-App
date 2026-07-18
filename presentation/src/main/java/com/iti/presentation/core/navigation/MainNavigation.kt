@@ -1,4 +1,4 @@
-package com.iti.presentation.navigation
+package com.iti.presentation.core.navigation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

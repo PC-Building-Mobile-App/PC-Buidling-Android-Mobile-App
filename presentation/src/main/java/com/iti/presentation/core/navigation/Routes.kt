@@ -1,4 +1,4 @@
-package com.iti.presentation.navigation
+package com.iti.presentation.core.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

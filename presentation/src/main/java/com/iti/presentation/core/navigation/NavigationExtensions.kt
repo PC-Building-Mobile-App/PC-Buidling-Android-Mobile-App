@@ -1,4 +1,4 @@
-package com.iti.presentation.navigation
+package com.iti.presentation.core.navigation
 
 fun <T : Any> MutableList<T>.navigateSingleTop(route: T) {
     if (lastOrNull() != route) {

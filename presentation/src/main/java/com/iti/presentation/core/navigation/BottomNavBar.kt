@@ -1,4 +1,4 @@
-package com.iti.presentation.navigation
+package com.iti.presentation.core.navigation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring

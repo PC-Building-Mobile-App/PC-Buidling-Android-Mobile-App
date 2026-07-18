@@ -1,4 +1,4 @@
-package com.iti.presentation.navigation
+package com.iti.presentation.core.navigation
 
 import androidx.annotation.DrawableRes
 import com.iti.presentation.R
