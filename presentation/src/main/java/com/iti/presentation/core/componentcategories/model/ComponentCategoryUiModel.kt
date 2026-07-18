@@ -1,4 +1,4 @@
-package com.iti.presentation.componentcategories.model
+package com.iti.presentation.core.componentcategories.model
 
 import androidx.annotation.DrawableRes
 

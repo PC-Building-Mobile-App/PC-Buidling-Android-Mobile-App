@@ -1,9 +1,9 @@
-package com.iti.presentation.componentcategories.mapper
+package com.iti.presentation.core.componentcategories.mapper
 
 import com.iti.domain.componentcategories.model.ComponentCategory
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.componentcategories.model.ComponentCategoryUiModel
+import com.iti.presentation.core.componentcategories.model.ComponentCategoryUiModel
 import javax.inject.Inject
 
 class ComponentCategoryUiMapper @Inject constructor() {

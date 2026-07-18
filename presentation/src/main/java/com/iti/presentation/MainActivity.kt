@@ -11,7 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.iti.presentation.navigation.AppNavigation
+import com.iti.presentation.core.navigation.AppNavigation
 import com.iti.presentation.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
