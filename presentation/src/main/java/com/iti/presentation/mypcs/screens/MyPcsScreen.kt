@@ -1,8 +1,10 @@
 package com.iti.presentation.mypcs.screens
+
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,7 +12,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,14 +27,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
+import com.iti.presentation.components.ErrorScreen
 import com.iti.presentation.mypcs.MyPcsContract.Effect
 import com.iti.presentation.mypcs.MyPcsContract.Event
 import com.iti.presentation.mypcs.MyPcsContract.State
 import com.iti.presentation.mypcs.components.BuildCategoryCard
+import com.iti.presentation.mypcs.components.BuildCategoryCardSkeleton
 import com.iti.presentation.mypcs.components.NewBuildButton
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.mypcs.viewmodel.MyPcsViewModel
-import com.iti.presentation.components.ErrorScreen
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.TextSecondary
 
@@ -63,68 +65,84 @@ fun MyPcsScreen(
 }
 
 @Composable
+private fun MyPcsHeader(onNewBuildClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column {
+            Text(
+                text = stringResource(R.string.my_pcs),
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    color = MaterialTheme.colorScheme.onBackground,
+                ),
+            )
+            Text(
+                text = stringResource(R.string.browse_builds_by_category),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSecondary,
+            )
+        }
+
+        NewBuildButton(onClick = onNewBuildClick)
+    }
+}
+
+@Composable
 private fun MyPcsScreenContent(
     state: State,
     onEvent: (Event) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        modifier = modifier.fillMaxSize(),
-    ) {
-        item(span = { GridItemSpan(2) }) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.my_pcs),
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            color = MaterialTheme.colorScheme.onBackground,
-                        ),
-                    )
-                    Text(
-                        text = stringResource(R.string.browse_builds_by_category),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary,
-                    )
+    Box(modifier = modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            item(span = { GridItemSpan(2) }) {
+                MyPcsHeader(onNewBuildClick = { onEvent(Event.NewBuildClicked) })
+            }
+
+            when {
+                state.errorMessage != null -> Unit
+
+                state.isLoading -> {
+                    items(6) {
+                        BuildCategoryCardSkeleton()
+                    }
                 }
-                NewBuildButton(onClick = { onEvent(Event.NewBuildClicked) })
+
+                else -> {
+                    items(state.categories, key = { it.id }) { category ->
+                        BuildCategoryCard(
+                            category = category,
+                            onClick = { onEvent(Event.CategoryClicked(category.id)) },
+                        )
+                    }
+                }
             }
         }
 
-        when {
-            state.isLoading -> {
-                item(span = { GridItemSpan(2) }) {
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 32.dp))
-                }
-            }
-
-            state.errorMessage != null -> {
-                item(span = { GridItemSpan(2) }) {
-                    ErrorScreen(
-                        message = state.errorMessage.asString(LocalContext.current)
-                    )
-                }
-            }
-
-            else -> {
-                items(state.categories, key = { it.id }) { category ->
-                    BuildCategoryCard(
-                        category = category,
-                        onClick = { onEvent(Event.CategoryClicked(category.id)) },
-                    )
-                }
+        if (state.errorMessage != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 88.dp, start = 20.dp, end = 20.dp, bottom = 24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                ErrorScreen(
+                    message = state.errorMessage.asString(LocalContext.current),
+                )
             }
         }
     }
 }
-
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
 private fun MyPcsScreenPreview() {
@@ -176,6 +194,17 @@ private fun MyPcsScreenPreview() {
                     ),
                 ),
             ),
+            onEvent = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
+@Composable
+private fun MyPcsScreenLoadingPreview() {
+    AppTheme {
+        MyPcsScreenContent(
+            state = State(isLoading = true),
             onEvent = {},
         )
     }
