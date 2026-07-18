@@ -21,6 +21,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.iti.presentation.builds.screens.MyPcsScreen
 
 @Composable
 fun MainNavigation(
@@ -29,9 +30,7 @@ fun MainNavigation(
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
     val backStacks: Map<TopLevelRoute, SnapshotStateList<Route>> = remember {
-        TopLevelRoute.entries.associate { tab ->
-            tab to mutableListOf<Route>(tab.route).toMutableStateList()
-        }
+        TopLevelRoute.entries.associateWith { tab -> mutableListOf(tab.route).toMutableStateList() }
     }
 
     val activeBackStack = backStacks.getValue(currentTab)
@@ -93,15 +92,14 @@ fun MainNavigation(
                     }
 
                     entry<MyPcsRoute> {
-                        // TODO: Replace with your MyPcScreen composable
-                        ScreenPlaceholder(
-                            title = "My PCs",
-                            subtitle = "Tap to start a build",
-                            onAction = {
-                                activeBackStack.navigateSingleTop(
-                                    BuildCategoryRoute(category = "Gaming"),
-                                )
-                            },
+                        MyPcsScreen(
+                                onNewBuildClick = {
+                                },
+                        onCategoryClick = { categoryId ->
+                            activeBackStack.navigateSingleTop(
+                                BuildCategoryRoute(category = categoryId),
+                            )
+                        },
                         )
                     }
 
