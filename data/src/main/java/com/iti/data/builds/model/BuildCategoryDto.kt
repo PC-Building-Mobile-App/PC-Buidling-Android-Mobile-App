@@ -12,11 +12,3 @@ data class BuildCategoryDto(
     val buildsCount: Int,
     val type: String,
 )
-
-fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
-    id = id,
-    name = name,
-    description = description,
-    buildsCount = buildsCount,
-    type = runCatching { BuildCategoryType.valueOf(type) }.getOrDefault(BuildCategoryType.GAMING),
-)
