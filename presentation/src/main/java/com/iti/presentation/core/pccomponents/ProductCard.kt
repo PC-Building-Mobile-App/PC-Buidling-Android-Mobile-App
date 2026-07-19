@@ -34,10 +34,7 @@ fun ProductCard(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            // 1. Image Header Section
+        Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,7 +52,6 @@ fun ProductCard(
                     contentScale = ContentScale.Fit
                 )
 
-                // Out of Stock Badge (Top-Start)
                 if (!component.isInStock) {
                     Box(
                         modifier = Modifier
@@ -77,69 +73,37 @@ fun ProductCard(
                 }
             }
 
-            // 2. Text Content Section (Aligned cleanly to Start by default)
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.Start // Fixed: Was Alignment.End
+                    .padding(12.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.End
             ) {
-                // Vendor · Category Subtitle
                 Text(
                     text = component.subtitle,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant, // Muted color looks cleaner for subtitles
-                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Main Product Name
                 Text(
                     text = component.productName,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 2.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Price
                 Text(
                     text = component.formattedPrice,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = SuccessGreen,
-                    fontWeight = FontWeight.ExtraBold
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
-
-                // 3. Optional Bottom Tags Row (e.g., "Top Pick", "In Stock")
-                if (component.tags.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        component.tags.forEach { tag ->
-                            Surface(
-                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
-                                shape = RoundedCornerShape(6.dp),
-                                modifier = Modifier.defaultMinSize(minHeight = 22.dp)
-                            ) {
-                                Text(
-                                    text = tag,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                )
-                            }
-                        }
-                    }
-                }
             }
         }
     }

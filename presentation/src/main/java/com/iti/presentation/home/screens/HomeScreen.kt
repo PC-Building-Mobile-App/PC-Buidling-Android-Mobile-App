@@ -137,6 +137,7 @@ private fun HomeScreenContent(
     }
 }
 
+/*
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
 private fun HomeScreenPreview() {
@@ -188,3 +189,4 @@ private fun HomeScreenLoadingPreview() {
         )
     }
 }
+*/

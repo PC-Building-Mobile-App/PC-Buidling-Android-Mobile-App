@@ -87,7 +87,7 @@ fun MainNavigation(
                             onNavigateToGenerateBuild = {
                                 // TODO: Navigate to actual build generation flow when implemented
                                 activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(buildId = "new"),
+                                    BuildGenerationRoute(),
                                 )
                             },
                             onNavigateToComponentDetail = { componentId ->

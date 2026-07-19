@@ -130,18 +130,3 @@ private fun FeaturedComponentSkeleton() {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun FeaturedComponentsSectionPreview() {
-    AppTheme {
-        FeaturedComponentsSection(
-            components = listOf(
-                ComponentUiModel(1, "AMD · CPU", "Ryzen 9 7950X", "18,500 EGP", "", listOf("Top Pick", "In Stock"), true),
-                ComponentUiModel(2, "NVIDIA · GPU", "RTX 4080", "52,000 EGP", "", listOf("In Stock"), true),
-            ),
-            isLoading = false,
-            onSeeAll = {},
-            onComponentClick = {}
-        )
-    }
-}
