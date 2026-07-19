@@ -86,4 +86,5 @@
     <string name="save_build_name_required_message">Give your build a name before saving.</string>
     <string name="save_build_incomplete_slots_message">Fill every component slot before saving.</string>
     <string name="save_build_missing_category_message">Pick at least one purpose so we know where to save this build.</string>
+    <string name="slogan">AI-POWERED PC BUILDER</string>
 </resources>
