@@ -1,4 +1,4 @@
-package com.iti.presentation.core.components.model
+package com.iti.presentation.core.pccomponents.model
 
 data class ComponentUiModel(
     val id: Long,

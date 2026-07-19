@@ -1,4 +1,4 @@
-package com.iti.presentation.shared
+package com.iti.presentation.core.pccomponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.iti.presentation.R
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.ui.theme.*
 
 @Composable
@@ -34,7 +34,10 @@ fun ProductCard(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // 1. Image Header Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -51,7 +54,8 @@ fun ProductCard(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
-                
+
+                // Out of Stock Badge (Top-Start)
                 if (!component.isInStock) {
                     Box(
                         modifier = Modifier
@@ -73,37 +77,69 @@ fun ProductCard(
                 }
             }
 
+            // 2. Text Content Section (Aligned cleanly to Start by default)
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.End
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.Start // Fixed: Was Alignment.End
             ) {
+                // Vendor · Category Subtitle
                 Text(
                     text = component.subtitle,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant, // Muted color looks cleaner for subtitles
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
+                // Main Product Name
                 Text(
                     text = component.productName,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 2.dp)
+                    modifier = Modifier.padding(top = 4.dp)
                 )
-                
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Price
                 Text(
                     text = component.formattedPrice,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = SuccessGreen,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontWeight = FontWeight.ExtraBold
                 )
+
+                // 3. Optional Bottom Tags Row (e.g., "Top Pick", "In Stock")
+                if (component.tags.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        component.tags.forEach { tag ->
+                            Surface(
+                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                                shape = RoundedCornerShape(6.dp),
+                                modifier = Modifier.defaultMinSize(minHeight = 22.dp)
+                            ) {
+                                Text(
+                                    text = tag,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

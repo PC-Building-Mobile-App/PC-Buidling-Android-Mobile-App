@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
-import com.iti.presentation.core.components.model.ComponentUiModel
-import com.iti.presentation.shared.ProductCard
+import com.iti.presentation.core.pccomponents.ProductCard
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 
 @Composable
 fun ProductGrid(
