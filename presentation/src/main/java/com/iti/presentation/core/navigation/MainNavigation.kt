@@ -22,6 +22,9 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
+import com.iti.presentation.hardwarenews.screens.HardwareNewsScreen
+import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
+import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
 import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
 import com.iti.presentation.parts.screens.PartsScreen
@@ -72,7 +75,61 @@ fun MainNavigation(
                 entryProvider = entryProvider {
 
                     entry<HomeRoute> {
-                        ScreenPlaceholder(title = "Home")
+                        HomeScreen(
+                            onNavigateToPartsWithQuery = { query ->
+                                // TODO: Pass query to Parts screen when inter-tab communication is implemented
+                                // For now, switches to the Parts tab
+                                currentTab = TopLevelRoute.PARTS
+                            },
+                            onNavigateToParts = {
+                                currentTab = TopLevelRoute.PARTS
+                            },
+                            onNavigateToGenerateBuild = {
+                                // TODO: Navigate to actual build generation flow when implemented
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(),
+                                )
+                            },
+                            onNavigateToComponentDetail = { componentId ->
+                                activeBackStack.navigateSingleTop(
+                                    PartsDetailRoute(partId = componentId.toString()),
+                                )
+                            },
+                            onNavigateToPartsWithCategory = { categoryId ->
+                                // TODO: Pass category filter to Parts screen when inter-tab communication is implemented
+                                currentTab = TopLevelRoute.PARTS
+                            },
+                            onNavigateToHardwareNews = {
+                                activeBackStack.navigateSingleTop(HardwareNewsListRoute)
+                            },
+                            onNavigateToNewsDetail = { articleId ->
+                                activeBackStack.navigateSingleTop(
+                                    HardwareNewsDetailRoute(articleId = articleId),
+                                )
+                            },
+                        )
+                    }
+
+                    entry<HardwareNewsListRoute> {
+                        HardwareNewsScreen(
+                            onArticleClick = { articleId ->
+                                activeBackStack.navigateSingleTop(
+                                    HardwareNewsDetailRoute(articleId = articleId),
+                                )
+                            },
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            },
+                        )
+                    }
+
+                    entry<HardwareNewsDetailRoute> { route ->
+                        HardwareNewsDetailScreen(
+                            articleId = route.articleId,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            },
+                        )
                     }
 
                     entry<PartsRoute> {
@@ -86,6 +143,7 @@ fun MainNavigation(
                     }
 
                     entry<AiAssistantRoute> {
+                        // TODO: Replace with your AIScreen composable
                         ScreenPlaceholder(title = "AI Assistant")
                     }
 
@@ -105,10 +163,13 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
+                        // TODO: Replace with your ProfileScreen composable
                         ScreenPlaceholder(title = "Profile")
                     }
 
                     entry<PartsDetailRoute> { route ->
+                        // TODO: Replace with your PartsDetailScreen composable
+
                         ScreenPlaceholder(
                             title = "Part Detail",
                             subtitle = "Part ID: ${route.partId}",
@@ -156,6 +217,7 @@ fun MainNavigation(
                     }
 
                     entry<ComparisonRoute> { route ->
+                        // TODO: Replace with your ComparisonScreen composable
                         ScreenPlaceholder(
                             title = "Comparison",
                             subtitle = "${route.firstPartId} vs ${route.secondPartId}",

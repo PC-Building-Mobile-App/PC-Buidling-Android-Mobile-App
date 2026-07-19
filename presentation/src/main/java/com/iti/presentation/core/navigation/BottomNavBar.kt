@@ -50,10 +50,9 @@ fun BottomNavBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(104.dp),
+            .height(76.dp),
         contentAlignment = Alignment.BottomCenter,
     ) {
-
         val outlineColor = colorScheme.outline
         Box(
             modifier = Modifier
@@ -96,7 +95,7 @@ fun BottomNavBar(
             onClick = { onItemClick(TopLevelRoute.AI) },
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = 0.dp),
+                .offset(y = (-28).dp),
         )
 
         Box(
@@ -112,7 +111,6 @@ fun BottomNavBar(
         )
     }
 }
-
 
 @Composable
 private fun NavItem(

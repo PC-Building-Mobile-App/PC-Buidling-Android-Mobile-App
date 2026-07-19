@@ -7,7 +7,7 @@ import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.usecase.SearchComponentsUseCase
 import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
-import com.iti.presentation.core.components.mapper.toUiModels
+import com.iti.presentation.core.pccomponents.mapper.toUiModels
 import com.iti.presentation.core.toUiText
 import com.iti.presentation.parts.PartsContract.Effect
 import com.iti.presentation.parts.PartsContract.Event

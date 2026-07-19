@@ -48,3 +48,9 @@ data class BuildGenerationRoute(
 
 @Serializable
 data class ComparisonRoute(val firstPartId: String, val secondPartId: String) : Route
+
+@Serializable
+data object HardwareNewsListRoute : Route
+
+@Serializable
+data class HardwareNewsDetailRoute(val articleId: String) : Route

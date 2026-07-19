@@ -1,7 +1,7 @@
-package com.iti.presentation.core.components.mapper
+package com.iti.presentation.core.pccomponents.mapper
 
 import com.iti.domain.components.model.Component
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import java.text.NumberFormat
 import java.util.Locale
 

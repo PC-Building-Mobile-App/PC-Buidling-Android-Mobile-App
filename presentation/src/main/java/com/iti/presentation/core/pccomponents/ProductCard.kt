@@ -1,4 +1,4 @@
-package com.iti.presentation.shared
+package com.iti.presentation.core.pccomponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.iti.presentation.R
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.ui.theme.*
 
 @Composable
@@ -51,7 +51,7 @@ fun ProductCard(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
-                
+
                 if (!component.isInStock) {
                     Box(
                         modifier = Modifier
@@ -87,7 +87,7 @@ fun ProductCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 Text(
                     text = component.productName,
                     style = MaterialTheme.typography.titleMedium,
@@ -96,7 +96,7 @@ fun ProductCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 2.dp)
                 )
-                
+
                 Text(
                     text = component.formattedPrice,
                     style = MaterialTheme.typography.headlineSmall,

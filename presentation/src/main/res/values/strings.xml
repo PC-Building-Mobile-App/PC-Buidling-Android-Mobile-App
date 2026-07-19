@@ -116,4 +116,26 @@
     <string name="onboarding_2_description">Every component is checked against each other in real-time. No more incompatible parts or wasted money.</string>
     <string name="track_prices_in_egp">Track Prices in EGP</string>
     <string name="onboarding_3_description">Real Egyptian market prices updated daily. Get alerts when prices drop so you never miss the best deal.</string>
+    <!-- Home Screen -->
+    <string name="welcome_greeting">Welcome,</string>
+    <string name="ai_powered">AI Powered</string>
+    <string name="new_badge">New</string>
+    <string name="hero_title_line1">Ready to build your</string>
+    <string name="hero_title_line2">dream PC</string>
+    <string name="hero_subtitle">Answer 3 quick questions and our AI crafts a build tuned to your budget in EGP</string>
+    <string name="generate_my_build">Generate My Build</string>
+    <string name="todays_deals">Today\'s Deals</string>
+    <string name="featured_components">Featured components</string>
+    <string name="see_all">See all</string>
+    <string name="show_less">Show less</string>
+    <string name="categories">Categories</string>
+    <string name="latest_hardware_news">Latest Hardware News</string>
+    <string name="search_home_placeholder">Search GPUs, CPUs, cases…</string>
+    <!-- Hardware News Screen -->
+    <string name="hardware_news_title">Hardware News</string>
+    <string name="read_full_article">Read Full Article</string>
+    <string name="published_on">Published on %1$s</string>
+    <string name="by_author">By %1$s</string>
+    <string name="article_not_found">Article not found</string>
+    <string name="source_label">Source: %1$s</string>
 </resources>
