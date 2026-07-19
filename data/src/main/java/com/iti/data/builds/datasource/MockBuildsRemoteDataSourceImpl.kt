@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
+
 @Singleton
 class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSource {
 
@@ -120,6 +121,7 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
             }
         }
     }
+
     private fun findBuildById(buildId: String): Pair<String, BuildDto>? {
         savedBuilds.forEach { (categoryId, builds) ->
             val match = builds.firstOrNull { it.id == buildId }
@@ -177,48 +179,60 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
                     id = "gaming_1",
                     categoryId = "gaming",
                     name = "Ultimate 4K Gaming Rig",
-                    price = 89500.0,
+                    price = 128500.0,
                     imageUrl = "https://picsum.photos/seed/gaming1/400/300",
                     performanceScore = 99,
                     avgFps = 165,
                     compatibilityPercent = 100,
                     specs = listOf(
                         ComponentDataModel(101, "TechStore", "CPU", "AMD Ryzen 9 7950X", "https://picsum.photos/seed/cpu1/100/100", 35000.0, true, mapOf("Socket" to "AM5")),
+                        ComponentDataModel(102, "TechStore", "MOTHERBOARD", "ASUS ROG Crosshair X670E", "https://placehold.co/400x400/png?text=X670E", 18000.0, true, mapOf("Socket" to "AM5")),
                         ComponentDataModel(103, "TechStore", "GPU", "NVIDIA RTX 4090", "https://picsum.photos/seed/gpu1/100/100", 45000.0, true, mapOf("VRAM" to "24GB")),
                         ComponentDataModel(104, "TechStore", "MEMORY", "64 GB DDR5", "https://picsum.photos/seed/ram1/100/100", 6500.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(105, "TechStore", "STORAGE", "2 TB NVMe", "https://picsum.photos/seed/storage1/100/100", 3000.0, true, mapOf("Type" to "NVMe"))
+                        ComponentDataModel(105, "TechStore", "STORAGE", "2 TB NVMe", "https://picsum.photos/seed/storage1/100/100", 3000.0, true, mapOf("Type" to "NVMe")),
+                        ComponentDataModel(106, "TechStore", "PSU", "Corsair AX1600i Titanium", "https://placehold.co/400x400/png?text=1600W", 9000.0, true, mapOf("Wattage" to "1600")),
+                        ComponentDataModel(107, "TechStore", "CASE", "Lian Li O11 Vision", "https://placehold.co/400x400/png?text=Vision", 4500.0, true, mapOf("FormFactor" to "ATX")),
+                        ComponentDataModel(108, "TechStore", "COOLER", "ASUS ROG RYUJIN III AIO", "https://placehold.co/400x400/png?text=AIO", 7500.0, true, mapOf("Type" to "Liquid"))
                     ),
                 ),
                 BuildDto(
                     id = "gaming_2",
                     categoryId = "gaming",
                     name = "Mid-Range 1440p Master",
-                    price = 42000.0,
+                    price = 56500.0,
                     imageUrl = "https://picsum.photos/seed/gaming2/400/300",
                     performanceScore = 85,
                     avgFps = 144,
                     compatibilityPercent = 100,
                     specs = listOf(
                         ComponentDataModel(201, "TechStore", "CPU", "Intel Core i5-13600K", "https://placehold.co/400x400/png?text=i5", 14000.0, true, mapOf("Socket" to "LGA1700")),
+                        ComponentDataModel(202, "TechStore", "MOTHERBOARD", "MSI MAG B760 TOMAHAWK", "https://placehold.co/400x400/png?text=B760", 6500.0, true, mapOf("Socket" to "LGA1700")),
                         ComponentDataModel(203, "TechStore", "GPU", "NVIDIA RTX 4070", "https://placehold.co/400x400/png?text=RTX4070", 22000.0, true, mapOf("VRAM" to "12GB")),
                         ComponentDataModel(204, "TechStore", "MEMORY", "32 GB DDR5", "https://placehold.co/400x400/png?text=RAM", 4200.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(205, "TechStore", "STORAGE", "1 TB NVMe", "https://placehold.co/400x400/png?text=SSD", 1800.0, true, mapOf("Type" to "NVMe"))
+                        ComponentDataModel(205, "TechStore", "STORAGE", "1 TB NVMe", "https://placehold.co/400x400/png?text=SSD", 1800.0, true, mapOf("Type" to "NVMe")),
+                        ComponentDataModel(206, "TechStore", "PSU", "Corsair RM750e Gold", "https://placehold.co/400x400/png?text=750W", 3500.0, true, mapOf("Wattage" to "750")),
+                        ComponentDataModel(207, "TechStore", "CASE", "NZXT H5 Flow", "https://placehold.co/400x400/png?text=H5", 2500.0, true, mapOf("FormFactor" to "ATX")),
+                        ComponentDataModel(208, "TechStore", "COOLER", "DeepCool AK620 Air", "https://placehold.co/400x400/png?text=AK620", 2000.0, true, mapOf("Type" to "Air"))
                     ),
                 ),
                 BuildDto(
                     id = "gaming_3",
                     categoryId = "gaming",
                     name = "Budget 1080p Blaster",
-                    price = 21000.0,
+                    price = 28700.0,
                     imageUrl = "https://picsum.photos/seed/gaming3/400/300",
                     performanceScore = 72,
                     avgFps = 120,
                     compatibilityPercent = 100,
                     specs = listOf(
                         ComponentDataModel(301, "TechStore", "CPU", "AMD Ryzen 5 7600", "https://placehold.co/400x400/png?text=Ryzen5", 9000.0, true, mapOf("Socket" to "AM5")),
+                        ComponentDataModel(302, "TechStore", "MOTHERBOARD", "Gigabyte B650M DS3H", "https://placehold.co/400x400/png?text=B650M", 4500.0, true, mapOf("Socket" to "AM5")),
                         ComponentDataModel(303, "TechStore", "GPU", "NVIDIA RTX 4060", "https://placehold.co/400x400/png?text=RTX4060", 9500.0, true, mapOf("VRAM" to "8GB")),
                         ComponentDataModel(304, "TechStore", "MEMORY", "16 GB DDR5", "https://placehold.co/400x400/png?text=RAM", 1500.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(305, "TechStore", "STORAGE", "500 GB NVMe", "https://placehold.co/400x400/png?text=SSD", 1000.0, true, mapOf("Type" to "NVMe"))
+                        ComponentDataModel(305, "TechStore", "STORAGE", "500 GB NVMe", "https://placehold.co/400x400/png?text=SSD", 1000.0, true, mapOf("Type" to "NVMe")),
+                        ComponentDataModel(306, "TechStore", "PSU", "EVGA 600 W1 White", "https://placehold.co/400x400/png?text=600W", 1500.0, true, mapOf("Wattage" to "600")),
+                        ComponentDataModel(307, "TechStore", "CASE", "Aerocool Cylon Mini", "https://placehold.co/400x400/png?text=Cylon", 1200.0, true, mapOf("FormFactor" to "MicroATX")),
+                        ComponentDataModel(308, "TechStore", "COOLER", "AMD Wraith Stealth", "https://placehold.co/400x400/png?text=Wraith", 500.0, true, mapOf("Type" to "Air"))
                     ),
                 ),
             ),

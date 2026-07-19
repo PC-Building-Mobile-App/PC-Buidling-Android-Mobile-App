@@ -13,6 +13,7 @@ fun ComponentCategory.toUiModel(): ComponentCategoryUiModel = ComponentCategoryU
     iconRes = type.toIconResource(),
 )
 
+fun List<ComponentCategory>.toUiModels(): List<ComponentCategoryUiModel> = map { it.toUiModel() }
 
 fun ComponentCategoryType.toIconResource(): Int = when (this) {
     ComponentCategoryType.CPU -> R.drawable.ic_cpu

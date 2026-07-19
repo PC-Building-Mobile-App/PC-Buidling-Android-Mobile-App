@@ -24,6 +24,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
 import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
+import com.iti.presentation.parts.screens.PartsScreen
 
 @Composable
 fun MainNavigation(
@@ -75,12 +76,10 @@ fun MainNavigation(
                     }
 
                     entry<PartsRoute> {
-                        ScreenPlaceholder(
-                            title = "Parts",
-                            subtitle = "Tap a part to see details",
-                            onAction = {
+                        PartsScreen(
+                            onNavigateToDetail = { partId ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = "sample-part-id"),
+                                    PartsDetailRoute(partId = partId),
                                 )
                             },
                         )
