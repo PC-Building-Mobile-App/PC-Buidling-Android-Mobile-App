@@ -41,23 +41,13 @@ fun FeaturedComponentsSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            SectionHeader(
-                title = "",
-                modifier = Modifier.padding(horizontal = 0.dp)
-            )
-
             SectionHeader(
                 title = stringResource(R.string.featured_components),
                 actionText = stringResource(R.string.see_all),
                 onActionClick = onSeeAll,
                 modifier = Modifier.padding(horizontal = 0.dp)
             )
-        }
+
 
         Spacer(Modifier.height(16.dp))
 
