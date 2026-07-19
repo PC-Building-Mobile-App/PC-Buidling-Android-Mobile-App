@@ -47,7 +47,7 @@ class PartsViewModel @Inject constructor(
                 .debounce(400.milliseconds)
                 .distinctUntilChanged()
                 .collectLatest {
-                    performSearch(reset = true)
+                    performSearch()
                 }
         }
 
@@ -55,7 +55,7 @@ class PartsViewModel @Inject constructor(
             updateState { it.copy(query = initialQuery) }
             queryFlow.value = initialQuery
         } else {
-            performSearch(reset = true)
+            performSearch()
         }
     }
 
@@ -67,15 +67,10 @@ class PartsViewModel @Inject constructor(
             }
             is Event.SelectCategory -> {
                 updateState { it.copy(selectedCategory = event.category) }
-                performSearch(reset = true)
-            }
-            is Event.LoadNextPage -> {
-                if (!state.value.isPagingLoading && !state.value.isLastPage) {
-                    performSearch(reset = false)
-                }
+                performSearch()
             }
             is Event.Refresh -> {
-                performSearch(reset = true)
+                performSearch()
             }
             is Event.ToggleFilterSheet -> {
                 updateState { it.copy(isFilterSheetOpen = !it.isFilterSheetOpen) }
@@ -87,7 +82,7 @@ class PartsViewModel @Inject constructor(
                     inStockOnly = event.inStockOnly,
                     isFilterSheetOpen = false
                 ) }
-                performSearch(reset = true)
+                performSearch()
             }
             is Event.ResetFilters -> {
                 updateState { it.copy(
@@ -95,7 +90,7 @@ class PartsViewModel @Inject constructor(
                     maxPrice = null,
                     inStockOnly = false
                 ) }
-                performSearch(reset = true)
+                performSearch()
             }
             is Event.ProductClicked -> {
                 sendEffect(Effect.NavigateToDetail(event.productId))
@@ -115,45 +110,33 @@ class PartsViewModel @Inject constructor(
         }
     }
 
-    private fun performSearch(reset: Boolean) {
+    private fun performSearch() {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             val currentState = state.value
-            val targetPage = if (reset) 0 else currentState.page + 1
             
-            if (reset) {
-                updateState { it.copy(isInitialLoading = true, errorMessage = null, products = emptyList()) }
-            } else {
-                updateState { it.copy(isPagingLoading = true) }
-            }
+            updateState { it.copy(isLoading = true, errorMessage = null, products = emptyList()) }
 
             val params = SearchParams(
                 query = currentState.query,
                 category = currentState.selectedCategory,
                 minPrice = currentState.minPrice,
                 maxPrice = currentState.maxPrice,
-                inStockOnly = currentState.inStockOnly,
-                page = targetPage,
-                size = 20
+                inStockOnly = currentState.inStockOnly
             )
 
-            searchComponentsUseCase(params).onSuccess { pageResult ->
-                val newProducts = pageResult.content.toUiModels()
+            searchComponentsUseCase(params).onSuccess { components ->
                 updateState {
                     it.copy(
-                        products = if (reset) newProducts else it.products + newProducts,
-                        page = pageResult.page,
-                        isLastPage = pageResult.page >= pageResult.totalPages - 1,
-                        isInitialLoading = false,
-                        isPagingLoading = false
+                        products = components.toUiModels(),
+                        isLoading = false
                     )
                 }
             }.onFailure { throwable ->
                 updateState { 
                     it.copy(
                         errorMessage = throwable.toUiText(),
-                        isInitialLoading = false,
-                        isPagingLoading = false
+                        isLoading = false
                     )
                 }
             }

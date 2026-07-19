@@ -77,7 +77,7 @@ fun ProductCard(
                 modifier = Modifier
                     .padding(12.dp)
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
                     text = component.subtitle,
