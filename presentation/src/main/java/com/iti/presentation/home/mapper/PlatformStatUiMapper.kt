@@ -4,26 +4,18 @@ import com.iti.domain.stats.model.PlatformStat
 import com.iti.presentation.home.model.PlatformStatUiModel
 import java.text.NumberFormat
 import java.util.Locale
-import javax.inject.Inject
 
-class PlatformStatUiMapper @Inject constructor() {
+fun PlatformStat.toUiModel(): PlatformStatUiModel = PlatformStatUiModel(
+    id = type.name,
+    formattedValue = formatCount(count, isApproximated),
+    label = label.uppercase(),
+)
 
-    fun mapToUiModel(domainModel: PlatformStat): PlatformStatUiModel {
-        return PlatformStatUiModel(
-            id = domainModel.type.name,
-            formattedValue = formatCount(domainModel.count, domainModel.isApproximated),
-            label = domainModel.label.uppercase()
-        )
-    }
+fun List<PlatformStat>.toUiModels(): List<PlatformStatUiModel> = map { it.toUiModel() }
 
-    fun mapToUiModels(domainModels: List<PlatformStat>): List<PlatformStatUiModel> {
-        return domainModels.map { mapToUiModel(it) }
-    }
-
-    private fun formatCount(count: Int, isApproximated: Boolean): String {
-        return when {
-            isApproximated && count >= 1000 -> "${count / 1000}K+"
-            else -> NumberFormat.getNumberInstance(Locale.US).format(count)
-        }
+private fun formatCount(count: Int, isApproximated: Boolean): String {
+    return when {
+        isApproximated && count >= 1000 -> "${count / 1000}K+"
+        else -> NumberFormat.getNumberInstance(Locale.US).format(count)
     }
 }
