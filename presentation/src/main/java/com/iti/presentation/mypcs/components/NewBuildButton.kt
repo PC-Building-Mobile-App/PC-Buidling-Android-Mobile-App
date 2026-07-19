@@ -48,9 +48,9 @@ fun NewBuildButton(
             interactionSource = interactionSource,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 disabledContainerColor = Color.Transparent,
-                disabledContentColor = Color.White
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary
             ),
             elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = 0.dp,

@@ -29,4 +29,19 @@
     <string name="out_of_stock">OUT OF STOCK</string>
     <string name="price_range">Price Range</string>
     <string name="price_range_format">%1$s - %2$s %3$s</string>
+    <string name="back">Back</string>
+    <string name="category_builds_title">%1$s Builds</string>
+    <string name="performance">Performance</string>
+    <string name="avg_fps">Avg FPS</string>
+    <string name="compat">Compat</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="export">Export</string>
+    <string name="build_score_format">%1$d/100</string>
+    <string name="build_fps_format">%1$d fps</string>
+    <string name="build_percent_format">%1$d%%</string>
+    <string name="generic_empty_title">Nothing here yet</string>
+    <string name="no_builds_yet_title">No builds yet</string>
+    <string name="no_builds_yet_message">You haven\'t created any builds in this category yet.</string>
+    <string name="slogan">AI-POWERED PC BUILDER</string>
 </resources>

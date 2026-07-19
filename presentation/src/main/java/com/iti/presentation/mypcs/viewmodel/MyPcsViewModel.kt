@@ -26,7 +26,7 @@ class MyPcsViewModel @Inject constructor(
     override fun onEvent(event: Event) {
         when (event) {
             is Event.LoadBuildCategories -> loadBuildCategories()
-            is Event.CategoryClicked -> sendEffect(Effect.NavigateToCategory(event.categoryId))
+            is Event.CategoryClicked -> sendEffect(Effect.NavigateToCategory(event.category))
             is Event.NewBuildClicked -> sendEffect(Effect.NavigateToNewBuild)
         }
     }

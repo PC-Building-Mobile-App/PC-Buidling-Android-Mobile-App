@@ -6,8 +6,8 @@ import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.usecase.SearchComponentsUseCase
 import com.iti.presentation.core.BaseViewModel
-import com.iti.presentation.core.componentcategories.mapper.ComponentCategoryUiMapper
-import com.iti.presentation.core.components.mapper.ComponentUiMapper
+import com.iti.presentation.core.componentcategories.mapper.toUiModels
+import com.iti.presentation.core.components.mapper.toUiModels
 import com.iti.presentation.core.toUiText
 import com.iti.presentation.parts.PartsContract.Effect
 import com.iti.presentation.parts.PartsContract.Event
@@ -29,8 +29,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class PartsViewModel @Inject constructor(
     private val searchComponentsUseCase: SearchComponentsUseCase,
     private val getCategoriesUseCase: GetComponentCategoriesUseCase,
-    private val categoryUiMapper: ComponentCategoryUiMapper,
-    private val componentUiMapper: ComponentUiMapper,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<Event, State, Effect>() {
 
@@ -109,7 +107,7 @@ class PartsViewModel @Inject constructor(
         viewModelScope.launch {
             getCategoriesUseCase()
                 .map { domainCategories ->
-                    categoryUiMapper.mapToUiModels(domainCategories)
+                    domainCategories.toUiModels()
                 }
                 .collect { uiCategories ->
                     updateState { it.copy(categories = uiCategories) }
@@ -140,7 +138,7 @@ class PartsViewModel @Inject constructor(
             )
 
             searchComponentsUseCase(params).onSuccess { pageResult ->
-                val newProducts = componentUiMapper.mapToUiModels(pageResult.content)
+                val newProducts = pageResult.content.toUiModels()
                 updateState {
                     it.copy(
                         products = if (reset) newProducts else it.products + newProducts,

@@ -21,6 +21,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
 import com.iti.presentation.parts.screens.PartsScreen
 
@@ -91,13 +92,13 @@ fun MainNavigation(
 
                     entry<MyPcsRoute> {
                         MyPcsScreen(
-                                onNewBuildClick = {
-                                },
-                        onCategoryClick = { categoryId ->
-                            activeBackStack.navigateSingleTop(
-                                BuildCategoryRoute(category = categoryId),
-                            )
-                        },
+                            onNewBuildClick = {
+                            },
+                            onCategoryClick = { category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildCategoryRoute(category = category),
+                                )
+                            },
                         )
                     }
 
@@ -124,15 +125,12 @@ fun MainNavigation(
                     }
 
                     entry<BuildCategoryRoute> { route ->
-                        // TODO: Replace with your BuildCategoryScreen composable
-                        ScreenPlaceholder(
-                            title = "Build Category",
-                            subtitle = route.category,
-                            onAction = {
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(buildId = "generated-build-123"),
-                                )
+                        CategoryBuildsScreen(
+                            category = route.category,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
                             },
+                            onNewBuildClick = {},
                         )
                     }
 

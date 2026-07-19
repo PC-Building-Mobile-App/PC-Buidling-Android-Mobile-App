@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.components.shimmerEffect
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.CardSurface
 
 @Composable
 fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
@@ -28,7 +26,7 @@ fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(shape)
-            .background(CardSurface)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .height(168.dp),
     ) {
         Column(
@@ -49,7 +47,7 @@ fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
                     .height(14.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
             )
 
@@ -59,7 +57,7 @@ fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(11.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
             )
 
@@ -69,7 +67,7 @@ fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .height(11.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
             )
 
@@ -80,7 +78,7 @@ fun BuildCategoryCardSkeleton(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .width(60.dp)
                         .height(14.dp)
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(MaterialTheme.shapes.extraSmall)
                         .shimmerEffect(),
                 )
             }

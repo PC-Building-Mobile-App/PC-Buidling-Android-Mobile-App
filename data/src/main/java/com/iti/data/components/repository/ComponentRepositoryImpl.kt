@@ -1,7 +1,7 @@
 package com.iti.data.components.repository
 
 import com.iti.data.components.datasource.ComponentDataSource
-import com.iti.data.components.mapper.ComponentDataMapper
+import com.iti.data.components.mapper.toDomain
 import com.iti.data.util.safeCall
 import com.iti.domain.components.model.Component
 import com.iti.domain.components.model.PageResult
@@ -11,22 +11,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.Result
 import kotlin.time.Duration.Companion.milliseconds
 
 class ComponentRepositoryImpl @Inject constructor(
-    private val mockDataSource: ComponentDataSource,
-    private val mapper: ComponentDataMapper
+    private val mockDataSource: ComponentDataSource
 ) : ComponentRepository {
 
     override fun getComponents(): Flow<List<Component>> {
         return mockDataSource.getComponents().map { dataModels ->
-            mapper.mapToDomainList(dataModels)
+            dataModels.toDomain()
         }
     }
 
     override fun getComponentById(id: Long): Flow<Component?> {
         return mockDataSource.getComponentById(id).map { dataModel ->
-            dataModel?.let { mapper.mapToDomain(it) }
+            dataModel?.toDomain()
         }
     }
 
@@ -44,7 +44,7 @@ class ComponentRepositoryImpl @Inject constructor(
         val end = (start + params.size).coerceAtMost(totalElements)
         
         val content = if (start < totalElements) {
-            filteredData.subList(start, end).map { mapper.mapToDomain(it) }
+            filteredData.subList(start, end).map { it.toDomain() }
         } else {
             emptyList()
         }

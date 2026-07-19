@@ -62,8 +62,8 @@ fun ErrorScreen(
             Button(
                 onClick = onRetry,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary, // Use theme primary
-                    contentColor = MaterialTheme.colorScheme.onPrimary // Use contrast color
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
             ) {
                 Text(retryLabel)

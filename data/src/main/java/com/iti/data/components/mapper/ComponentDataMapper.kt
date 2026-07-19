@@ -2,23 +2,15 @@ package com.iti.data.components.mapper
 
 import com.iti.data.components.model.ComponentDataModel
 import com.iti.domain.components.model.Component
-import javax.inject.Inject
 
-class ComponentDataMapper @Inject constructor() {
+fun ComponentDataModel.toDomain(): Component = Component(
+    id = id,
+    vendorName = vendorName,
+    category = category,
+    productName = productName,
+    productImage = productImage,
+    price = price,
+    inStock = inStock,
+)
 
-    fun mapToDomain(dataModel: ComponentDataModel): Component {
-        return Component(
-            id = dataModel.id,
-            vendorName = dataModel.vendorName,
-            category = dataModel.category,
-            productName = dataModel.productName,
-            productImage = dataModel.productImage,
-            price = dataModel.price,
-            inStock = dataModel.inStock
-        )
-    }
-
-    fun mapToDomainList(dataModels: List<ComponentDataModel>): List<Component> {
-        return dataModels.map { mapToDomain(it) }
-    }
-}
+fun List<ComponentDataModel>.toDomain(): List<Component> = map { it.toDomain() }

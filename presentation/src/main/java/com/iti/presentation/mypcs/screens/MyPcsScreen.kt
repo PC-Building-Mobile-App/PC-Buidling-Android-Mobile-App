@@ -42,7 +42,7 @@ import com.iti.presentation.ui.theme.TextSecondary
 @Composable
 fun MyPcsScreen(
     onNewBuildClick: () -> Unit,
-    onCategoryClick: (String) -> Unit,
+    onCategoryClick: (BuildCategoryUiModel) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyPcsViewModel = hiltViewModel(),
 ) {
@@ -51,7 +51,7 @@ fun MyPcsScreen(
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is Effect.NavigateToCategory -> onCategoryClick(effect.categoryId)
+                is Effect.NavigateToCategory -> onCategoryClick(effect.category)
                 is Effect.NavigateToNewBuild -> onNewBuildClick()
             }
         }
@@ -122,7 +122,7 @@ private fun MyPcsScreenContent(
                     items(state.categories, key = { it.id }) { category ->
                         BuildCategoryCard(
                             category = category,
-                            onClick = { onEvent(Event.CategoryClicked(category.id)) },
+                            onClick = { onEvent(Event.CategoryClicked(category)) },
                         )
                     }
                 }
