@@ -44,4 +44,10 @@
     <string name="no_builds_yet_title">No builds yet</string>
     <string name="no_builds_yet_message">You haven\'t created any builds in this category yet.</string>
     <string name="slogan">AI-POWERED PC BUILDER</string>
+    <string name="build_your_dream_pc">Build Your Dream PC</string>
+    <string name="onboarding_1_description">Describe your needs in Arabic or English and our AI crafts the perfect build — optimized for Egypt\'s market and prices.</string>
+    <string name="instant_compatibility">Instant Compatibility</string>
+    <string name="onboarding_2_description">Every component is checked against each other in real-time. No more incompatible parts or wasted money.</string>
+    <string name="track_prices_in_egp">Track Prices in EGP</string>
+    <string name="onboarding_3_description">Real Egyptian market prices updated daily. Get alerts when prices drop so you never miss the best deal.</string>
 </resources>
