@@ -39,7 +39,7 @@ import com.iti.presentation.ui.theme.AppTheme
 @Composable
 fun CategoryBuildsScreen(
     onBackClick: () -> Unit,
-    onNewBuildClick: (String) -> Unit,
+    onNewBuildClick: (BuildCategoryUiModel) -> Unit,
     category: BuildCategoryUiModel,
     modifier: Modifier = Modifier,
     viewModel: CategoryBuildsViewModel = hiltViewModel(),
@@ -54,7 +54,7 @@ fun CategoryBuildsScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is Effect.NavigateBack -> onBackClick()
-                is Effect.NavigateToNewBuild -> onNewBuildClick(effect.categoryId)
+                is Effect.NavigateToNewBuild -> onNewBuildClick(effect.category)
                 is Effect.NavigateToEditBuild -> {}
                 is Effect.ShareBuild -> {}
                 is Effect.ExportBuild -> {}

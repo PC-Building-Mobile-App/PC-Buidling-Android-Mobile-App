@@ -38,7 +38,7 @@ class CategoryBuildsViewModel @Inject constructor(
             is Event.BackClicked -> sendEffect(Effect.NavigateBack)
             is Event.NewBuildClicked -> {
                 state.value.category?.let {
-                    sendEffect(Effect.NavigateToNewBuild(it.id))
+                    sendEffect(Effect.NavigateToNewBuild(it))
                 }
             }
             is Event.EditClicked -> sendEffect(Effect.NavigateToEditBuild(event.buildId))

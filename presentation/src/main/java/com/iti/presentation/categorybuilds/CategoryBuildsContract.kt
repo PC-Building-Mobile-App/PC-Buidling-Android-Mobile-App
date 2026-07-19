@@ -28,7 +28,7 @@ object CategoryBuildsContract {
 
     sealed interface Effect {
         data object NavigateBack : Effect
-        data class NavigateToNewBuild(val categoryId: String) : Effect
+        data class NavigateToNewBuild(val category: BuildCategoryUiModel) : Effect
         data class NavigateToEditBuild(val buildId: String) : Effect
         data class ShareBuild(val buildId: String) : Effect
         data class ExportBuild(val buildId: String) : Effect

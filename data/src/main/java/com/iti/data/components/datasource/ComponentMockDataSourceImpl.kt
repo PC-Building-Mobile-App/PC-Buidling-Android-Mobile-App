@@ -1,4 +1,3 @@
-// File: data/components/datasource/ComponentMockDataSourceImpl.kt
 package com.iti.data.components.datasource
 
 import com.iti.data.components.model.ComponentDataModel
@@ -9,13 +8,12 @@ import javax.inject.Inject
 class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
 
     private val mockComponents = listOf(
-        // CPUs
         ComponentDataModel(
             id = 1,
             vendorName = "TechStore",
             category = "CPU",
             productName = "AMD Ryzen 7 7800X3D",
-            productImage = "https://cdn.example.com/img/1.jpg",
+            productImage = "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&auto=format&fit=crop&q=60",
             price = 18500.00,
             inStock = true
         ),
@@ -24,7 +22,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "GearHub",
             category = "CPU",
             productName = "Intel Core i7-14700K",
-            productImage = "https://cdn.example.com/img/2.jpg",
+            productImage = "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=400&auto=format&fit=crop&q=60",
             price = 21000.00,
             inStock = true
         ),
@@ -33,7 +31,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "PCWorld",
             category = "CPU",
             productName = "AMD Ryzen 5 7600X",
-            productImage = "https://cdn.example.com/img/3.jpg",
+            productImage = "https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&auto=format&fit=crop&q=60",
             price = 11500.00,
             inStock = true
         ),
@@ -42,18 +40,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "TechStore",
             category = "CPU",
             productName = "Intel Core i5-13600K",
-            productImage = "https://cdn.example.com/img/4.jpg",
+            productImage = "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=400&auto=format&fit=crop&q=60",
             price = 14800.00,
             inStock = false
         ),
-
-        // GPUs
         ComponentDataModel(
             id = 5,
             vendorName = "GearHub",
             category = "GPU",
             productName = "NVIDIA GeForce RTX 4070 Super",
-            productImage = "https://cdn.example.com/img/5.jpg",
+            productImage = "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=400&auto=format&fit=crop&q=60",
             price = 32000.00,
             inStock = true
         ),
@@ -62,7 +58,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "TechStore",
             category = "GPU",
             productName = "NVIDIA GeForce RTX 4080 Super",
-            productImage = "https://cdn.example.com/img/6.jpg",
+            productImage = "https://images.unsplash.com/photo-1624705002806-5d72df19c3ad?w=400&auto=format&fit=crop&q=60",
             price = 54000.00,
             inStock = true
         ),
@@ -71,7 +67,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "PCWorld",
             category = "GPU",
             productName = "AMD Radeon RX 7800 XT",
-            productImage = "https://cdn.example.com/img/7.jpg",
+            productImage = "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=400&auto=format&fit=crop&q=60",
             price = 26500.00,
             inStock = true
         ),
@@ -80,18 +76,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "GearHub",
             category = "GPU",
             productName = "NVIDIA GeForce RTX 4060 Ti 16GB",
-            productImage = "https://cdn.example.com/img/8.jpg",
+            productImage = "https://images.unsplash.com/photo-1601524909162-be87252be298?w=400&auto=format&fit=crop&q=60",
             price = 22000.00,
             inStock = false
         ),
-
-        // Motherboards
         ComponentDataModel(
             id = 9,
             vendorName = "TechStore",
             category = "MOTHERBOARD",
             productName = "ASUS ROG Strix B650-A Gaming WiFi",
-            productImage = "https://cdn.example.com/img/9.jpg",
+            productImage = "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop&q=60",
             price = 11200.00,
             inStock = true
         ),
@@ -100,7 +94,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "PCWorld",
             category = "MOTHERBOARD",
             productName = "MSI MAG Z790 Tomahawk WiFi",
-            productImage = "https://cdn.example.com/img/10.jpg",
+            productImage = "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=400&auto=format&fit=crop&q=60",
             price = 13500.00,
             inStock = true
         ),
@@ -109,18 +103,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "GearHub",
             category = "MOTHERBOARD",
             productName = "Gigabyte B650 AORUS Elite AX",
-            productImage = "https://cdn.example.com/img/11.jpg",
+            productImage = "https://images.unsplash.com/photo-1631553127988-3486392095f7?w=400&auto=format&fit=crop&q=60",
             price = 10500.00,
             inStock = true
         ),
-
-        // Memory (RAM)
         ComponentDataModel(
             id = 12,
             vendorName = "PCWorld",
             category = "MEMORY",
             productName = "Corsair Vengeance RGB 32GB (2x16GB) DDR5-6000",
-            productImage = "https://cdn.example.com/img/12.jpg",
+            productImage = "https://images.unsplash.com/photo-1562976540-1502c2145186?w=400&auto=format&fit=crop&q=60",
             price = 6500.00,
             inStock = false
         ),
@@ -129,7 +121,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "TechStore",
             category = "MEMORY",
             productName = "G.Skill Trident Z5 Neo RGB 32GB DDR5-6000",
-            productImage = "https://cdn.example.com/img/13.jpg",
+            productImage = "https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?w=400&auto=format&fit=crop&q=60",
             price = 6800.00,
             inStock = true
         ),
@@ -138,18 +130,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "GearHub",
             category = "MEMORY",
             productName = "Kingston Fury Beast 16GB (2x8GB) DDR4-3200",
-            productImage = "https://cdn.example.com/img/14.jpg",
+            productImage = "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=400&auto=format&fit=crop&q=60",
             price = 2400.00,
             inStock = true
         ),
-
-        // Storage / SSDs
         ComponentDataModel(
             id = 15,
             vendorName = "TechStore",
             category = "STORAGE",
             productName = "Samsung 990 PRO 2TB M.2 NVMe SSD",
-            productImage = "https://cdn.example.com/img/15.jpg",
+            productImage = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&auto=format&fit=crop&q=60",
             price = 8500.00,
             inStock = true
         ),
@@ -158,18 +148,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "PCWorld",
             category = "STORAGE",
             productName = "Western Digital Black SN850X 1TB NVMe",
-            productImage = "https://cdn.example.com/img/16.jpg",
+            productImage = "https://images.unsplash.com/photo-1601737487795-daf37f941af5?w=400&auto=format&fit=crop&q=60",
             price = 4800.00,
             inStock = true
         ),
-
-        // Power Supplies (PSU)
         ComponentDataModel(
             id = 17,
             vendorName = "GearHub",
             category = "PSU",
             productName = "Corsair RM850e 80+ Gold Fully Modular",
-            productImage = "https://cdn.example.com/img/17.jpg",
+            productImage = "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&auto=format&fit=crop&q=60",
             price = 6200.00,
             inStock = true
         ),
@@ -178,18 +166,16 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "TechStore",
             category = "PSU",
             productName = "MSI MPG A1000G PCIE5 1000W 80+ Gold",
-            productImage = "https://cdn.example.com/img/18.jpg",
+            productImage = "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=400&auto=format&fit=crop&q=60",
             price = 8900.00,
             inStock = false
         ),
-
-        // Cases & Cooling
         ComponentDataModel(
             id = 19,
             vendorName = "PCWorld",
             category = "CASE",
             productName = "NZXT H9 Flow Dual-Chamber ATX Mid-Tower",
-            productImage = "https://cdn.example.com/img/19.jpg",
+            productImage = "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=400&auto=format&fit=crop&q=60",
             price = 7800.00,
             inStock = true
         ),
@@ -198,7 +184,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             vendorName = "GearHub",
             category = "COOLER",
             productName = "Liquid Freezer III 360 AIO Liquid Cooler",
-            productImage = "https://cdn.example.com/img/20.jpg",
+            productImage = "https://images.unsplash.com/photo-1625805708453-2949ff12b9ff?w=400&auto=format&fit=crop&q=60",
             price = 5500.00,
             inStock = true
         )

@@ -15,7 +15,7 @@ data class GenerateBuildRequest(
     }
 }
 enum class BuildPurpose {
-    GAMING, STREAMING, WORKSTATION, BUDGET, SFF,
+    GAMING, STREAMING, WORKSTATION, BUDGET, SFF, VIDEO_EDIT, AI_ML, ARCHITECTURE, DESIGN
 }
 
 

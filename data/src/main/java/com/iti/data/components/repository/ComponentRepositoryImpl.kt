@@ -2,6 +2,7 @@ package com.iti.data.components.repository
 
 import com.iti.data.components.datasource.ComponentDataSource
 import com.iti.data.components.mapper.ComponentDataMapper
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import com.iti.domain.components.repository.ComponentRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,14 @@ class ComponentRepositoryImpl @Inject constructor(
     override fun getComponentById(id: Long): Flow<Component?> {
         return mockDataSource.getComponentById(id).map { dataModel ->
             dataModel?.let { mapper.mapToDomain(it) }
+        }
+    }
+
+    override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> {
+        return mockDataSource.getComponents().map { dataModels ->
+            mapper.mapToDomainList(
+                dataModels.filter { it.category.equals(category.name, ignoreCase = true) }
+            )
         }
     }
 }
