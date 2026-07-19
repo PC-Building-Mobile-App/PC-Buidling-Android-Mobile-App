@@ -1,6 +1,7 @@
 package com.iti.presentation.core.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,8 +35,9 @@ data object ProfileRoute : Route
 data class PartsDetailRoute(val partId: String) : Route
 
 @Serializable
-data class BuildCategoryRoute(val category: String) : Route
-
+data class BuildCategoryRoute(
+    val category: BuildCategoryUiModel
+) : Route
 @Serializable
 data class BuildGenerationRoute(val buildId: String) : Route
 

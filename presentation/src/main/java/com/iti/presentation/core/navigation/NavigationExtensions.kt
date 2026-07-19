@@ -13,3 +13,12 @@ fun <T : Any> MutableList<T>.navigateToRoot(root: T, route: T) {
         add(route)
     }
 }
+
+fun <T : Any> MutableList<T>.navigateBack(): Boolean {
+    return if (size > 1) {
+        removeAt(lastIndex)
+        true
+    } else {
+        false
+    }
+}

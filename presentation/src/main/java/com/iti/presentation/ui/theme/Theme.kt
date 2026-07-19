@@ -14,15 +14,17 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = RoyalPurple,
     background = DeepBlack,
     surface = SurfaceDark,
+    surfaceVariant = SurfaceVariantDark,
+    surfaceContainer = NavBarSurface,
+    surfaceContainerHigh = CardSurface,
     onPrimary = TextPrimary,
     onSecondary = TextPrimary,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
-    error = ErrorRed,
-    surfaceVariant = SurfaceVariantDark,
-    outline = BorderSubtle,
-    surfaceContainer = NavBarSurface,
     onSurfaceVariant = NavInactive,
+
+    outline = BorderSubtle,
+    error = ErrorRed,
 )
 
 @Composable
