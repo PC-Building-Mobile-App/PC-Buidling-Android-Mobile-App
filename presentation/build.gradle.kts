@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.datastore.preferences)
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.navigation3.runtime)

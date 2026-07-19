@@ -21,6 +21,7 @@ kotlinxSerialization = "1.9.0"
 ktor = "3.5.0"
 androidx-core-splashscreen = "1.0.1"
 google-material = "1.12.0"
+androidx-datastore = "1.1.1"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -58,6 +59,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-core-splashscreen" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "google-material" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidx-datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
