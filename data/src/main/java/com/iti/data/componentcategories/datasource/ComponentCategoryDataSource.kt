@@ -1,6 +1,6 @@
-package com.iti.data.componentcategories.datasource
+package com.iti.data.componentCategories.datasource
 
-import com.iti.data.componentcategories.model.ComponentCategoryDataModel
+import com.iti.data.componentCategories.model.ComponentCategoryDataModel
 import kotlinx.coroutines.flow.Flow
 
 interface ComponentCategoryDataSource {

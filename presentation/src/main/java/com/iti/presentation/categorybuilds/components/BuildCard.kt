@@ -31,15 +31,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.categorybuilds.model.BuildSpecUiModel
+import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.mypcs.model.accentColor
-import com.iti.presentation.ui.theme.AppTheme
 
 @Composable
 fun BuildCard(
@@ -184,14 +182,14 @@ private fun StatChip(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SpecChips(specs: List<BuildSpecUiModel>) {
+private fun SpecChips(specs: List<PickerComponentUiModel>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         specs.forEach { spec ->
             Text(
-                text = spec.name,
+                text = spec.productName,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -233,34 +231,6 @@ private fun ActionChip(
             text = label,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun BuildCardPreview() {
-    AppTheme {
-        BuildCard(
-            build = BuildUiModel(
-                id = "gaming_1",
-                name = "Ultimate 4K Gaming Rig",
-                priceFormatted = "89,500 EGP",
-                imageUrl = "",
-                performanceScore = 99,
-                avgFps = 165,
-                compatibilityPercent = 100,
-                specs = listOf(
-                    BuildSpecUiModel("CPU", "AMD Ryzen 9 7950X", null),
-                    BuildSpecUiModel("GPU", "NVIDIA RTX 4090", null),
-                    BuildSpecUiModel("RAM", "64 GB DDR5", null),
-                    BuildSpecUiModel("STORAGE", "2 TB NVMe", null),
-                ),
-            ),
-            categoryType = BuildCategoryType.GAMING,
-            onEditClick = {},
-            onShareClick = {},
-            onExportClick = {},
         )
     }
 }

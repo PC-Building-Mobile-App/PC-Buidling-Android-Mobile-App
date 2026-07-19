@@ -1,6 +1,7 @@
 package com.iti.presentation.core.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import kotlinx.serialization.Serializable
 
@@ -38,8 +39,12 @@ data class PartsDetailRoute(val partId: String) : Route
 data class BuildCategoryRoute(
     val category: BuildCategoryUiModel
 ) : Route
+
 @Serializable
-data class BuildGenerationRoute(val buildId: String) : Route
+data class BuildGenerationRoute(
+    val category: BuildCategoryUiModel? = null,
+    val editingBuild: BuildUiModel? = null
+) : Route
 
 @Serializable
 data class ComparisonRoute(val firstPartId: String, val secondPartId: String) : Route
