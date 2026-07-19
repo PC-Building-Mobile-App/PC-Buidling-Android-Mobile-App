@@ -20,4 +20,5 @@
     <string name="generic_empty_title">Nothing here yet</string>
     <string name="no_builds_yet_title">No builds yet</string>
     <string name="no_builds_yet_message">You haven\'t created any builds in this category yet.</string>
+    <string name="slogan">AI-POWERED PC BUILDER</string>
 </resources>
