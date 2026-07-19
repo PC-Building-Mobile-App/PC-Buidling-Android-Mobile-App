@@ -1,7 +1,7 @@
-// File: data/components/datasource/ComponentMockDataSourceImpl.kt
 package com.iti.data.components.datasource
 
 import com.iti.data.components.model.ComponentDataModel
+import com.iti.domain.components.model.SearchParams
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -211,5 +211,29 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
     override fun getComponentById(id: Long): Flow<ComponentDataModel?> {
         val component = mockComponents.find { it.id == id }
         return flowOf(component)
+    }
+
+    override suspend fun searchComponents(params: SearchParams): List<ComponentDataModel> {
+        //todo (Implement real remote search once the backend is done)
+        val query = params.query?.trim()
+        val category = params.category
+        val minPrice = params.minPrice
+        val maxPrice = params.maxPrice
+
+        return mockComponents.filter { component ->
+            val matchQuery = query.isNullOrBlank() ||
+                    component.productName.contains(query, ignoreCase = true) ||
+                    component.vendorName.contains(query, ignoreCase = true)
+
+            val matchCategory = category == null ||
+                    component.category.equals(category.name, ignoreCase = true)
+
+            val matchPrice = (minPrice == null || component.price >= minPrice) &&
+                    (maxPrice == null || component.price <= maxPrice)
+
+            val matchStock = !params.inStockOnly || component.inStock
+
+            matchQuery && matchCategory && matchPrice && matchStock
+        }
     }
 }

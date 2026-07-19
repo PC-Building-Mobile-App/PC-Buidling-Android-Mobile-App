@@ -16,7 +16,7 @@ enum class TopLevelRoute(
         unselectedIcon = R.drawable.ic_nav_home,
     ),
     PARTS(
-        route = PartsRoute,
+        route = PartsRoute(),
         label = "Parts",
         selectedIcon = R.drawable.ic_nav_parts_filled,
         unselectedIcon = R.drawable.ic_nav_parts,
