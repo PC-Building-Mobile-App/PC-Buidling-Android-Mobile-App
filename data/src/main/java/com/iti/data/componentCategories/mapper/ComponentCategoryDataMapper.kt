@@ -17,6 +17,7 @@ class ComponentCategoryDataMapper @Inject constructor() {
             "CASE" -> ComponentCategoryType.CASE
             "COOLER" -> ComponentCategoryType.COOLER
             "MEMORY" -> ComponentCategoryType.MEMORY
+            "STORAGE" -> ComponentCategoryType.STORAGE
             else -> throw IllegalArgumentException("Unknown category id: ${dataModel.id}")
         }
 

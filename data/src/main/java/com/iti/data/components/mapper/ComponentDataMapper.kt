@@ -14,8 +14,9 @@ class ComponentDataMapper @Inject constructor() {
             productName = dataModel.productName,
             productImage = dataModel.productImage,
             price = dataModel.price,
-            inStock = dataModel.inStock
-        )
+            inStock = dataModel.inStock,
+            specs = dataModel.specs.orEmpty(),
+            )
     }
 
     fun mapToDomainList(dataModels: List<ComponentDataModel>): List<Component> {
