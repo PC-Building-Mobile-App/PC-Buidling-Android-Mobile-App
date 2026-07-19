@@ -1,7 +1,7 @@
-package com.iti.data.componentcategories.repository
+package com.iti.data.componentCategories.repository
 
-import com.iti.data.componentcategories.datasource.ComponentCategoryDataSource
-import com.iti.data.componentcategories.mapper.toDomain
+import com.iti.data.componentCategories.mapper.toDomain
+import com.iti.data.componentCategories.datasource.ComponentCategoryDataSource
 import com.iti.domain.componentcategories.model.ComponentCategory
 import com.iti.domain.componentcategories.repository.ComponentCategoryRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class ComponentCategoryRepositoryImpl @Inject constructor(
 
     override fun getComponentCategories(): Flow<List<ComponentCategory>> {
         return localDataSource.getCategories().map { dataModels ->
-            dataModels.toDomain()
+            dataModels.map { it.toDomain() }
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.iti.data.componentcategories.mapper
+package com.iti.data.componentCategories.mapper
 
-import com.iti.data.componentcategories.model.ComponentCategoryDataModel
+import com.iti.data.componentCategories.model.ComponentCategoryDataModel
 import com.iti.domain.componentcategories.model.ComponentCategory
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 

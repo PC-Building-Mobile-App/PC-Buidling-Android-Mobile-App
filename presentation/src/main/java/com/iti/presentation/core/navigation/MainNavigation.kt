@@ -26,6 +26,7 @@ import com.iti.presentation.hardwarenews.screens.HardwareNewsScreen
 import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
 import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
+import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
 import com.iti.presentation.parts.screens.PartsScreen
 
 @Composable
@@ -149,6 +150,9 @@ fun MainNavigation(
                     entry<MyPcsRoute> {
                         MyPcsScreen(
                             onNewBuildClick = {
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(category = null)
+                                )
                             },
                             onCategoryClick = { category ->
                                 activeBackStack.navigateSingleTop(
@@ -186,15 +190,29 @@ fun MainNavigation(
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             },
-                            onNewBuildClick = {},
+
+                            onEditBuildClick = { build, category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(
+                                        editingBuild = build,
+                                        category = category)
+                                )
+                            },
+                            onNewBuildClick = { category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(category = category)
+                                )
+                            },
                         )
                     }
 
                     entry<BuildGenerationRoute> { route ->
-                        // TODO: Replace with your BuildGenerationScreen composable
-                        ScreenPlaceholder(
-                            title = "Build Generation",
-                            subtitle = "Build ID: ${route.buildId}",
+                        BuildGenerationScreen(
+                            category = route.category,
+                            editingBuild = route.editingBuild,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            }
                         )
                     }
 

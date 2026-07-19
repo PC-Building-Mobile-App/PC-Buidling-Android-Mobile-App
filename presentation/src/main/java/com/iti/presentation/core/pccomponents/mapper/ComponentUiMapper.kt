@@ -13,6 +13,7 @@ fun Component.toUiModel(): ComponentUiModel = ComponentUiModel(
     imageUrl = productImage,
     tags = buildTags(this),
     isInStock = inStock,
+    vendorName = vendorName
 )
 
 fun List<Component>.toUiModels(): List<ComponentUiModel> = map { it.toUiModel() }
