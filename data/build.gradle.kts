@@ -12,6 +12,7 @@ val localProperties = Properties().apply {
     if (localPropertiesFile.exists()) {
         load(localPropertiesFile.inputStream())
     }
+
 }
 
 android {
@@ -50,9 +51,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
     implementation(libs.kotlinx.coroutines.core)
-    ksp(libs.hilt.compiler)
     implementation(libs.kotlinx.serialization.json)
-
+    ksp(libs.hilt.compiler)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.content.negotiation)
