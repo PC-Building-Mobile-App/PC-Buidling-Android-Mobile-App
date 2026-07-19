@@ -1,4 +1,4 @@
-package com.iti.data.componentCategories.model
+package com.iti.data.componentcategories.model
 
 data class ComponentCategoryDataModel(
     val id: String,
