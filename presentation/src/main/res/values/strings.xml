@@ -6,4 +6,27 @@
     <string name="generic_error_title">Something went wrong!</string>
     <string name="retry">Try Again</string>
     <string name="builds">%1$d builds</string>
+    <string name="search_parts_placeholder">Search components…</string>
+    <string name="filter_all">All</string>
+    <string name="filter_cpu">CPU</string>
+    <string name="filter_motherboard">Motherboard</string>
+    <string name="filter_gpu">GPU</string>
+    <string name="filter_case">Case</string>
+    <string name="filter_cooler">Cooler</string>
+    <string name="filter_memory">Memory</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="min_price">Min Price (EGP)</string>
+    <string name="max_price">Max Price (EGP)</string>
+    <string name="in_stock_only">In Stock Only</string>
+    <string name="apply_filters">Apply Filters</string>
+    <string name="reset">Reset</string>
+    <string name="no_products_found">No components match your search.</string>
+    <string name="egp_suffix">EGP</string>
+    <string name="socket_label">Socket:</string>
+    <string name="wattage_label">Wattage:</string>
+    <string name="form_factor_label">Form Factor:</string>
+    <string name="tdp_label">TDP:</string>
+    <string name="out_of_stock">OUT OF STOCK</string>
+    <string name="price_range">Price Range</string>
+    <string name="price_range_format">%1$s - %2$s %3$s</string>
 </resources>

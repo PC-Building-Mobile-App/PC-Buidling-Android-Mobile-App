@@ -74,13 +74,10 @@ fun MainNavigation(
                     }
 
                     entry<PartsRoute> {
-                        // TODO: Replace with your PartsScreen composable
-                        ScreenPlaceholder(
-                            title = "Parts",
-                            subtitle = "Tap a part to see details",
-                            onAction = {
+                        com.iti.presentation.features.parts.PartsScreen(
+                            onNavigateToDetail = { partId ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = "sample-part-id"),
+                                    PartsDetailRoute(partId = partId),
                                 )
                             },
                         )
