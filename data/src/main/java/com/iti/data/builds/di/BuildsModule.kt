@@ -8,14 +8,17 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class BuildsModule {
 
     @Binds
+    @Singleton
     abstract fun bindBuildsRemoteDataSource(impl: MockBuildsRemoteDataSourceImpl): BuildsRemoteDataSource
 
     @Binds
+    @Singleton
     abstract fun bindBuildsRepository(impl: BuildsRepositoryImpl): BuildsRepository
 }

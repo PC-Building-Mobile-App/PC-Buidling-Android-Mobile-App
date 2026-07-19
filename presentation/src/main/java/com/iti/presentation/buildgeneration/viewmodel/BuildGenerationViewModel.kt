@@ -2,7 +2,6 @@ package com.iti.presentation.buildgeneration.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.iti.domain.builds.model.BuildCategoryType
-import com.iti.domain.builds.model.BuildGenerationMode
 import com.iti.domain.builds.model.BuildPurpose
 import com.iti.domain.builds.model.CompatibilityCheckRequest
 import com.iti.domain.builds.model.CompatibilityCheckTarget
@@ -19,9 +18,11 @@ import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.BuildGenerationContract.Effect
 import com.iti.presentation.buildgeneration.BuildGenerationContract.Event
 import com.iti.presentation.buildgeneration.BuildGenerationContract.State
+import com.iti.presentation.buildgeneration.model.ComponentSlotUiModel
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.buildgeneration.model.toPickerUiModel
 import com.iti.presentation.buildgeneration.model.toUiModel
+import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.mypcs.model.toUiModel
 import com.iti.presentation.core.BaseViewModel
@@ -45,7 +46,7 @@ class BuildGenerationViewModel @Inject constructor(
 
     override fun onEvent(event: Event) {
         when (event) {
-            is Event.Initialize -> initialize(event.category)
+            is Event.Initialize -> initialize(event.category, event.editingBuild)
             is Event.BudgetChanged -> updateState { it.copy(budget = event.budget) }
             is Event.CategoryTypeToggled -> toggleCategoryType(event.type)
             is Event.BrandToggled -> toggleBrand(event.brand)
@@ -69,15 +70,40 @@ class BuildGenerationViewModel @Inject constructor(
         }
     }
 
-    private fun initialize(category: BuildCategoryUiModel?) {
+    private fun initialize(category: BuildCategoryUiModel?, editingBuild: BuildUiModel?) {
         updateState {
             it.copy(
                 category = category,
                 selectedCategoryTypes = category?.type?.let { type -> setOf(type) } ?: emptySet(),
+                isEditingExistingBuild = editingBuild != null,
+                editingBuildId = editingBuild?.id,
+                budget = editingBuild?.price?.toFloat() ?: it.budget,
+                buildName = editingBuild?.name ?: it.buildName,
             )
         }
         if (category == null) {
             loadCategories()
+        }
+        if (editingBuild != null) {
+            resolveSlots(editingBuild.specs)
+
+        }
+    }
+
+    private fun resolveSlots(components: List<PickerComponentUiModel>) {
+        updateState { state ->
+            val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
+                ComponentSlotUiModel(
+                    category = categoryType,
+                    component = components.find {
+                        it.category.equals(
+                            categoryType.name,
+                            ignoreCase = true
+                        )
+                    }
+                )
+            }
+            state.copy(slots = updatedSlots)
         }
     }
 
@@ -208,14 +234,12 @@ class BuildGenerationViewModel @Inject constructor(
     private fun generateBuild() {
         val current = state.value
         val existingIds = current.slots.mapNotNull { it.component?.id }
-        val mode =
-            if (existingIds.isEmpty()) BuildGenerationMode.NEW else BuildGenerationMode.FILL_MISSING
 
-        val request = GenerateBuildRequest(
+        val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
             purpose = getPurposesForCategoryTypes(current.selectedCategoryTypes),
             brandPreference = current.selectedBrands.toList(),
-            mode = mode,
+            isEditingExistingBuild = current.isEditingExistingBuild,
             existingComponentIds = existingIds,
         )
 
@@ -239,7 +263,8 @@ class BuildGenerationViewModel @Inject constructor(
                             )
                         )
                     } else {
-                        val issueMessage = generatedBuild.compatibilityReport.issues.firstOrNull()?.message
+                        val issueMessage =
+                            generatedBuild.compatibilityReport.issues.firstOrNull()?.message
                         sendEffect(
                             Effect.ShowMessage(
                                 message = issueMessage?.let { UiText.DynamicString(it) }
@@ -282,7 +307,11 @@ class BuildGenerationViewModel @Inject constructor(
         val current = state.value
 
         if (!current.allSlotsFilled) {
-            sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_incomplete_slots_message)))
+            sendEffect(
+                Effect.ShowMessage(
+                    UiText.StringResource(R.string.save_build_incomplete_slots_message)
+                )
+            )
             return
         }
 
@@ -299,6 +328,16 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun saveBuild() {
         val current = state.value
+
+        if (!current.allSlotsFilled) {
+            updateState { it.copy(isSaveDialogVisible = false) }
+            sendEffect(
+                Effect.ShowMessage(
+                    UiText.StringResource(R.string.save_build_incomplete_slots_message)
+                )
+            )
+            return
+        }
 
         if (current.buildName.isBlank()) {
             sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_name_required_message)))
@@ -318,6 +357,7 @@ class BuildGenerationViewModel @Inject constructor(
         val componentIds = current.slots.mapNotNull { it.component?.id }
 
         val request = SaveBuildRequest(
+            buildId = current.editingBuildId,
             name = current.buildName,
             componentIds = componentIds,
             categoryId = targetCategoryId,

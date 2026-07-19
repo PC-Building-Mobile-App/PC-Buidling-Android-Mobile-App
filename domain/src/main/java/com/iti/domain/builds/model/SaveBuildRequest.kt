@@ -4,4 +4,5 @@ data class SaveBuildRequest(
     val name: String,
     val componentIds: List<Long>,
     val categoryId: String,
+    val buildId: String? = null,
 )

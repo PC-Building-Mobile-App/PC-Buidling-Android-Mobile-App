@@ -5,6 +5,7 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.buildgeneration.model.ComponentSlotUiModel
 import com.iti.presentation.buildgeneration.model.GeneratedBuildUiModel
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
+import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.core.UiText
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 
@@ -32,13 +33,16 @@ object BuildGenerationContract {
         val buildName: String = "",
         val isSaving: Boolean = false,
         val errorMessage: UiText? = null,
+        val isEditingExistingBuild: Boolean = false,
+        val isResolvingEditingBuild: Boolean = false,
+        val editingBuildId: String? = null,
     ) {
         val filledSlotsCount: Int get() = slots.count { it.component != null }
-        val allSlotsFilled: Boolean get() = slots.all { it.component != null }
+        val allSlotsFilled: Boolean get() = slots.isNotEmpty() && slots.all { it.component != null }
     }
 
     sealed interface Event {
-        data class Initialize(val category: BuildCategoryUiModel?) : Event
+        data class Initialize(val category: BuildCategoryUiModel?, val editingBuild: BuildUiModel? = null) : Event
         data class BudgetChanged(val budget: Float) : Event
         data class CategoryTypeToggled(val type: BuildCategoryType) : Event
         data class BrandToggled(val brand: String?) : Event

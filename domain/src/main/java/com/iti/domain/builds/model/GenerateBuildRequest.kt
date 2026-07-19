@@ -1,6 +1,5 @@
 package com.iti.domain.builds.model
 
-
 data class GenerateBuildRequest(
     val budget: Double,
     val purpose: List<BuildPurpose> = emptyList(),
@@ -13,11 +12,34 @@ data class GenerateBuildRequest(
             "existingComponentIds is required when mode is FILL_MISSING or REPLACE"
         }
     }
+
+    companion object {
+        fun create(
+            budget: Double,
+            purpose: List<BuildPurpose> = emptyList(),
+            brandPreference: List<String> = emptyList(),
+            isEditingExistingBuild: Boolean,
+            existingComponentIds: List<Long>,
+        ): GenerateBuildRequest {
+            val safeMode = when {
+                existingComponentIds.isEmpty() -> BuildGenerationMode.NEW
+                isEditingExistingBuild -> BuildGenerationMode.REPLACE
+                else -> BuildGenerationMode.FILL_MISSING
+            }
+            return GenerateBuildRequest(
+                budget = budget,
+                purpose = purpose,
+                brandPreference = brandPreference,
+                mode = safeMode,
+                existingComponentIds = existingComponentIds,
+            )
+        }
+    }
 }
+
 enum class BuildPurpose {
     GAMING, STREAMING, WORKSTATION, BUDGET, SFF, VIDEO_EDIT, AI_ML, ARCHITECTURE, DESIGN
 }
-
 
 enum class BuildGenerationMode {
     NEW,
@@ -29,4 +51,3 @@ enum class CompatibilityMode {
     RULE_BASED,
     AI,
 }
-

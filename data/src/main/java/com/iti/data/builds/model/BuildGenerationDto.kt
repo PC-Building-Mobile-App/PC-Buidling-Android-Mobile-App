@@ -39,9 +39,10 @@ data class CompatibilityCheckRequestDto(
     val candidateComponentId: Long,
     val mode: String = "RULE_BASED",
 )
-
 @Serializable
 data class SaveBuildRequestDto(
     val name: String,
     val componentIds: List<Long>,
+    val categoryId: String,
+    val buildId: String? = null,
 )

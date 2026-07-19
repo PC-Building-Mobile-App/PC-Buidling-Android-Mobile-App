@@ -1,5 +1,8 @@
 package com.iti.presentation.buildgeneration.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +53,7 @@ import com.iti.presentation.buildgeneration.components.GenerateBuildButton
 import com.iti.presentation.buildgeneration.components.PurposeSelector
 import com.iti.presentation.buildgeneration.components.SaveBuildDialog
 import com.iti.presentation.buildgeneration.viewmodel.BuildGenerationViewModel
+import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.components.AppSnackbar
 import com.iti.presentation.components.LocalSnackbarController
 import com.iti.presentation.components.SnackbarController
@@ -64,6 +68,7 @@ import java.util.Locale
 fun BuildGenerationScreen(
     modifier: Modifier = Modifier,
     category: BuildCategoryUiModel? = null,
+    editingBuild: BuildUiModel? = null,
     onBackClick: () -> Unit,
     viewModel: BuildGenerationViewModel = hiltViewModel(),
 ) {
@@ -73,8 +78,8 @@ fun BuildGenerationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarController = remember(snackbarHostState) { SnackbarController(snackbarHostState) }
 
-    LaunchedEffect(category) {
-        viewModel.onEvent(Event.Initialize(category))
+    LaunchedEffect(category, editingBuild) {
+        viewModel.onEvent(Event.Initialize(category, editingBuild))
     }
 
     LaunchedEffect(Unit) {
@@ -187,10 +192,10 @@ private fun BuildGenerationScreenContent(
         }
 
         item {
-            androidx.compose.animation.AnimatedVisibility(
+            AnimatedVisibility(
                 visible = isComponentsExpanded,
-                enter = androidx.compose.animation.expandVertically(),
-                exit = androidx.compose.animation.shrinkVertically(),
+                enter = expandVertically(),
+                exit = shrinkVertically(),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     state.slots.forEach { slot ->

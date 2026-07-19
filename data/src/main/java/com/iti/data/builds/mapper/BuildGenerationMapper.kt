@@ -6,7 +6,7 @@ import com.iti.data.builds.model.CompatibilityReportDto
 import com.iti.data.builds.model.GenerateBuildRequestDto
 import com.iti.data.builds.model.GeneratedBuildDto
 import com.iti.data.builds.model.SaveBuildRequestDto
-import com.iti.data.components.mapper.ComponentDataMapper
+import com.iti.data.components.mapper.toDomain
 import com.iti.domain.builds.model.CompatibilityCheckRequest
 import com.iti.domain.builds.model.CompatibilityCheckTarget
 import com.iti.domain.builds.model.CompatibilityIssue
@@ -29,7 +29,8 @@ fun CompatibilityReportDto.toDomain(): CompatibilityReport = CompatibilityReport
     warnings = warnings.map { it.toDomain() },
 )
 
-fun CompatibilityIssueDto.toDomain(): CompatibilityIssue = CompatibilityIssue(rule = rule, message = message)
+fun CompatibilityIssueDto.toDomain(): CompatibilityIssue =
+    CompatibilityIssue(rule = rule, message = message)
 
 fun CompatibilityCheckRequest.toDto(): CompatibilityCheckRequestDto = CompatibilityCheckRequestDto(
     buildId = (target as? CompatibilityCheckTarget.SavedBuild)?.buildId,
@@ -38,12 +39,17 @@ fun CompatibilityCheckRequest.toDto(): CompatibilityCheckRequestDto = Compatibil
     mode = mode.name,
 )
 
-fun SaveBuildRequest.toDto(): SaveBuildRequestDto = SaveBuildRequestDto(name = name, componentIds = componentIds)
+fun SaveBuildRequest.toDto(): SaveBuildRequestDto = SaveBuildRequestDto(
+    name = name,
+    componentIds = componentIds,
+    categoryId = categoryId,
+    buildId = buildId
+
+)
 
 fun GeneratedBuildDto.toDomain(
-    componentDataMapper: ComponentDataMapper,
 ): GeneratedBuild = GeneratedBuild(
-    components = componentDataMapper.mapToDomainList(components),
+    components = components.map { it.toDomain() },
     totalPrice = totalPrice,
     compatibilityReport = compatibilityReport.toDomain(),
 )

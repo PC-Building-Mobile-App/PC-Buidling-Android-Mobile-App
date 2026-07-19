@@ -38,9 +38,9 @@ import coil3.compose.SubcomposeAsyncImage
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
-import com.iti.presentation.buildgeneration.model.iconRes
 import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.core.UiText
+import com.iti.presentation.core.componentcategories.mapper.toIconResource
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.SuccessGreen
 import com.iti.presentation.ui.theme.WarningOrange
@@ -205,7 +205,7 @@ private fun ComponentThumbnail(
 @Composable
 private fun CategoryFallbackIcon(category: ComponentCategoryType) {
     Icon(
-        painter = painterResource(category.iconRes),
+        painter = painterResource(category.toIconResource()),
         contentDescription = null,
         tint = MaterialTheme.colorScheme.primary,
         modifier = Modifier.size(26.dp),

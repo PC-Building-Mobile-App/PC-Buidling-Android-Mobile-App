@@ -130,6 +130,14 @@ fun MainNavigation(
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             },
+
+                            onEditBuildClick = { build, category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(
+                                        editingBuild = build,
+                                        category = category)
+                                )
+                            },
                             onNewBuildClick = { category ->
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(category = category)
@@ -141,6 +149,7 @@ fun MainNavigation(
                     entry<BuildGenerationRoute> { route ->
                         BuildGenerationScreen(
                             category = route.category,
+                            editingBuild = route.editingBuild,
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             }
