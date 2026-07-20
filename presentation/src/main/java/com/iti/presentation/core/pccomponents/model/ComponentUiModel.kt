@@ -13,5 +13,8 @@ data class ComponentUiModel(
     val tags: List<String>,
     val isInStock: Boolean,
     val sourceUrl: String? = null,
-    val matchedGlobalName: String? = null
+    val matchedGlobalName: String? = null,
+    val category: String,
+    val price: Double,
+    val specs: Map<String, String> = emptyMap()
 )

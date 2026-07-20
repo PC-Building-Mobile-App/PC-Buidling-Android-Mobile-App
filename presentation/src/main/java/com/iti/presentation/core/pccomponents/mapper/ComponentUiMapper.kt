@@ -15,7 +15,10 @@ fun Component.toUiModel(): ComponentUiModel = ComponentUiModel(
     isInStock = inStock,
     vendorName = vendorName,
     sourceUrl = sourceUrl,
-    matchedGlobalName = matchedGlobalName
+    matchedGlobalName = matchedGlobalName,
+    category = category,
+    price = price,
+    specs = specs
 )
 
 fun List<Component>.toUiModels(): List<ComponentUiModel> = map { it.toUiModel() }
