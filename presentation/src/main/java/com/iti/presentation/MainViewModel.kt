@@ -1,15 +1,18 @@
 package com.iti.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.iti.domain.auth.usecase.ObserveAuthStateUseCase
 import com.iti.domain.onboarding.usecase.GetOnboardingStatusUseCase
 import com.iti.presentation.core.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase
+    private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase,
+    private val observeAuthStateUseCase: ObserveAuthStateUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     init {
@@ -20,20 +23,23 @@ class MainViewModel @Inject constructor(
 
     override fun onEvent(event: MainContract.Event) {
         when (event) {
-            MainContract.Event.CheckAppState -> loadSettings()
-            MainContract.Event.AuthSuccess -> updateState { it.copy(isAuthenticated = true) }
+            MainContract.Event.CheckAppState -> loadAppState()
         }
     }
 
-    private fun loadSettings() {
+    private fun loadAppState() {
         viewModelScope.launch {
-            getOnboardingStatusUseCase().collect { completed ->
-                updateState {
-                    it.copy(
-                        hasSeenOnboarding = completed,
-                        isLoading = false
-                    )
-                }
+            combine(
+                getOnboardingStatusUseCase(),
+                observeAuthStateUseCase(),
+            ) { hasSeenOnboarding, isAuthenticated ->
+                MainContract.State(
+                    isLoading = false,
+                    hasSeenOnboarding = hasSeenOnboarding,
+                    isAuthenticated = isAuthenticated,
+                )
+            }.collect { newState ->
+                updateState { newState }
             }
         }
     }

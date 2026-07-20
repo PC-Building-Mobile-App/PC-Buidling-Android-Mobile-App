@@ -1,4 +1,4 @@
-package com.iti.presentation.shared
+package com.iti.presentation.core.pccomponents
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
