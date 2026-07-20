@@ -11,5 +11,7 @@ data class ComponentUiModel(
     val formattedPrice: String,
     val imageUrl: String,
     val tags: List<String>,
-    val isInStock: Boolean
+    val isInStock: Boolean,
+    val sourceUrl: String? = null,
+    val matchedGlobalName: String? = null
 )

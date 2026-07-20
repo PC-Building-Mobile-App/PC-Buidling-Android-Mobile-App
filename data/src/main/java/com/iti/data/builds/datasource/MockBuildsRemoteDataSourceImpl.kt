@@ -154,14 +154,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
         val singleSlotCategories = setOf("CPU", "MOTHERBOARD", "PSU", "CASE", "COOLER")
 
         val mockComponentCatalog = listOf(
-            ComponentDataModel(1, "TechStore", "CPU", "AMD Ryzen 7 7800X3D", "https://placehold.co/400x400/png?text=Ryzen+7", 24999.0, true, mapOf("Socket" to "AM5", "TDP" to "120W")),
-            ComponentDataModel(2, "TechStore", "MOTHERBOARD", "ASUS ROG STRIX B650E-F", "https://placehold.co/400x400/png?text=Motherboard", 12500.0, true, mapOf("Socket" to "AM5", "FormFactor" to "ATX", "RamType" to "DDR5")),
-            ComponentDataModel(3, "TechStore", "GPU", "RTX 4070 SUPER 12GB", "https://placehold.co/400x400/png?text=GPU", 38499.0, true, mapOf("VRAM" to "12GB", "LengthMm" to "285")),
-            ComponentDataModel(4, "TechStore", "MEMORY", "32GB DDR5 6000 CL30", "https://placehold.co/400x400/png?text=RAM", 6199.0, true, mapOf("RamType" to "DDR5")),
-            ComponentDataModel(5, "TechStore", "STORAGE", "Samsung 990 PRO 2TB", "https://placehold.co/400x400/png?text=SSD", 5499.0, true, mapOf("Type" to "NVMe", "Capacity" to "2TB")),
-            ComponentDataModel(6, "TechStore", "PSU", "Corsair RM850x", "https://placehold.co/400x400/png?text=PSU", 4299.0, true, mapOf("Wattage" to "850")),
-            ComponentDataModel(7, "TechStore", "CASE", "Lian Li O11 Dynamic", "https://placehold.co/400x400/png?text=Case", 3499.0, true, mapOf("MaxGpuLengthMm" to "420", "MaxCoolerHeightMm" to "167")),
-            ComponentDataModel(8, "TechStore", "COOLER", "Noctua NH-D15", "https://placehold.co/400x400/png?text=Cooler", 4200.0, true, mapOf("HeightMm" to "165")),
+            ComponentDataModel(id = 1, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 7 7800X3D", productImage = "https://placehold.co/400x400/png?text=Ryzen+7", price = 24999.0, inStock = true, specs = mapOf("Socket" to "AM5", "TDP" to "120W")),
+            ComponentDataModel(id = 2, vendorName = "TechStore", category = "MOTHERBOARD", productName = "ASUS ROG STRIX B650E-F", productImage = "https://placehold.co/400x400/png?text=Motherboard", price = 12500.0, inStock = true, specs = mapOf("Socket" to "AM5", "FormFactor" to "ATX", "RamType" to "DDR5")),
+            ComponentDataModel(id = 3, vendorName = "TechStore", category = "GPU", productName = "RTX 4070 SUPER 12GB", productImage = "https://placehold.co/400x400/png?text=GPU", price = 38499.0, inStock = true, specs = mapOf("VRAM" to "12GB", "LengthMm" to "285")),
+            ComponentDataModel(id = 4, vendorName = "TechStore", category = "MEMORY", productName = "32GB DDR5 6000 CL30", productImage = "https://placehold.co/400x400/png?text=RAM", price = 6199.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
+            ComponentDataModel(id = 5, vendorName = "TechStore", category = "STORAGE", productName = "Samsung 990 PRO 2TB", productImage = "https://placehold.co/400x400/png?text=SSD", price = 5499.0, inStock = true, specs = mapOf("Type" to "NVMe", "Capacity" to "2TB")),
+            ComponentDataModel(id = 6, vendorName = "TechStore", category = "PSU", productName = "Corsair RM850x", productImage = "https://placehold.co/400x400/png?text=PSU", price = 4299.0, inStock = true, specs = mapOf("Wattage" to "850")),
+            ComponentDataModel(id = 7, vendorName = "TechStore", category = "CASE", productName = "Lian Li O11 Dynamic", productImage = "https://placehold.co/400x400/png?text=Case", price = 3499.0, inStock = true, specs = mapOf("MaxGpuLengthMm" to "420", "MaxCoolerHeightMm" to "167")),
+            ComponentDataModel(id = 8, vendorName = "TechStore", category = "COOLER", productName = "Noctua NH-D15", productImage = "https://placehold.co/400x400/png?text=Cooler", price = 4200.0, inStock = true, specs = mapOf("HeightMm" to "165")),
         )
 
         val mockBuildCategories = listOf(
@@ -185,14 +185,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
                     avgFps = 165,
                     compatibilityPercent = 100,
                     specs = listOf(
-                        ComponentDataModel(101, "TechStore", "CPU", "AMD Ryzen 9 7950X", "https://picsum.photos/seed/cpu1/100/100", 35000.0, true, mapOf("Socket" to "AM5")),
-                        ComponentDataModel(102, "TechStore", "MOTHERBOARD", "ASUS ROG Crosshair X670E", "https://placehold.co/400x400/png?text=X670E", 18000.0, true, mapOf("Socket" to "AM5")),
-                        ComponentDataModel(103, "TechStore", "GPU", "NVIDIA RTX 4090", "https://picsum.photos/seed/gpu1/100/100", 45000.0, true, mapOf("VRAM" to "24GB")),
-                        ComponentDataModel(104, "TechStore", "MEMORY", "64 GB DDR5", "https://picsum.photos/seed/ram1/100/100", 6500.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(105, "TechStore", "STORAGE", "2 TB NVMe", "https://picsum.photos/seed/storage1/100/100", 3000.0, true, mapOf("Type" to "NVMe")),
-                        ComponentDataModel(106, "TechStore", "PSU", "Corsair AX1600i Titanium", "https://placehold.co/400x400/png?text=1600W", 9000.0, true, mapOf("Wattage" to "1600")),
-                        ComponentDataModel(107, "TechStore", "CASE", "Lian Li O11 Vision", "https://placehold.co/400x400/png?text=Vision", 4500.0, true, mapOf("FormFactor" to "ATX")),
-                        ComponentDataModel(108, "TechStore", "COOLER", "ASUS ROG RYUJIN III AIO", "https://placehold.co/400x400/png?text=AIO", 7500.0, true, mapOf("Type" to "Liquid"))
+                        ComponentDataModel(id = 101, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 9 7950X", productImage = "https://picsum.photos/seed/cpu1/100/100", price = 35000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
+                        ComponentDataModel(id = 102, vendorName = "TechStore", category = "MOTHERBOARD", productName = "ASUS ROG Crosshair X670E", productImage = "https://placehold.co/400x400/png?text=X670E", price = 18000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
+                        ComponentDataModel(id = 103, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4090", productImage = "https://picsum.photos/seed/gpu1/100/100", price = 45000.0, inStock = true, specs = mapOf("VRAM" to "24GB")),
+                        ComponentDataModel(id = 104, vendorName = "TechStore", category = "MEMORY", productName = "64 GB DDR5", productImage = "https://picsum.photos/seed/ram1/100/100", price = 6500.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
+                        ComponentDataModel(id = 105, vendorName = "TechStore", category = "STORAGE", productName = "2 TB NVMe", productImage = "https://picsum.photos/seed/storage1/100/100", price = 3000.0, inStock = true, specs = mapOf("Type" to "NVMe")),
+                        ComponentDataModel(id = 106, vendorName = "TechStore", category = "PSU", productName = "Corsair AX1600i Titanium", productImage = "https://placehold.co/400x400/png?text=1600W", price = 9000.0, inStock = true, specs = mapOf("Wattage" to "1600")),
+                        ComponentDataModel(id = 107, vendorName = "TechStore", category = "CASE", productName = "Lian Li O11 Vision", productImage = "https://placehold.co/400x400/png?text=Vision", price = 4500.0, inStock = true, specs = mapOf("FormFactor" to "ATX")),
+                        ComponentDataModel(id = 108, vendorName = "TechStore", category = "COOLER", productName = "ASUS ROG RYUJIN III AIO", productImage = "https://placehold.co/400x400/png?text=AIO", price = 7500.0, inStock = true, specs = mapOf("Type" to "Liquid"))
                     ),
                 ),
                 BuildDto(
@@ -205,14 +205,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
                     avgFps = 144,
                     compatibilityPercent = 100,
                     specs = listOf(
-                        ComponentDataModel(201, "TechStore", "CPU", "Intel Core i5-13600K", "https://placehold.co/400x400/png?text=i5", 14000.0, true, mapOf("Socket" to "LGA1700")),
-                        ComponentDataModel(202, "TechStore", "MOTHERBOARD", "MSI MAG B760 TOMAHAWK", "https://placehold.co/400x400/png?text=B760", 6500.0, true, mapOf("Socket" to "LGA1700")),
-                        ComponentDataModel(203, "TechStore", "GPU", "NVIDIA RTX 4070", "https://placehold.co/400x400/png?text=RTX4070", 22000.0, true, mapOf("VRAM" to "12GB")),
-                        ComponentDataModel(204, "TechStore", "MEMORY", "32 GB DDR5", "https://placehold.co/400x400/png?text=RAM", 4200.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(205, "TechStore", "STORAGE", "1 TB NVMe", "https://placehold.co/400x400/png?text=SSD", 1800.0, true, mapOf("Type" to "NVMe")),
-                        ComponentDataModel(206, "TechStore", "PSU", "Corsair RM750e Gold", "https://placehold.co/400x400/png?text=750W", 3500.0, true, mapOf("Wattage" to "750")),
-                        ComponentDataModel(207, "TechStore", "CASE", "NZXT H5 Flow", "https://placehold.co/400x400/png?text=H5", 2500.0, true, mapOf("FormFactor" to "ATX")),
-                        ComponentDataModel(208, "TechStore", "COOLER", "DeepCool AK620 Air", "https://placehold.co/400x400/png?text=AK620", 2000.0, true, mapOf("Type" to "Air"))
+                        ComponentDataModel(id = 201, vendorName = "TechStore", category = "CPU", productName = "Intel Core i5-13600K", productImage = "https://placehold.co/400x400/png?text=i5", price = 14000.0, inStock = true, specs = mapOf("Socket" to "LGA1700")),
+                        ComponentDataModel(id = 202, vendorName = "TechStore", category = "MOTHERBOARD", productName = "MSI MAG B760 TOMAHAWK", productImage = "https://placehold.co/400x400/png?text=B760", price = 6500.0, inStock = true, specs = mapOf("Socket" to "LGA1700")),
+                        ComponentDataModel(id = 203, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4070", productImage = "https://placehold.co/400x400/png?text=RTX4070", price = 22000.0, inStock = true, specs = mapOf("VRAM" to "12GB")),
+                        ComponentDataModel(id = 204, vendorName = "TechStore", category = "MEMORY", productName = "32 GB DDR5", productImage = "https://placehold.co/400x400/png?text=RAM", price = 4200.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
+                        ComponentDataModel(id = 205, vendorName = "TechStore", category = "STORAGE", productName = "1 TB NVMe", productImage = "https://placehold.co/400x400/png?text=SSD", price = 1800.0, inStock = true, specs = mapOf("Type" to "NVMe")),
+                        ComponentDataModel(id = 206, vendorName = "TechStore", category = "PSU", productName = "Corsair RM750e Gold", productImage = "https://placehold.co/400x400/png?text=750W", price = 3500.0, inStock = true, specs = mapOf("Wattage" to "750")),
+                        ComponentDataModel(id = 207, vendorName = "TechStore", category = "CASE", productName = "NZXT H5 Flow", productImage = "https://placehold.co/400x400/png?text=H5", price = 2500.0, inStock = true, specs = mapOf("FormFactor" to "ATX")),
+                        ComponentDataModel(id = 208, vendorName = "TechStore", category = "COOLER", productName = "DeepCool AK620 Air", productImage = "https://placehold.co/400x400/png?text=AK620", price = 2000.0, inStock = true, specs = mapOf("Type" to "Air"))
                     ),
                 ),
                 BuildDto(
@@ -225,14 +225,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
                     avgFps = 120,
                     compatibilityPercent = 100,
                     specs = listOf(
-                        ComponentDataModel(301, "TechStore", "CPU", "AMD Ryzen 5 7600", "https://placehold.co/400x400/png?text=Ryzen5", 9000.0, true, mapOf("Socket" to "AM5")),
-                        ComponentDataModel(302, "TechStore", "MOTHERBOARD", "Gigabyte B650M DS3H", "https://placehold.co/400x400/png?text=B650M", 4500.0, true, mapOf("Socket" to "AM5")),
-                        ComponentDataModel(303, "TechStore", "GPU", "NVIDIA RTX 4060", "https://placehold.co/400x400/png?text=RTX4060", 9500.0, true, mapOf("VRAM" to "8GB")),
-                        ComponentDataModel(304, "TechStore", "MEMORY", "16 GB DDR5", "https://placehold.co/400x400/png?text=RAM", 1500.0, true, mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(305, "TechStore", "STORAGE", "500 GB NVMe", "https://placehold.co/400x400/png?text=SSD", 1000.0, true, mapOf("Type" to "NVMe")),
-                        ComponentDataModel(306, "TechStore", "PSU", "EVGA 600 W1 White", "https://placehold.co/400x400/png?text=600W", 1500.0, true, mapOf("Wattage" to "600")),
-                        ComponentDataModel(307, "TechStore", "CASE", "Aerocool Cylon Mini", "https://placehold.co/400x400/png?text=Cylon", 1200.0, true, mapOf("FormFactor" to "MicroATX")),
-                        ComponentDataModel(308, "TechStore", "COOLER", "AMD Wraith Stealth", "https://placehold.co/400x400/png?text=Wraith", 500.0, true, mapOf("Type" to "Air"))
+                        ComponentDataModel(id = 301, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 5 7600", productImage = "https://placehold.co/400x400/png?text=Ryzen5", price = 9000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
+                        ComponentDataModel(id = 302, vendorName = "TechStore", category = "MOTHERBOARD", productName = "Gigabyte B650M DS3H", productImage = "https://placehold.co/400x400/png?text=B650M", price = 4500.0, inStock = true, specs = mapOf("Socket" to "AM5")),
+                        ComponentDataModel(id = 303, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4060", productImage = "https://placehold.co/400x400/png?text=RTX4060", price = 9500.0, inStock = true, specs = mapOf("VRAM" to "8GB")),
+                        ComponentDataModel(id = 304, vendorName = "TechStore", category = "MEMORY", productName = "16 GB DDR5", productImage = "https://placehold.co/400x400/png?text=RAM", price = 1500.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
+                        ComponentDataModel(id = 305, vendorName = "TechStore", category = "STORAGE", productName = "500 GB NVMe", productImage = "https://placehold.co/400x400/png?text=SSD", price = 1000.0, inStock = true, specs = mapOf("Type" to "NVMe")),
+                        ComponentDataModel(id = 306, vendorName = "TechStore", category = "PSU", productName = "EVGA 600 W1 White", productImage = "https://placehold.co/400x400/png?text=600W", price = 1500.0, inStock = true, specs = mapOf("Wattage" to "600")),
+                        ComponentDataModel(id = 307, vendorName = "TechStore", category = "CASE", productName = "Aerocool Cylon Mini", productImage = "https://placehold.co/400x400/png?text=Cylon", price = 1200.0, inStock = true, specs = mapOf("FormFactor" to "MicroATX")),
+                        ComponentDataModel(id = 308, vendorName = "TechStore", category = "COOLER", productName = "AMD Wraith Stealth", productImage = "https://placehold.co/400x400/png?text=Wraith", price = 500.0, inStock = true, specs = mapOf("Type" to "Air"))
                     ),
                 ),
             ),

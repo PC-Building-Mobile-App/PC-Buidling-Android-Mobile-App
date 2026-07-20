@@ -2,7 +2,7 @@ package com.iti.presentation.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
-import com.iti.domain.components.usecase.GetComponentsUseCase
+import com.iti.domain.components.usecase.GetRandomComponentsUseCase
 import com.iti.domain.hardwarenews.usecase.GetLatestHardwareNewsUseCase
 import com.iti.domain.stats.usecase.GetPlatformStatsUseCase
 import com.iti.presentation.core.BaseViewModel
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getComponentsUseCase: GetComponentsUseCase,
+    private val getRandomComponentsUseCase: GetRandomComponentsUseCase,
     private val getCategoriesUseCase: GetComponentCategoriesUseCase,
     private val getLatestNewsUseCase: GetLatestHardwareNewsUseCase,
     private val getPlatformStatsUseCase: GetPlatformStatsUseCase
@@ -35,54 +35,33 @@ class HomeViewModel @Inject constructor(
 
     override fun onEvent(event: Event) {
         when (event) {
-            is Event.UpdateSearchQuery -> {
-                updateState { it.copy(searchQuery = event.query) }
-            }
-
+            is Event.UpdateSearchQuery -> updateState { it.copy(searchQuery = event.query) }
             is Event.SearchSubmitted -> {
                 val query = state.value.searchQuery.trim()
-                if (query.isNotEmpty()) {
-                    sendEffect(Effect.NavigateToPartsWithQuery(query))
-                }
+                if (query.isNotEmpty()) sendEffect(Effect.NavigateToPartsWithQuery(query))
             }
-
-            is Event.GenerateBuildClicked -> {
-                sendEffect(Effect.NavigateToGenerateBuild)
-            }
-
-            is Event.SeeAllComponentsClicked -> {
-                sendEffect(Effect.NavigateToParts)
-            }
-
-            is Event.ToggleCategoriesExpanded -> {
-                updateState { it.copy(isCategoriesExpanded = !it.isCategoriesExpanded) }
-            }
-
-            is Event.CategoryClicked -> {
-                sendEffect(Effect.NavigateToPartsWithCategory(event.category.id))
-            }
-
-            is Event.SeeAllNewsClicked -> {
-                sendEffect(Effect.NavigateToHardwareNews)
-            }
-
-            is Event.NewsClicked -> {
-                sendEffect(Effect.NavigateToNewsDetail(event.newsId))
-            }
-
-            is Event.ComponentClicked -> {
-                sendEffect(Effect.NavigateToComponentDetail(event.componentId))
-            }
+            is Event.GenerateBuildClicked -> sendEffect(Effect.NavigateToGenerateBuild)
+            is Event.SeeAllComponentsClicked -> sendEffect(Effect.NavigateToParts)
+            is Event.ToggleCategoriesExpanded -> updateState { it.copy(isCategoriesExpanded = !it.isCategoriesExpanded) }
+            is Event.CategoryClicked -> sendEffect(Effect.NavigateToPartsWithCategory(event.category.id))
+            is Event.SeeAllNewsClicked -> sendEffect(Effect.NavigateToHardwareNews)
+            is Event.NewsClicked -> sendEffect(Effect.NavigateToNewsDetail(event.newsId))
+            is Event.ComponentClicked -> sendEffect(Effect.NavigateToComponentDetail(event.componentId))
         }
     }
 
     private fun loadHomeData() {
         viewModelScope.launch {
+            val componentsFlow = getRandomComponentsUseCase().catch { emit(emptyList()) }
+            val categoriesFlow = getCategoriesUseCase().catch { emit(emptyList()) }
+            val newsFlow = getLatestNewsUseCase(limit = 10).catch { emit(emptyList()) }
+            val statsFlow = getPlatformStatsUseCase().catch { emit(emptyList()) }
+
             combine(
-                getComponentsUseCase(limit = 10),
-                getCategoriesUseCase(),
-                getLatestNewsUseCase(limit = 10),
-                getPlatformStatsUseCase()
+                componentsFlow,
+                categoriesFlow,
+                newsFlow,
+                statsFlow
             ) { components, categories, news, stats ->
                 State(
                     isLoading = false,
@@ -92,7 +71,8 @@ class HomeViewModel @Inject constructor(
                     featuredComponents = components.toUiModels(),
                     categories = categories.toUiModels(),
                     latestNews = news.toUiModels(),
-                    stats = stats.toUiModels()
+                    stats = stats.toUiModels(),
+                    errorMessage = null
                 )
             }.catch { throwable ->
                 updateState {

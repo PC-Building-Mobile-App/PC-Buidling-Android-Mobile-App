@@ -11,6 +11,9 @@ fun ComponentDataModel.toDomain(): Component = Component(
     productImage = productImage,
     price = price,
     inStock = inStock,
+    sourceUrl = sourceUrl,
+    matchedGlobalName = matchedGlobalName,
+    specs = specs
 )
 
 fun List<ComponentDataModel>.toDomain(): List<Component> = map { it.toDomain() }

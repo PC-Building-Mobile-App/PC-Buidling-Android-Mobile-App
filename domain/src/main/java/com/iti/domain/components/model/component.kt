@@ -8,5 +8,7 @@ data class Component (
     val productImage: String,
     val price: Double,
     val inStock: Boolean,
+    val sourceUrl: String? = null,
+    val matchedGlobalName: String? = null,
     val specs: Map<String, String> = emptyMap()
 )
