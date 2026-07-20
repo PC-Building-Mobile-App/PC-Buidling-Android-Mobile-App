@@ -21,7 +21,10 @@ data object RegisterRoute : Route
 data object HomeRoute : Route
 
 @Serializable
-data class PartsRoute(val initialQuery: String? = null) : Route
+data class PartsRoute(
+    val initialQuery: String? = null,
+    val initialCategoryId: String? = null
+) : Route
 
 @Serializable
 data object AiAssistantRoute : Route

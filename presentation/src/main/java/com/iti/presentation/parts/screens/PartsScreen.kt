@@ -61,9 +61,7 @@ fun PartsScreen(
     ) { padding ->
         ProductGrid(
             products = state.products,
-            isInitialLoading = state.isInitialLoading,
-            isPagingLoading = state.isPagingLoading,
-            onLoadMore = { viewModel.onEvent(Event.LoadNextPage) },
+            isLoading = state.isLoading,
             onProductClick = { viewModel.onEvent(Event.ProductClicked(it)) },
             modifier = Modifier.padding(padding)
         )

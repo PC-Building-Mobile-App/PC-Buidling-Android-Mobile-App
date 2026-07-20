@@ -7,7 +7,5 @@ data class SearchParams(
     val category: ComponentCategoryType? = null,
     val minPrice: Double? = null,
     val maxPrice: Double? = null,
-    val inStockOnly: Boolean = false,
-    val page: Int = 0,
-    val size: Int = 20
+    val inStockOnly: Boolean = false
 )
