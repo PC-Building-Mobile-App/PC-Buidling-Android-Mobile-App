@@ -1,5 +1,6 @@
 package com.iti.presentation.core.pccomponents.model
 
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +15,7 @@ data class ComponentUiModel(
     val isInStock: Boolean,
     val sourceUrl: String? = null,
     val matchedGlobalName: String? = null,
-    val category: String,
-    val price: Double,
+    val category: ComponentCategoryType = ComponentCategoryType.CPU,
+    val price: Double = 32000.0,
     val specs: Map<String, String> = emptyMap()
 )
