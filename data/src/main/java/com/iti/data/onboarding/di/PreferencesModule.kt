@@ -1,7 +1,10 @@
 package com.iti.data.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.iti.data.onboarding.repository.UserPreferencesRepositoryImpl
+import com.iti.data.onboarding.repository.dataStore
 import com.iti.domain.onboarding.repository.UserPreferencesRepository
 import dagger.Module
 import dagger.Provides
@@ -21,4 +24,9 @@ object PreferencesModule {
     ): UserPreferencesRepository {
         return UserPreferencesRepositoryImpl(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.dataStore
 }

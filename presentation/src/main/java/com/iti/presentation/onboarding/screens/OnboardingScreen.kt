@@ -81,7 +81,7 @@ fun OnboardingScreen(
         modifier = modifier
             .fillMaxSize()
             .background(DeepBlack)
-            .statusBarsPadding() // Pushes layout down below camera and system status bar
+            .statusBarsPadding()
             .padding(bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -108,7 +108,7 @@ fun OnboardingScreen(
                         painter = painterResource(id = page.imageRes),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Fit // Prevents stretching or bad cropping
+                        contentScale = ContentScale.Fit
                     )
                 }
             }
@@ -190,7 +190,9 @@ fun OnboardingScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = if (pagerState.currentPage == pages.lastIndex) "Get Started" else "Continue",
+                    text = if (pagerState.currentPage == pages.lastIndex) stringResource(R.string.get_started) else stringResource(
+                        R.string.continue_str
+                    ),
                     fontFamily = Inter,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -214,7 +216,7 @@ fun OnboardingScreen(
                 enabled = !state.isLoading
             ) {
                 Text(
-                    text = "Skip",
+                    text = stringResource(R.string.skip),
                     color = TextSecondary,
                     fontFamily = Inter,
                     fontSize = 14.sp,

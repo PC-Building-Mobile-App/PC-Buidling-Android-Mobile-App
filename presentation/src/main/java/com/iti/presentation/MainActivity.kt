@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity() {
                             isAuthenticated = state.isAuthenticated,
                             hasSeenOnboarding = state.hasSeenOnboarding,
                             onAuthComplete = {
-                                mainViewModel.onEvent(MainContract.Event.AuthSuccess)
-                            }
+
+                            },
                         )
                     }
                 }
