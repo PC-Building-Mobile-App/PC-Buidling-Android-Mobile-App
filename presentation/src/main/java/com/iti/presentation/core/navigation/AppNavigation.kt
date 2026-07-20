@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.iti.presentation.auth.screens.AuthScreen
 import com.iti.presentation.onboarding.OnboardingViewModel
 import com.iti.presentation.onboarding.screens.OnboardingScreen
 
@@ -24,15 +25,11 @@ fun AppNavigation(
     onAuthComplete: () -> Unit,
 ) {
     if (isAuthenticated) {
-        MainNavigation(
-            onNavigateToAuth = {
-
-            },
-        )
+        MainNavigation()
     } else {
         AuthNavigation(
             hasSeenOnboarding = hasSeenOnboarding,
-            onAuthComplete = onAuthComplete
+            onAuthComplete = onAuthComplete,
         )
     }
 }
@@ -78,22 +75,14 @@ private fun AuthNavigation(
                 }
 
                 entry<LoginRoute> {
-                    ScreenPlaceholder(
-                        title = "Login",
-                        subtitle = "Tap to go to Register screen\n(Pretend there's a separate 'Sign In' button that completes auth)",
-                        onAction = {
-                            authBackStack.navigateSingleTop(RegisterRoute)
-                        },
+                    AuthScreen(
+                        onNavigateToHome = onAuthComplete,
                     )
                 }
 
                 entry<RegisterRoute> {
-                    ScreenPlaceholder(
-                        title = "Register",
-                        subtitle = "Tap to finish registration and go to Home",
-                        onAction = {
-                            onAuthComplete()
-                        },
+                    AuthScreen(
+                        onNavigateToHome = onAuthComplete,
                     )
                 }
             },

@@ -138,4 +138,19 @@
     <string name="by_author">By %1$s</string>
     <string name="article_not_found">Article not found</string>
     <string name="source_label">Source: %1$s</string>
+    <string name="skip">Skip</string>
+    <string name="get_started">Get Started</string>
+    <string name="continue_str">Continue</string>
+    <string name="create_one">Create one</string>
+    <string name="sign_in">Sign in</string>
+    <string name="already_have_an_account">"Already have an account? "</string>
+    <string name="don_t_have_an_account">"Don't have an account? "</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="email">EMAIL</string>
+    <string name="sign_in_to_your_pc_building_account">Sign in to your PC Building account</string>
+    <string name="create_your_pc_building_account">Create your PC Building account</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="create_account">Create account</string>
+    <string name="name">NAME</string>
+    <string name="password">PASSWORD</string>
 </resources>
