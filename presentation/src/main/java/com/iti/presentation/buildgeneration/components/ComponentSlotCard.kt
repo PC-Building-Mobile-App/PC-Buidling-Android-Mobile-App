@@ -38,6 +38,7 @@ import coil3.compose.SubcomposeAsyncImage
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.model.labelRes
+import com.iti.presentation.categorybuilds.model.AlternativeOptionUiModel
 import com.iti.presentation.core.UiText
 import com.iti.presentation.core.componentcategories.mapper.toIconResource
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
@@ -53,6 +54,7 @@ fun ComponentSlotCard(
     onClick: () -> Unit,
     onRemoveClick: () -> Unit,
     modifier: Modifier = Modifier,
+    alternatives: List<AlternativeOptionUiModel> = emptyList(),
 ) {
     val context = LocalContext.current
     val shape = MaterialTheme.shapes.large
@@ -152,8 +154,46 @@ fun ComponentSlotCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 14.dp)
-                    .padding(bottom = 12.dp),
+                    .padding(bottom = if (alternatives.isEmpty()) 12.dp else 4.dp),
             )
+        }
+
+        if (alternatives.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp)
+                    .padding(bottom = 12.dp)
+            ) {
+                Text(
+                    text = "Recommended Alternatives:",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                alternatives.forEach { alternative ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 2.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = alternative.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = alternative.priceFormatted,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -297,7 +337,7 @@ private fun ComponentSlotCardFilledPreview() {
                 imageUrl = "",
                 tags = listOf("Top Pick", "In Stock"),
                 isInStock = true,
-                category = ComponentCategoryType.GPU
+                category = ComponentCategoryType.GPU,
             ),
             warningMessage = null,
             onClick = {},
@@ -321,9 +361,8 @@ private fun ComponentSlotCardOutOfStockPreview() {
                 imageUrl = "",
                 tags = listOf("Out of Stock"),
                 isInStock = false,
-                category = ComponentCategoryType.CPU
-
-            ),
+                category = ComponentCategoryType.CPU,
+                ),
             warningMessage = null,
             onClick = {},
             onRemoveClick = {},
@@ -346,8 +385,8 @@ private fun ComponentSlotCardWarningPreview() {
                 imageUrl = "",
                 tags = listOf("In Stock"),
                 isInStock = true,
-                category = ComponentCategoryType.MEMORY
-            ),
+                category = ComponentCategoryType.MEMORY,
+                ),
             warningMessage = UiText.DynamicString("Runs below the motherboard's rated memory speed."),
             onClick = {},
             onRemoveClick = {},
@@ -371,7 +410,7 @@ private fun ComponentSlotCardWarningOutOfStockPreview() {
                 tags = listOf("Out of Stock"),
                 isInStock = false,
                 category = ComponentCategoryType.PSU
-            ),
+                ),
             warningMessage = UiText.DynamicString("Wattage is close to your build's estimated draw."),
             onClick = {},
             onRemoveClick = {},

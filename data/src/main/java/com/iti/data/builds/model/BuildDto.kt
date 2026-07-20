@@ -10,8 +10,8 @@ data class BuildDto(
     val totalPrice: Double,
     val compatible: Boolean,
     val items: List<BuildItemDto>,
-    val issues: List<String>?,
-    val alternatives: List<String>?,
+    val issues: List<BuildIssueDto>?,
+    val alternatives: Map<String, List<AlternativeDto>>?,
     val createdAt: String,
     val updatedAt: String,
 )
@@ -24,4 +24,17 @@ data class BuildItemDto(
     val price: Double,
     val quantity: Int,
     val subtotal: Double,
+)
+
+@Serializable
+data class BuildIssueDto(
+    val category: String,
+    val reason: String,
+)
+
+@Serializable
+data class AlternativeDto(
+    val id: Long,
+    val name: String,
+    val price: Double,
 )

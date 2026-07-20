@@ -8,7 +8,19 @@ data class Build(
     val totalPrice: Double,
     val compatible: Boolean,
     val items: List<Component>,
-    val issues: List<String>,
+    val issues: List<BuildIssue>,
+    val alternatives: Map<String, List<AlternativeOption>>,
     val createdAt: String,
     val updatedAt: String,
+)
+
+data class BuildIssue(
+    val category: String,
+    val reason: String,
+)
+
+data class AlternativeOption(
+    val id: Long,
+    val name: String,
+    val price: Double,
 )

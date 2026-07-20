@@ -20,6 +20,8 @@ import com.iti.presentation.buildgeneration.BuildGenerationContract.State
 import com.iti.presentation.buildgeneration.model.ComponentSlotUiModel
 import com.iti.presentation.buildgeneration.model.toUiModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
+import com.iti.presentation.categorybuilds.model.BuildIssueUiModel
+import com.iti.presentation.categorybuilds.model.AlternativeOptionUiModel
 import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.UiText
 import com.iti.presentation.core.pccomponents.mapper.toUiModel
@@ -57,7 +59,6 @@ class BuildGenerationViewModel @Inject constructor(
                     pickerCategory = null
                 )
             }
-
             is Event.ComponentPicked -> pickComponent(event.component)
             is Event.SlotCleared -> clearSlot(event.category)
             is Event.GenerateClicked -> generateBuild()
@@ -84,16 +85,29 @@ class BuildGenerationViewModel @Inject constructor(
             loadCategories()
         }
         if (editingBuild != null) {
-            resolveSlots(editingBuild.specs)
+            resolveSlots(editingBuild.specs, editingBuild.issues, editingBuild.alternatives)
         }
     }
 
-    private fun resolveSlots(components: List<ComponentUiModel>) {
+    private fun resolveSlots(
+        components: List<ComponentUiModel>,
+        issues: List<BuildIssueUiModel> = emptyList(),
+        alternatives: Map<String, List<AlternativeOptionUiModel>> = emptyMap(),
+    ) {
         updateState { state ->
             val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
+                val matchingComponent = components.find {
+                    it.category == categoryType
+                }
+                val matchingIssue = issues.find {
+                    it.category.equals(categoryType.name, ignoreCase = true)
+                }
+                val matchingAlternatives = alternatives[categoryType.name.uppercase()].orEmpty()
                 ComponentSlotUiModel(
                     category = categoryType,
-                    component = components.find { it.category == categoryType }
+                    component = matchingComponent,
+                    warningMessage = matchingIssue?.reason?.let { UiText.DynamicString(it) },
+                    alternatives = matchingAlternatives,
                 )
             }
             state.copy(slots = updatedSlots)
@@ -169,7 +183,9 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun pickComponent(component: ComponentUiModel) {
         val category = state.value.pickerCategory ?: return
-        val existingIds = state.value.slots.mapNotNull { it.component?.id }
+        val existingIds = state.value.slots
+            .filter { it.category != category }
+            .mapNotNull { it.component?.id }
 
         val request = CompatibilityCheckRequest(
             target = CompatibilityCheckTarget.InProgressSelection(existingIds),
@@ -203,7 +219,8 @@ class BuildGenerationViewModel @Inject constructor(
                 slots = current.slots.map { slot ->
                     if (slot.category == category) slot.copy(
                         component = component,
-                        warningMessage = warning
+                        warningMessage = warning,
+                        alternatives = emptyList()
                     ) else slot
                 },
             )
@@ -216,7 +233,8 @@ class BuildGenerationViewModel @Inject constructor(
                 slots = current.slots.map { slot ->
                     if (slot.category == category) slot.copy(
                         component = null,
-                        warningMessage = null
+                        warningMessage = null,
+                        alternatives = emptyList()
                     ) else slot
                 },
                 generatedBuild = null,

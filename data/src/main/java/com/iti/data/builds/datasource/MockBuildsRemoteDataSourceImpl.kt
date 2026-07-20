@@ -1,7 +1,9 @@
 package com.iti.data.builds.datasource
 
+import com.iti.data.builds.model.AlternativeDto
 import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
+import com.iti.data.builds.model.BuildIssueDto
 import com.iti.data.builds.model.BuildItemDto
 import com.iti.data.builds.model.CompatibilityCheckRequestDto
 import com.iti.data.builds.model.CompatibilityIssueDto
@@ -114,15 +116,39 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
             }
             val totalPrice = items.sumOf { it.subtotal }
 
+            val isIncompatible = request.name.equals("My Gaming Rig", ignoreCase = true) ||
+                    items.any { it.productName.contains("AMD Ryzen 9") } && items.any { it.productName.contains("ASUS ROG Crosshair") }.not() && request.name.contains("Incompatible")
+
+            val compatible = !isIncompatible
+            val issues = if (isIncompatible) {
+                listOf(
+                    BuildIssueDto(
+                        category = "MOTHERBOARD",
+                        reason = "CPU socket (AM5) does not match motherboard socket (LGA1700)."
+                    )
+                )
+            } else null
+
+            val alternatives = if (isIncompatible) {
+                mapOf(
+                    "MOTHERBOARD" to listOf(
+                        AlternativeDto(id = 33, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                    ),
+                    "CPU" to listOf(
+                        AlternativeDto(id = 21, name = "Intel Core i5 12400F...", price = 8000.00)
+                    )
+                )
+            } else null
+
             if (existingEntry != null) {
                 val (oldCategoryId, oldBuild) = existingEntry
                 val updated = oldBuild.copy(
                     name = request.name,
                     totalPrice = totalPrice,
-                    compatible = true,
+                    compatible = compatible,
                     items = items,
-                    issues = null,
-                    alternatives = null,
+                    issues = issues,
+                    alternatives = alternatives,
                     updatedAt = now,
                 )
                 savedBuilds[oldCategoryId]?.removeAll { it.id == updated.id }
@@ -133,10 +159,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     id = buildIdCounter.incrementAndGet().toInt(),
                     name = request.name,
                     totalPrice = totalPrice,
-                    compatible = true,
+                    compatible = compatible,
                     items = items,
-                    issues = null,
-                    alternatives = null,
+                    issues = issues,
+                    alternatives = alternatives,
                     createdAt = now,
                     updatedAt = now,
                 )
@@ -180,6 +206,35 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
 
         val seedBuilds: Map<String, List<BuildDto>> = mapOf(
             "gaming" to listOf(
+                BuildDto(
+                    id = 12,
+                    name = "My Gaming Rig",
+                    totalPrice = 45230.00,
+                    compatible = false,
+                    items = listOf(
+                        BuildItemDto(101, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
+                        BuildItemDto(202, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
+                        BuildItemDto(307, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
+                        BuildItemDto(306, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
+                        BuildItemDto(304, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0)
+                    ),
+                    issues = listOf(
+                        BuildIssueDto(
+                            category = "MOTHERBOARD",
+                            reason = "CPU socket (AM5) does not match motherboard socket (LGA1700)."
+                        )
+                    ),
+                    alternatives = mapOf(
+                        "MOTHERBOARD" to listOf(
+                            AlternativeDto(id = 33, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                        ),
+                        "CPU" to listOf(
+                            AlternativeDto(id = 21, name = "Intel Core i5 12400F...", price = 8000.00)
+                        )
+                    ),
+                    createdAt = "2026-07-20T12:17:17.000000",
+                    updatedAt = "2026-07-20T12:17:17.000000"
+                ),
                 BuildDto(
                     id = 1,
                     name = "Ultimate 4K Gaming Rig",

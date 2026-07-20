@@ -206,6 +206,7 @@ private fun BuildGenerationScreenContent(
                             onClick = { onEvent(Event.SlotClicked(slot.category)) },
                             onRemoveClick = { onEvent(Event.SlotCleared(slot.category)) },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                            alternatives = slot.alternatives,
                         )
                     }
                 }
