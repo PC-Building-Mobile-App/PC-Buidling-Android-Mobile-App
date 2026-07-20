@@ -2,7 +2,7 @@ package com.iti.presentation.parts
 
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.core.componentcategories.model.ComponentCategoryUiModel
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.UiText
 
 interface PartsContract {

@@ -1,8 +1,9 @@
 package com.iti.presentation.buildgeneration.model
 
 import com.iti.domain.builds.model.GeneratedBuild
-import com.iti.presentation.core.components.mapper.toUiModels
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.mapper.toUiModels
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
+
 
 data class GeneratedBuildUiModel(
     val components: List<ComponentUiModel>,

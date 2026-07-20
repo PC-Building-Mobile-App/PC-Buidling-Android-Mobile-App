@@ -1,10 +1,20 @@
-package com.iti.presentation.shared
+package com.iti.presentation.core.pccomponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.iti.presentation.R
-import com.iti.presentation.core.components.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 
 @Composable
 fun ProductCard(
@@ -57,7 +67,7 @@ fun ProductCard(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-                
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -109,7 +119,7 @@ fun ProductCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                
+
                 Text(
                     text = component.productName,
                     style = MaterialTheme.typography.titleMedium,
@@ -118,8 +128,9 @@ fun ProductCard(
                     fontSize = 15.sp,
                     lineHeight = 20.sp
                 )
-                
+
                 Spacer(modifier = Modifier.height(4.dp))
+
 
                 Text(
                     text = component.formattedPrice,

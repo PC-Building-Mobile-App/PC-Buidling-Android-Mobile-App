@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.iti.presentation.components.shimmerEffect
+import com.iti.presentation.core.uicomponents.shimmerEffect
 
 @Composable
 fun ProductCardSkeleton(
@@ -17,8 +17,6 @@ fun ProductCardSkeleton(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-        //colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-
     ) {
         Column {
             Box(

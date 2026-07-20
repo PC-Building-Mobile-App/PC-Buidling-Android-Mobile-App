@@ -33,7 +33,7 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.buildgeneration.model.labelRes
-import com.iti.presentation.components.EmptyScreen
+import com.iti.presentation.core.uicomponents.EmptyScreen
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.SuccessGreen
 

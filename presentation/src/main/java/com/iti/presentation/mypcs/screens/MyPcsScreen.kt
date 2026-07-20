@@ -27,7 +27,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.components.ErrorScreen
+import com.iti.presentation.core.uicomponents.ErrorScreen
 import com.iti.presentation.mypcs.MyPcsContract.Effect
 import com.iti.presentation.mypcs.MyPcsContract.Event
 import com.iti.presentation.mypcs.MyPcsContract.State

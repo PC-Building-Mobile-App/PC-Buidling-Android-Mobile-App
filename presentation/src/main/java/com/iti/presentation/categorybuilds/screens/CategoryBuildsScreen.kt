@@ -29,8 +29,8 @@ import com.iti.presentation.categorybuilds.components.CategoryBuildsFab
 import com.iti.presentation.categorybuilds.components.CategoryBuildsHeader
 import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.categorybuilds.viewmodel.CategoryBuildsViewModel
-import com.iti.presentation.components.EmptyScreen
-import com.iti.presentation.components.ErrorScreen
+import com.iti.presentation.core.uicomponents.EmptyScreen
+import com.iti.presentation.core.uicomponents.ErrorScreen
 import com.iti.presentation.core.UiText
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.ui.theme.AppTheme
