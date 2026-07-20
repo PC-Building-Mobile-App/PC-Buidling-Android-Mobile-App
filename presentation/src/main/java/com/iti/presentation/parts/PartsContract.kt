@@ -10,7 +10,6 @@ interface PartsContract {
     sealed interface Event {
         data class UpdateQuery(val query: String) : Event
         data class SelectCategory(val category: ComponentCategoryType?) : Event
-        data object LoadNextPage : Event
         data object Refresh : Event
         data object ToggleFilterSheet : Event
         data class UpdateAdvancedFilters(
@@ -27,11 +26,8 @@ interface PartsContract {
         val categories: List<ComponentCategoryUiModel> = emptyList(),
         val selectedCategory: ComponentCategoryType? = null,
         val products: List<ComponentUiModel> = emptyList(),
-        val isInitialLoading: Boolean = false,
-        val isPagingLoading: Boolean = false,
+        val isLoading: Boolean = false,
         val errorMessage: UiText? = null,
-        val page: Int = 0,
-        val isLastPage: Boolean = false,
         val minPrice: Double? = null,
         val maxPrice: Double? = null,
         val inStockOnly: Boolean = false,
