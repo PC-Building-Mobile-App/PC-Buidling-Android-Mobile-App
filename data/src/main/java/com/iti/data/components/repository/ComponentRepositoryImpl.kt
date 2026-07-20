@@ -3,6 +3,7 @@ package com.iti.data.components.repository
 import com.iti.data.components.datasource.ComponentDataSource
 import com.iti.data.components.mapper.toDomain
 import com.iti.data.util.safeCall
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.repository.ComponentRepository
@@ -34,7 +35,16 @@ class ComponentRepositoryImpl @Inject constructor(
         delay(600.milliseconds)
 
         val filteredData = mockDataSource.searchComponents(params)
-        
+
         filteredData.toDomain()
+
+    }
+
+    override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> {
+        return mockDataSource.getComponents().map { dataModels ->
+            dataModels
+                .filter { it.category.equals(category.name, ignoreCase = true) }
+                .map { it.toDomain() }
+        }
     }
 }

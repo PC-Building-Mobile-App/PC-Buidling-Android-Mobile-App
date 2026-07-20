@@ -2,6 +2,7 @@ package com.iti.presentation.parts.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.usecase.SearchComponentsUseCase
@@ -39,6 +40,11 @@ class PartsViewModel @Inject constructor(
 
     init {
         val initialQuery: String? = savedStateHandle["initialQuery"]
+        val initialCategoryId: String? = savedStateHandle["initialCategoryId"]
+
+        val initialCategory = initialCategoryId?.let { id ->
+            runCatching { ComponentCategoryType.valueOf(id.uppercase()) }.getOrNull()
+        }
         
         loadCategories()
 
@@ -51,9 +57,15 @@ class PartsViewModel @Inject constructor(
                 }
         }
 
-        if (initialQuery != null) {
-            updateState { it.copy(query = initialQuery) }
-            queryFlow.value = initialQuery
+        if (initialQuery != null || initialCategory != null) {
+            updateState { 
+                it.copy(
+                    query = initialQuery ?: "",
+                    selectedCategory = initialCategory
+                ) 
+            }
+            queryFlow.value = initialQuery ?: ""
+            performSearch()
         } else {
             performSearch()
         }

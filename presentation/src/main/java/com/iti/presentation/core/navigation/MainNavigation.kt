@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
+import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
 import com.iti.presentation.parts.screens.PartsScreen
 
 @Composable
@@ -71,7 +72,6 @@ fun MainNavigation(
                 entryProvider = entryProvider {
 
                     entry<HomeRoute> {
-                        // TODO: Replace with your HomeScreen composable
                         ScreenPlaceholder(title = "Home")
                     }
 
@@ -86,13 +86,15 @@ fun MainNavigation(
                     }
 
                     entry<AiAssistantRoute> {
-                        // TODO: Replace with your AIScreen composable
                         ScreenPlaceholder(title = "AI Assistant")
                     }
 
                     entry<MyPcsRoute> {
                         MyPcsScreen(
                             onNewBuildClick = {
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(category = null)
+                                )
                             },
                             onCategoryClick = { category ->
                                 activeBackStack.navigateSingleTop(
@@ -103,13 +105,10 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
-                        // TODO: Replace with your ProfileScreen composable
                         ScreenPlaceholder(title = "Profile")
                     }
 
                     entry<PartsDetailRoute> { route ->
-                        // TODO: Replace with your PartsDetailScreen composable
-
                         ScreenPlaceholder(
                             title = "Part Detail",
                             subtitle = "Part ID: ${route.partId}",
@@ -130,20 +129,33 @@ fun MainNavigation(
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             },
-                            onNewBuildClick = {},
+
+                            onEditBuildClick = { build, category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(
+                                        editingBuild = build,
+                                        category = category)
+                                )
+                            },
+                            onNewBuildClick = { category ->
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(category = category)
+                                )
+                            },
                         )
                     }
 
                     entry<BuildGenerationRoute> { route ->
-                        // TODO: Replace with your BuildGenerationScreen composable
-                        ScreenPlaceholder(
-                            title = "Build Generation",
-                            subtitle = "Build ID: ${route.buildId}",
+                        BuildGenerationScreen(
+                            category = route.category,
+                            editingBuild = route.editingBuild,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            }
                         )
                     }
 
                     entry<ComparisonRoute> { route ->
-                        // TODO: Replace with your ComparisonScreen composable
                         ScreenPlaceholder(
                             title = "Comparison",
                             subtitle = "${route.firstPartId} vs ${route.secondPartId}",

@@ -7,5 +7,6 @@ enum class ComponentCategoryType {
     PSU,
     CASE,
     COOLER,
-    MEMORY
+    MEMORY,
+    STORAGE
 }

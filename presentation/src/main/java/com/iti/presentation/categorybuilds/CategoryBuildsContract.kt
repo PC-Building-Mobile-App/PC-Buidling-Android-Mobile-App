@@ -12,8 +12,7 @@ object CategoryBuildsContract {
         val builds: List<BuildUiModel> = emptyList(),
         val errorMessage: UiText? = null,
     ) {
-        val isEmpty: Boolean
-            get() = !isLoading && errorMessage == null && builds.isEmpty()
+        val isEmpty: Boolean get() = !isLoading && errorMessage == null && builds.isEmpty()
     }
 
     sealed interface Event {
@@ -21,15 +20,15 @@ object CategoryBuildsContract {
         data object LoadBuilds : Event
         data object BackClicked : Event
         data object NewBuildClicked : Event
-        data class EditClicked(val buildId: String) : Event
+        data class EditClicked(val build: BuildUiModel) : Event
         data class ShareClicked(val buildId: String) : Event
         data class ExportClicked(val buildId: String) : Event
     }
 
     sealed interface Effect {
         data object NavigateBack : Effect
-        data class NavigateToNewBuild(val categoryId: String) : Effect
-        data class NavigateToEditBuild(val buildId: String) : Effect
+        data class NavigateToNewBuild(val category: BuildCategoryUiModel) : Effect
+        data class NavigateToEditBuild(val build: BuildUiModel) : Effect
         data class ShareBuild(val buildId: String) : Effect
         data class ExportBuild(val buildId: String) : Effect
     }

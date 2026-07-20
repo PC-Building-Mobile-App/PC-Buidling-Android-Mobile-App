@@ -1,5 +1,7 @@
 package com.iti.domain.builds.model
 
+import com.iti.domain.components.model.Component
+
 data class Build(
     val id: String,
     val categoryId: String,
@@ -10,11 +12,5 @@ data class Build(
     val performanceScore: Int,
     val avgFps: Int,
     val compatibilityPercent: Int,
-    val specs: List<BuildSpec>,
-)
-
-data class BuildSpec(
-    val category: String,
-    val name: String,
-    val imageUrl: String?,
+    val specs: List<Component>,
 )

@@ -1,8 +1,8 @@
-package com.iti.data.componentcategories.di
+package com.iti.data.componentCategories.di
 
-import com.iti.data.componentcategories.datasource.ComponentCategoryDataSource
-import com.iti.data.componentcategories.datasource.ComponentCategoryLocalDataSourceImpl
-import com.iti.data.componentcategories.repository.ComponentCategoryRepositoryImpl
+import com.iti.data.componentCategories.datasource.ComponentCategoryDataSource
+import com.iti.data.componentCategories.datasource.ComponentCategoryLocalDataSourceImpl
+import com.iti.data.componentCategories.repository.ComponentCategoryRepositoryImpl
 import com.iti.domain.componentcategories.repository.ComponentCategoryRepository
 import dagger.Binds
 import dagger.Module

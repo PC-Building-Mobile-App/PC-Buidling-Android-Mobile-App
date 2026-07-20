@@ -1,4 +1,6 @@
 package com.iti.data.builds.model
+
+import com.iti.data.components.model.ComponentDataModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,12 +14,5 @@ data class BuildDto(
     val performanceScore: Int,
     val avgFps: Int,
     val compatibilityPercent: Int,
-    val specs: List<BuildSpecDto>,
-)
-
-@Serializable
-data class BuildSpecDto(
-    val category: String,
-    val name: String,
-    val imageUrl: String? = null,
+    val specs: List<ComponentDataModel>,
 )
