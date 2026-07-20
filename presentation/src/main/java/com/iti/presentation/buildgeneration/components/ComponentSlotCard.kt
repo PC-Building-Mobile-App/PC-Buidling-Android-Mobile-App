@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.core.UiText
 import com.iti.presentation.core.componentcategories.mapper.toIconResource
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.SuccessGreen
 import com.iti.presentation.ui.theme.WarningOrange
@@ -48,7 +48,7 @@ import com.iti.presentation.ui.theme.WarningOrange
 @Composable
 fun ComponentSlotCard(
     category: ComponentCategoryType,
-    component: PickerComponentUiModel?,
+    component: ComponentUiModel?,
     warningMessage: UiText?,
     onClick: () -> Unit,
     onRemoveClick: () -> Unit,
@@ -85,7 +85,7 @@ fun ComponentSlotCard(
         ) {
             ComponentThumbnail(
                 category = category,
-                imageUrl = component?.productImage,
+                imageUrl = component?.imageUrl,
             )
 
             Column(
@@ -109,7 +109,7 @@ fun ComponentSlotCard(
                         modifier = Modifier.padding(top = 2.dp),
                     )
                     StockBadge(
-                        inStock = component.inStock,
+                        inStock = component.isInStock,
                         modifier = Modifier.padding(top = 6.dp),
                     )
                 } else {
@@ -125,7 +125,7 @@ fun ComponentSlotCard(
             if (component != null) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = stringResource(R.string.price_format, component.priceFormatted),
+                        text = stringResource(R.string.price_format, component.formattedPrice),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
@@ -200,7 +200,6 @@ private fun ComponentThumbnail(
         }
     }
 }
-
 
 @Composable
 private fun CategoryFallbackIcon(category: ComponentCategoryType) {
@@ -289,15 +288,16 @@ private fun ComponentSlotCardFilledPreview() {
     AppTheme {
         ComponentSlotCard(
             category = ComponentCategoryType.GPU,
-            component = PickerComponentUiModel(
-                id = 5,
-                vendorName = "GearHub",
-                category = "GPU",
+            component = ComponentUiModel(
+                id = 5L,
+                subtitle = "GearHub · GPU",
                 productName = "NVIDIA GeForce RTX 4070 Super",
-                productImage = "",
-                price = 32000.0,
-                priceFormatted = "32,000",
-                inStock = true,
+                vendorName = "GearHub",
+                formattedPrice = "32,000 EGP",
+                imageUrl = "",
+                tags = listOf("Top Pick", "In Stock"),
+                isInStock = true,
+                category = ComponentCategoryType.GPU
             ),
             warningMessage = null,
             onClick = {},
@@ -312,15 +312,17 @@ private fun ComponentSlotCardOutOfStockPreview() {
     AppTheme {
         ComponentSlotCard(
             category = ComponentCategoryType.CPU,
-            component = PickerComponentUiModel(
-                id = 7,
-                vendorName = "GearHub",
-                category = "CPU",
+            component = ComponentUiModel(
+                id = 7L,
+                subtitle = "GearHub · CPU",
                 productName = "AMD Ryzen 7 7800X3D",
-                productImage = "",
-                price = 14500.0,
-                priceFormatted = "14,500",
-                inStock = false,
+                vendorName = "GearHub",
+                formattedPrice = "14,500 EGP",
+                imageUrl = "",
+                tags = listOf("Out of Stock"),
+                isInStock = false,
+                category = ComponentCategoryType.CPU
+
             ),
             warningMessage = null,
             onClick = {},
@@ -335,15 +337,16 @@ private fun ComponentSlotCardWarningPreview() {
     AppTheme {
         ComponentSlotCard(
             category = ComponentCategoryType.MEMORY,
-            component = PickerComponentUiModel(
-                id = 12,
-                vendorName = "GearHub",
-                category = "RAM",
+            component = ComponentUiModel(
+                id = 12L,
+                subtitle = "GearHub · RAM",
                 productName = "Corsair Vengeance 32GB DDR5 6000MHz",
-                productImage = "",
-                price = 5200.0,
-                priceFormatted = "5,200",
-                inStock = true,
+                vendorName = "GearHub",
+                formattedPrice = "5,200 EGP",
+                imageUrl = "",
+                tags = listOf("In Stock"),
+                isInStock = true,
+                category = ComponentCategoryType.MEMORY
             ),
             warningMessage = UiText.DynamicString("Runs below the motherboard's rated memory speed."),
             onClick = {},
@@ -358,15 +361,16 @@ private fun ComponentSlotCardWarningOutOfStockPreview() {
     AppTheme {
         ComponentSlotCard(
             category = ComponentCategoryType.PSU,
-            component = PickerComponentUiModel(
-                id = 19,
-                vendorName = "GearHub",
-                category = "PSU",
+            component = ComponentUiModel(
+                id = 19L,
+                subtitle = "GearHub · PSU",
                 productName = "Corsair RM750x 750W 80+ Gold",
-                productImage = "",
-                price = 4300.0,
-                priceFormatted = "4,300",
-                inStock = false,
+                vendorName = "GearHub",
+                formattedPrice = "4,300 EGP",
+                imageUrl = "",
+                tags = listOf("Out of Stock"),
+                isInStock = false,
+                category = ComponentCategoryType.PSU
             ),
             warningMessage = UiText.DynamicString("Wattage is close to your build's estimated draw."),
             onClick = {},

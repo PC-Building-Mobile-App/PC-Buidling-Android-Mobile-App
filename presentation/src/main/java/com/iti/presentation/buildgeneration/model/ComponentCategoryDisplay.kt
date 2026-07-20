@@ -12,5 +12,4 @@ val ComponentCategoryType.labelRes: Int
         ComponentCategoryType.CASE -> R.string.category_case
         ComponentCategoryType.COOLER -> R.string.category_cooler
         ComponentCategoryType.MEMORY -> R.string.category_memory
-        ComponentCategoryType.STORAGE -> R.string.category_storage
     }

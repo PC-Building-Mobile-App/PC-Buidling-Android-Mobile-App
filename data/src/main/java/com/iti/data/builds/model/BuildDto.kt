@@ -1,18 +1,27 @@
 package com.iti.data.builds.model
 
-import com.iti.data.components.model.ComponentDataModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class BuildDto(
-    val id: String,
-    val categoryId: String,
+    val id: Int,
     val name: String,
+    val totalPrice: Double,
+    val compatible: Boolean,
+    val items: List<BuildItemDto>,
+    val issues: List<String>?,
+    val alternatives: List<String>?,
+    val createdAt: String,
+    val updatedAt: String,
+)
+
+@Serializable
+data class BuildItemDto(
+    @SerialName("productId") val id: Long,
+    @SerialName("name") val productName: String,
+    val category: String,
     val price: Double,
-    val currency: String = "EGP",
-    val imageUrl: String,
-    val performanceScore: Int,
-    val avgFps: Int,
-    val compatibilityPercent: Int,
-    val specs: List<ComponentDataModel>,
+    val quantity: Int,
+    val subtotal: Double,
 )

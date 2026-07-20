@@ -16,13 +16,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.ui.theme.AppTheme
 
 @Composable
 fun SelectedComponentsList(
-    components: List<PickerComponentUiModel>,
+    components: List<ComponentUiModel>,
     totalPriceFormatted: String,
     modifier: Modifier = Modifier,
 ) {
@@ -54,7 +55,7 @@ fun SelectedComponentsList(
 }
 
 @Composable
-private fun SelectedComponentRow(component: PickerComponentUiModel, modifier: Modifier = Modifier) {
+private fun SelectedComponentRow(component: ComponentUiModel, modifier: Modifier = Modifier) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -65,13 +66,13 @@ private fun SelectedComponentRow(component: PickerComponentUiModel, modifier: Mo
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = component.category,
+                text = component.subtitle.substringAfterLast("·").trim(),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         Text(
-            text = stringResource(R.string.price_format, component.priceFormatted),
+            text = stringResource(R.string.price_format, component.formattedPrice),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -84,10 +85,30 @@ private fun SelectedComponentsListPreview() {
     AppTheme {
         SelectedComponentsList(
             components = listOf(
-                PickerComponentUiModel(1, "TechStore", "CPU", "AMD Ryzen 7 7800X3D", "", 18500.0, "18,500", true),
-                PickerComponentUiModel(5, "GearHub", "GPU", "NVIDIA RTX 4070 Super", "", 32000.0, "32,000", true),
+                ComponentUiModel(
+                    id = 1L,
+                    subtitle = "TechStore · CPU",
+                    productName = "AMD Ryzen 7 7800X3D",
+                    vendorName = "TechStore",
+                    formattedPrice = "18,500 EGP",
+                    imageUrl = "",
+                    tags = listOf("Top Pick", "In Stock"),
+                    isInStock = true,
+                    category = ComponentCategoryType.CPU
+                ),
+                ComponentUiModel(
+                    id = 5L,
+                    subtitle = "GearHub · GPU",
+                    productName = "NVIDIA RTX 4070 Super",
+                    vendorName = "GearHub",
+                    formattedPrice = "32,000 EGP",
+                    imageUrl = "",
+                    tags = listOf("Top Pick", "In Stock"),
+                    isInStock = true,
+                    category = ComponentCategoryType.GPU
+                )
             ),
-            totalPriceFormatted = "50,500",
+            totalPriceFormatted = "50,500 EGP",
         )
     }
 }

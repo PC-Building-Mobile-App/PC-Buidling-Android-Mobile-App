@@ -1,5 +1,6 @@
 package com.iti.presentation.core.pccomponents.mapper
 
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import java.text.NumberFormat
@@ -13,7 +14,8 @@ fun Component.toUiModel(): ComponentUiModel = ComponentUiModel(
     imageUrl = productImage,
     tags = buildTags(this),
     isInStock = inStock,
-    vendorName = vendorName
+    vendorName = vendorName,
+    category = ComponentCategoryType.valueOf(category.uppercase()),
 )
 
 fun List<Component>.toUiModels(): List<ComponentUiModel> = map { it.toUiModel() }
