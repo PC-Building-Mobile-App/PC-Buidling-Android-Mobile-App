@@ -23,5 +23,4 @@ fun ComponentCategoryType.toIconResource(): Int = when (this) {
     ComponentCategoryType.CASE -> R.drawable.ic_case
     ComponentCategoryType.COOLER -> R.drawable.ic_cooler
     ComponentCategoryType.MEMORY -> R.drawable.ic_memory
-    ComponentCategoryType.STORAGE -> R.drawable.ic_storage
 }

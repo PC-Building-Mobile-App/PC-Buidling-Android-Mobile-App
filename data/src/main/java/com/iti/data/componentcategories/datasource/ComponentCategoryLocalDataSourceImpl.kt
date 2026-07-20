@@ -1,6 +1,6 @@
-package com.iti.data.componentCategories.datasource
+package com.iti.data.componentcategories.datasource
 
-import com.iti.data.componentCategories.model.ComponentCategoryDataModel
+import com.iti.data.componentcategories.model.ComponentCategoryDataModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject

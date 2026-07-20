@@ -136,24 +136,6 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             inStock = true
         ),
         ComponentDataModel(
-            id = 15,
-            vendorName = "TechStore",
-            category = "STORAGE",
-            productName = "Samsung 990 PRO 2TB M.2 NVMe SSD",
-            productImage = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&auto=format&fit=crop&q=60",
-            price = 8500.00,
-            inStock = true
-        ),
-        ComponentDataModel(
-            id = 16,
-            vendorName = "PCWorld",
-            category = "STORAGE",
-            productName = "Western Digital Black SN850X 1TB NVMe",
-            productImage = "https://images.unsplash.com/photo-1601737487795-daf37f941af5?w=400&auto=format&fit=crop&q=60",
-            price = 4800.00,
-            inStock = true
-        ),
-        ComponentDataModel(
             id = 17,
             vendorName = "GearHub",
             category = "PSU",

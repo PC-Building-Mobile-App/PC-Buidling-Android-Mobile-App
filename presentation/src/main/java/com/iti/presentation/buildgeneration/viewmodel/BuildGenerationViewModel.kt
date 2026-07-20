@@ -2,7 +2,6 @@ package com.iti.presentation.buildgeneration.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.iti.domain.builds.model.BuildCategoryType
-import com.iti.domain.builds.model.BuildPurpose
 import com.iti.domain.builds.model.CompatibilityCheckRequest
 import com.iti.domain.builds.model.CompatibilityCheckTarget
 import com.iti.domain.builds.model.GenerateBuildRequest
@@ -19,15 +18,18 @@ import com.iti.presentation.buildgeneration.BuildGenerationContract.Effect
 import com.iti.presentation.buildgeneration.BuildGenerationContract.Event
 import com.iti.presentation.buildgeneration.BuildGenerationContract.State
 import com.iti.presentation.buildgeneration.model.ComponentSlotUiModel
-import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
-import com.iti.presentation.buildgeneration.model.toPickerUiModel
 import com.iti.presentation.buildgeneration.model.toUiModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
-import com.iti.presentation.mypcs.model.BuildCategoryUiModel
-import com.iti.presentation.mypcs.model.toUiModel
+import com.iti.presentation.categorybuilds.model.BuildIssueUiModel
+import com.iti.presentation.categorybuilds.model.AlternativeOptionUiModel
 import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.UiText
+import com.iti.presentation.core.pccomponents.mapper.toUiModel
+import com.iti.presentation.core.pccomponents.mapper.toUiModels
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.toUiText
+import com.iti.presentation.mypcs.model.BuildCategoryUiModel
+import com.iti.presentation.mypcs.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -57,12 +59,10 @@ class BuildGenerationViewModel @Inject constructor(
                     pickerCategory = null
                 )
             }
-
             is Event.ComponentPicked -> pickComponent(event.component)
             is Event.SlotCleared -> clearSlot(event.category)
             is Event.GenerateClicked -> generateBuild()
             is Event.SaveClicked -> onSave()
-
             is Event.BuildNameChanged -> updateState { it.copy(buildName = event.name) }
             is Event.ConfirmSaveClicked -> saveBuild()
             is Event.SaveDialogDismissed -> updateState { it.copy(isSaveDialogVisible = false) }
@@ -77,7 +77,7 @@ class BuildGenerationViewModel @Inject constructor(
                 selectedCategoryTypes = category?.type?.let { type -> setOf(type) } ?: emptySet(),
                 isEditingExistingBuild = editingBuild != null,
                 editingBuildId = editingBuild?.id,
-                budget = editingBuild?.price?.toFloat() ?: it.budget,
+                budget = editingBuild?.totalPrice?.toFloat() ?: it.budget,
                 buildName = editingBuild?.name ?: it.buildName,
             )
         }
@@ -85,22 +85,29 @@ class BuildGenerationViewModel @Inject constructor(
             loadCategories()
         }
         if (editingBuild != null) {
-            resolveSlots(editingBuild.specs)
-
+            resolveSlots(editingBuild.specs, editingBuild.issues, editingBuild.alternatives)
         }
     }
 
-    private fun resolveSlots(components: List<PickerComponentUiModel>) {
+    private fun resolveSlots(
+        components: List<ComponentUiModel>,
+        issues: List<BuildIssueUiModel> = emptyList(),
+        alternatives: Map<String, List<AlternativeOptionUiModel>> = emptyMap(),
+    ) {
         updateState { state ->
             val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
+                val matchingComponent = components.find {
+                    it.category == categoryType
+                }
+                val matchingIssue = issues.find {
+                    it.category.equals(categoryType.name, ignoreCase = true)
+                }
+                val matchingAlternatives = alternatives[categoryType.name.uppercase()].orEmpty()
                 ComponentSlotUiModel(
                     category = categoryType,
-                    component = components.find {
-                        it.category.equals(
-                            categoryType.name,
-                            ignoreCase = true
-                        )
-                    }
+                    component = matchingComponent,
+                    warningMessage = matchingIssue?.reason?.let { UiText.DynamicString(it) },
+                    alternatives = matchingAlternatives,
                 )
             }
             state.copy(slots = updatedSlots)
@@ -163,7 +170,7 @@ class BuildGenerationViewModel @Inject constructor(
                     updateState {
                         it.copy(
                             isPickerLoading = false,
-                            pickerComponents = components.map(Component::toPickerUiModel)
+                            pickerComponents = components.toUiModels()
                         )
                     }
                 }
@@ -174,9 +181,11 @@ class BuildGenerationViewModel @Inject constructor(
         }
     }
 
-    private fun pickComponent(component: PickerComponentUiModel) {
+    private fun pickComponent(component: ComponentUiModel) {
         val category = state.value.pickerCategory ?: return
-        val existingIds = state.value.slots.mapNotNull { it.component?.id }
+        val existingIds = state.value.slots
+            .filter { it.category != category }
+            .mapNotNull { it.component?.id }
 
         val request = CompatibilityCheckRequest(
             target = CompatibilityCheckTarget.InProgressSelection(existingIds),
@@ -202,7 +211,7 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun applyComponentToSlot(
         category: ComponentCategoryType,
-        component: PickerComponentUiModel,
+        component: ComponentUiModel,
         warning: UiText?
     ) {
         updateState { current ->
@@ -210,7 +219,8 @@ class BuildGenerationViewModel @Inject constructor(
                 slots = current.slots.map { slot ->
                     if (slot.category == category) slot.copy(
                         component = component,
-                        warningMessage = warning
+                        warningMessage = warning,
+                        alternatives = emptyList()
                     ) else slot
                 },
             )
@@ -223,7 +233,8 @@ class BuildGenerationViewModel @Inject constructor(
                 slots = current.slots.map { slot ->
                     if (slot.category == category) slot.copy(
                         component = null,
-                        warningMessage = null
+                        warningMessage = null,
+                        alternatives = emptyList()
                     ) else slot
                 },
                 generatedBuild = null,
@@ -237,7 +248,7 @@ class BuildGenerationViewModel @Inject constructor(
 
         val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
-            purpose = getPurposesForCategoryTypes(current.selectedCategoryTypes),
+            purpose = current.selectedCategoryTypes.toList(),
             brandPreference = current.selectedBrands.toList(),
             isEditingExistingBuild = current.isEditingExistingBuild,
             existingComponentIds = existingIds,
@@ -297,7 +308,7 @@ class BuildGenerationViewModel @Inject constructor(
                             ignoreCase = true
                         )
                     }
-                    if (match != null) slot.copy(component = match.toPickerUiModel()) else slot
+                    if (match != null) slot.copy(component = match.toUiModel()) else slot
                 },
             )
         }
@@ -379,34 +390,5 @@ class BuildGenerationViewModel @Inject constructor(
                     sendEffect(Effect.ShowMessage(throwable.toUiText()))
                 }
         }
-    }
-
-    private fun getPurposesForCategoryTypes(types: Set<BuildCategoryType>): List<BuildPurpose> {
-        return types.flatMap { type ->
-            when (type) {
-                BuildCategoryType.GAMING -> listOf(BuildPurpose.GAMING)
-                BuildCategoryType.PROGRAMMING -> listOf(
-                    BuildPurpose.WORKSTATION,
-                    BuildPurpose.AI_ML
-                )
-
-                BuildCategoryType.CONTENT_CREATION -> listOf(
-                    BuildPurpose.VIDEO_EDIT,
-                    BuildPurpose.STREAMING
-                )
-
-                BuildCategoryType.OFFICE -> listOf(BuildPurpose.BUDGET)
-                BuildCategoryType.AI_WORKSTATION -> listOf(
-                    BuildPurpose.AI_ML,
-                    BuildPurpose.WORKSTATION
-                )
-
-                BuildCategoryType.DREAM_BUILDS -> listOf(
-                    BuildPurpose.GAMING,
-                    BuildPurpose.STREAMING,
-                    BuildPurpose.WORKSTATION
-                )
-            }
-        }.distinct()
     }
 }

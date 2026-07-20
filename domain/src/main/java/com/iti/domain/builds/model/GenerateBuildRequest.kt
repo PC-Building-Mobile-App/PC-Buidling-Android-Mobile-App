@@ -2,7 +2,7 @@ package com.iti.domain.builds.model
 
 data class GenerateBuildRequest(
     val budget: Double,
-    val purpose: List<BuildPurpose> = emptyList(),
+    val purpose: List<BuildCategoryType> = emptyList(),
     val brandPreference: List<String> = emptyList(),
     val mode: BuildGenerationMode = BuildGenerationMode.NEW,
     val existingComponentIds: List<Long> = emptyList(),
@@ -16,7 +16,7 @@ data class GenerateBuildRequest(
     companion object {
         fun create(
             budget: Double,
-            purpose: List<BuildPurpose> = emptyList(),
+            purpose: List<BuildCategoryType> = emptyList(),
             brandPreference: List<String> = emptyList(),
             isEditingExistingBuild: Boolean,
             existingComponentIds: List<Long>,
@@ -37,9 +37,6 @@ data class GenerateBuildRequest(
     }
 }
 
-enum class BuildPurpose {
-    GAMING, STREAMING, WORKSTATION, BUDGET, SFF, VIDEO_EDIT, AI_ML, ARCHITECTURE, DESIGN
-}
 
 enum class BuildGenerationMode {
     NEW,

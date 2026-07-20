@@ -2,10 +2,15 @@ package com.iti.data.builds.mapper
 
 import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
-import com.iti.data.components.mapper.toDomain
+import com.iti.data.builds.model.BuildItemDto
+import com.iti.data.builds.model.BuildIssueDto
+import com.iti.data.builds.model.AlternativeDto
 import com.iti.domain.builds.model.Build
 import com.iti.domain.builds.model.BuildCategory
 import com.iti.domain.builds.model.BuildCategoryType
+import com.iti.domain.builds.model.BuildIssue
+import com.iti.domain.builds.model.AlternativeOption
+import com.iti.domain.components.model.Component
 
 fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
     id = id,
@@ -15,16 +20,35 @@ fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
     type = runCatching { BuildCategoryType.valueOf(type) }.getOrDefault(BuildCategoryType.GAMING),
 )
 
-fun BuildDto.toDomain(
-): Build = Build(
+fun BuildItemDto.toDomain(): Component = Component(
     id = id,
-    categoryId = categoryId,
+    vendorName = "",
+    category = category,
+    productName = productName,
+    productImage = "",
+    price = price,
+    inStock = true,
+)
+
+fun BuildIssueDto.toDomain(): BuildIssue = BuildIssue(
+    category = category,
+    reason = reason,
+)
+
+fun AlternativeDto.toDomain(): AlternativeOption = AlternativeOption(
+    id = id,
     name = name,
     price = price,
-    currency = currency,
-    imageUrl = imageUrl,
-    performanceScore = performanceScore,
-    avgFps = avgFps,
-    compatibilityPercent = compatibilityPercent,
-    specs = specs.map { it.toDomain() },
+)
+
+fun BuildDto.toDomain(): Build = Build(
+    id = id.toString(),
+    name = name,
+    totalPrice = totalPrice,
+    compatible = compatible,
+    items = items.map { it.toDomain() },
+    issues = issues?.map { it.toDomain() }.orEmpty(),
+    alternatives = alternatives?.mapValues { (_, list) -> list.map { it.toDomain() } }.orEmpty(),
+    createdAt = createdAt,
+    updatedAt = updatedAt,
 )
