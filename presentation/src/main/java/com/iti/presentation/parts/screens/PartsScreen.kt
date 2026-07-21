@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.iti.presentation.parts.PartsContract
 import com.iti.presentation.parts.PartsContract.Event
 import com.iti.presentation.parts.components.AdvancedSearchSheet
@@ -26,6 +27,7 @@ fun PartsScreen(
     onNavigateToDetail: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val pagingItems = state.products.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -60,8 +62,7 @@ fun PartsScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         ProductGrid(
-            products = state.products,
-            isLoading = state.isLoading,
+            products = pagingItems,
             onProductClick = { viewModel.onEvent(Event.ProductClicked(it)) },
             modifier = Modifier.padding(padding)
         )
@@ -70,9 +71,8 @@ fun PartsScreen(
             AdvancedSearchSheet(
                 initialMinPrice = state.minPrice,
                 initialMaxPrice = state.maxPrice,
-                initialInStockOnly = state.inStockOnly,
-                onApply = { min, max, stock ->
-                    viewModel.onEvent(Event.UpdateAdvancedFilters(min, max, stock))
+                onApply = { min, max ->
+                    viewModel.onEvent(Event.UpdateAdvancedFilters(min, max))
                 },
                 onReset = { viewModel.onEvent(Event.ResetFilters) },
                 onDismiss = { viewModel.onEvent(Event.ToggleFilterSheet) }

@@ -1,9 +1,12 @@
 package com.iti.presentation.parts
 
+import androidx.paging.PagingData
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.core.componentcategories.model.ComponentCategoryUiModel
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.UiText
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 interface PartsContract {
 
@@ -14,8 +17,7 @@ interface PartsContract {
         data object ToggleFilterSheet : Event
         data class UpdateAdvancedFilters(
             val minPrice: Double?,
-            val maxPrice: Double?,
-            val inStockOnly: Boolean
+            val maxPrice: Double?
         ) : Event
         data object ResetFilters : Event
         data class ProductClicked(val productId: String) : Event
@@ -25,12 +27,11 @@ interface PartsContract {
         val query: String = "",
         val categories: List<ComponentCategoryUiModel> = emptyList(),
         val selectedCategory: ComponentCategoryType? = null,
-        val products: List<ComponentUiModel> = emptyList(),
+        val products: Flow<PagingData<ComponentUiModel>> = flowOf(PagingData.empty()),
         val isLoading: Boolean = false,
         val errorMessage: UiText? = null,
         val minPrice: Double? = null,
         val maxPrice: Double? = null,
-        val inStockOnly: Boolean = false,
         val isFilterSheetOpen: Boolean = false
     )
 
