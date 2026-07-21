@@ -1,8 +1,10 @@
 package com.iti.presentation.parts.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,10 +20,12 @@ fun CategoryChipsRow(
     categories: List<ComponentCategoryUiModel>,
     selectedCategory: ComponentCategoryType?,
     onCategorySelected: (ComponentCategoryType?) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState()
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
+        state = lazyListState,
         contentPadding = PaddingValues(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -40,7 +44,7 @@ fun CategoryChipsRow(
 
         items(categories) { item ->
             val categoryType = try { ComponentCategoryType.valueOf(item.id) } catch (_: Exception) { null }
-            if (categoryType != null && categoryType != ComponentCategoryType.PSU) {
+            if (categoryType != null) {
                 val isSelected = categoryType == selectedCategory
                 FilterChip(
                     selected = isSelected,
