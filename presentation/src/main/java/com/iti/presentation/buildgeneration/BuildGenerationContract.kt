@@ -4,9 +4,9 @@ import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.buildgeneration.model.ComponentSlotUiModel
 import com.iti.presentation.buildgeneration.model.GeneratedBuildUiModel
-import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.core.UiText
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 
 object BuildGenerationContract {
@@ -27,7 +27,7 @@ object BuildGenerationContract {
         val generatedBuild: GeneratedBuildUiModel? = null,
         val isPickerVisible: Boolean = false,
         val pickerCategory: ComponentCategoryType? = null,
-        val pickerComponents: List<PickerComponentUiModel> = emptyList(),
+        val pickerComponents: List<ComponentUiModel> = emptyList(),
         val isPickerLoading: Boolean = false,
         val isSaveDialogVisible: Boolean = false,
         val buildName: String = "",
@@ -48,7 +48,7 @@ object BuildGenerationContract {
         data class BrandToggled(val brand: String?) : Event
         data class SlotClicked(val category: ComponentCategoryType) : Event
         data object PickerDismissed : Event
-        data class ComponentPicked(val component: PickerComponentUiModel) : Event
+        data class ComponentPicked(val component: ComponentUiModel) : Event
         data class SlotCleared(val category: ComponentCategoryType) : Event
         data object GenerateClicked : Event
         data object SaveClicked : Event

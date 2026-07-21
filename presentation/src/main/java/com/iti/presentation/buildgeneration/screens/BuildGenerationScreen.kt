@@ -206,6 +206,7 @@ private fun BuildGenerationScreenContent(
                             onClick = { onEvent(Event.SlotClicked(slot.category)) },
                             onRemoveClick = { onEvent(Event.SlotCleared(slot.category)) },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                            alternatives = slot.alternatives,
                         )
                     }
                 }
@@ -225,7 +226,14 @@ private fun BuildGenerationScreenContent(
 
         if (state.allSlotsFilled) {
             val components = state.slots.mapNotNull { it.component }
-            val totalPriceFormatted = NumberFormat.getNumberInstance(Locale.US).format(components.sumOf { it.price }.toLong())
+            val totalPrice = components.sumOf { comp ->
+                comp.formattedPrice
+                    .replace("EGP", "")
+                    .replace(",", "")
+                    .trim()
+                    .toDoubleOrNull() ?: 0.0
+            }
+            val totalPriceFormatted = NumberFormat.getNumberInstance(Locale.US).format(totalPrice.toLong())
 
             item {
                 Row(

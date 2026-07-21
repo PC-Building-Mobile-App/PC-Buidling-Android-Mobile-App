@@ -1,16 +1,21 @@
 package com.iti.data.builds.datasource
 
+import com.iti.data.builds.model.AlternativeDto
 import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
+import com.iti.data.builds.model.BuildIssueDto
+import com.iti.data.builds.model.BuildItemDto
 import com.iti.data.builds.model.CompatibilityCheckRequestDto
 import com.iti.data.builds.model.CompatibilityIssueDto
 import com.iti.data.builds.model.CompatibilityReportDto
 import com.iti.data.builds.model.GenerateBuildRequestDto
 import com.iti.data.builds.model.GeneratedBuildDto
 import com.iti.data.builds.model.SaveBuildRequestDto
+import com.iti.data.components.datasource.ComponentDataSource
 import com.iti.data.components.model.ComponentDataModel
 import com.iti.data.util.safeCall
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.atomic.AtomicLong
@@ -19,16 +24,26 @@ import javax.inject.Singleton
 import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton
-class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSource {
+class MockBuildsRemoteDataSourceImpl @Inject constructor(
+    private val componentDataSource: ComponentDataSource,
+) : BuildsRemoteDataSource {
 
     private val mutex = Mutex()
     private val buildIdCounter = AtomicLong(1000L)
     private val savedBuilds: MutableMap<String, MutableList<BuildDto>> =
         seedBuilds.mapValues { (_, builds) -> builds.toMutableList() }.toMutableMap()
 
+    private suspend fun catalog(): List<ComponentDataModel> =
+        componentDataSource.getComponents().first()
+            .filter { it.category.uppercase() in supportedCategoryNames }
+
     override suspend fun getBuildCategories(): Result<List<BuildCategoryDto>> = safeCall {
         delay(2000.milliseconds)
-        mockBuildCategories
+        mutex.withLock {
+            mockBuildCategories.map { category ->
+                category.copy(buildsCount = savedBuilds[category.id]?.size ?: 0)
+            }
+        }
     }
 
     override suspend fun getBuildsByCategory(categoryId: String): Result<List<BuildDto>> = safeCall {
@@ -38,13 +53,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
 
     override suspend fun generateBuild(request: GenerateBuildRequestDto): Result<GeneratedBuildDto> = safeCall {
         delay(2500.milliseconds)
-        val existing = mockComponentCatalog.filter { it.id in request.existingComponentIds }
+        val fullCatalog = catalog()
+        val existing = fullCatalog.filter { it.id in request.existingComponentIds }
         val coveredCategories = existing.map { it.category }.toSet()
 
         val components = if (request.mode == "NEW") {
-            mockComponentCatalog.distinctByCategory()
+            fullCatalog.distinctByCategory()
         } else {
-            existing + mockComponentCatalog
+            existing + fullCatalog
                 .filter { it.category !in coveredCategories }
                 .distinctByCategory()
         }
@@ -58,10 +74,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
 
     override suspend fun checkCompatibility(request: CompatibilityCheckRequestDto): Result<CompatibilityReportDto> = safeCall {
         delay(800.milliseconds)
-        val candidate = mockComponentCatalog.firstOrNull { it.id == request.candidateComponentId }
+        val fullCatalog = catalog()
+        val candidate = fullCatalog.firstOrNull { it.id == request.candidateComponentId }
         val existingIds = request.existingComponentIds.orEmpty()
-        val hasSameCategorySelected = mockComponentCatalog.any {
-            it.id in existingIds && it.category.equals(candidate?.category, ignoreCase = true)
+
+        val hasSameCategorySelected = existingIds.any { existingId ->
+            val existingCategory = fullCatalog.firstOrNull { it.id == existingId }?.category
+                ?: categoryForSavedItemId(existingId)
+            existingCategory != null && existingCategory.equals(candidate?.category, ignoreCase = true)
         }
 
         val issues = if (candidate != null &&
@@ -83,38 +103,68 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
 
     override suspend fun saveBuild(request: SaveBuildRequestDto): Result<BuildDto> = safeCall {
         delay(1200.milliseconds)
-        val components = mockComponentCatalog.filter { it.id in request.componentIds }
-        val report = CompatibilityReportDto(compatible = true)
+        val fullCatalog = catalog()
+        val now = "2026-07-20T12:17:17.000000"
 
         mutex.withLock {
             val existingEntry = request.buildId?.let { id -> findBuildById(id) }
+            val previousItems = existingEntry?.second?.items.orEmpty()
+
+            val items = request.componentIds.mapNotNull { id ->
+                fullCatalog.firstOrNull { it.id == id }?.toItem()
+                    ?: previousItems.firstOrNull { it.id == id }
+            }
+            val totalPrice = items.sumOf { it.subtotal }
+
+            val isIncompatible = request.name.equals("My Gaming Rig", ignoreCase = true) ||
+                    items.any { it.productName.contains("AMD Ryzen 9") } && items.any { it.productName.contains("ASUS ROG Crosshair") }.not() && request.name.contains("Incompatible")
+
+            val compatible = !isIncompatible
+            val issues = if (isIncompatible) {
+                listOf(
+                    BuildIssueDto(
+                        category = "MOTHERBOARD",
+                        reason = "CPU socket (AM5) does not match motherboard socket (LGA1700)."
+                    )
+                )
+            } else null
+
+            val alternatives = if (isIncompatible) {
+                mapOf(
+                    "MOTHERBOARD" to listOf(
+                        AlternativeDto(id = 33L, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                    ),
+                    "CPU" to listOf(
+                        AlternativeDto(id = 21L, name = "Intel Core i5 12400F...", price = 8000.00)
+                    )
+                )
+            } else null
 
             if (existingEntry != null) {
                 val (oldCategoryId, oldBuild) = existingEntry
                 val updated = oldBuild.copy(
-                    categoryId = request.categoryId,
                     name = request.name,
-                    price = components.sumOf { it.price },
-                    imageUrl = components.firstOrNull()?.productImage.orEmpty(),
-                    performanceScore = performanceScore(components),
-                    avgFps = avgFps(components),
-                    compatibilityPercent = compatibilityPercent(report),
-                    specs = components,
+                    totalPrice = totalPrice,
+                    compatible = compatible,
+                    items = items,
+                    issues = issues,
+                    alternatives = alternatives,
+                    updatedAt = now,
                 )
                 savedBuilds[oldCategoryId]?.removeAll { it.id == updated.id }
                 savedBuilds.getOrPut(request.categoryId) { mutableListOf() }.add(0, updated)
                 updated
             } else {
                 val newBuild = BuildDto(
-                    id = "build_${buildIdCounter.incrementAndGet()}",
-                    categoryId = request.categoryId,
+                    id = buildIdCounter.incrementAndGet().toInt(),
                     name = request.name,
-                    price = components.sumOf { it.price },
-                    imageUrl = components.firstOrNull()?.productImage.orEmpty(),
-                    performanceScore = performanceScore(components),
-                    avgFps = avgFps(components),
-                    compatibilityPercent = compatibilityPercent(report),
-                    specs = components,
+                    totalPrice = totalPrice,
+                    compatible = compatible,
+                    items = items,
+                    issues = issues,
+                    alternatives = alternatives,
+                    createdAt = now,
+                    updatedAt = now,
                 )
                 savedBuilds.getOrPut(request.categoryId) { mutableListOf() }.add(0, newBuild)
                 newBuild
@@ -124,118 +174,135 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor() : BuildsRemoteDataSou
 
     private fun findBuildById(buildId: String): Pair<String, BuildDto>? {
         savedBuilds.forEach { (categoryId, builds) ->
-            val match = builds.firstOrNull { it.id == buildId }
+            val match = builds.firstOrNull { it.id.toString() == buildId }
             if (match != null) return categoryId to match
         }
         return null
     }
 
-    private fun performanceScore(components: List<ComponentDataModel>): Int {
-        val gpuPrice = components.firstOrNull { it.category.equals("GPU", ignoreCase = true) }?.price ?: 0.0
-        val cpuPrice = components.firstOrNull { it.category.equals("CPU", ignoreCase = true) }?.price ?: 0.0
-        val weighted = gpuPrice * 0.6 + cpuPrice * 0.4
-        return (weighted / 500).toInt().coerceIn(0, 100)
+    private fun categoryForSavedItemId(id: Long): String? {
+        savedBuilds.values.forEach { builds ->
+            builds.forEach { build ->
+                build.items.firstOrNull { it.id == id }?.let { return it.category }
+            }
+        }
+        return null
     }
 
-    private fun avgFps(components: List<ComponentDataModel>): Int {
-        val gpuPrice = components.firstOrNull { it.category.equals("GPU", ignoreCase = true) }?.price ?: return 0
-        return (gpuPrice / 250).toInt().coerceIn(0, 300)
-    }
-
-    private fun compatibilityPercent(report: CompatibilityReportDto): Int {
-        if (report.compatible) return 100
-        val penalty = report.issues.size * 15 + report.warnings.size * 5
-        return (100 - penalty).coerceIn(0, 100)
-    }
+    private fun ComponentDataModel.toItem(): BuildItemDto = BuildItemDto(
+        id = id,
+        productName = productName,
+        category = category,
+        price = price,
+        quantity = 1,
+        subtotal = price,
+    )
 
     private fun List<ComponentDataModel>.distinctByCategory(): List<ComponentDataModel> = distinctBy { it.category }
 
     private companion object {
         val singleSlotCategories = setOf("CPU", "MOTHERBOARD", "PSU", "CASE", "COOLER")
-
-        val mockComponentCatalog = listOf(
-            ComponentDataModel(id = 1, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 7 7800X3D", productImage = "https://placehold.co/400x400/png?text=Ryzen+7", price = 24999.0, inStock = true, specs = mapOf("Socket" to "AM5", "TDP" to "120W")),
-            ComponentDataModel(id = 2, vendorName = "TechStore", category = "MOTHERBOARD", productName = "ASUS ROG STRIX B650E-F", productImage = "https://placehold.co/400x400/png?text=Motherboard", price = 12500.0, inStock = true, specs = mapOf("Socket" to "AM5", "FormFactor" to "ATX", "RamType" to "DDR5")),
-            ComponentDataModel(id = 3, vendorName = "TechStore", category = "GPU", productName = "RTX 4070 SUPER 12GB", productImage = "https://placehold.co/400x400/png?text=GPU", price = 38499.0, inStock = true, specs = mapOf("VRAM" to "12GB", "LengthMm" to "285")),
-            ComponentDataModel(id = 4, vendorName = "TechStore", category = "MEMORY", productName = "32GB DDR5 6000 CL30", productImage = "https://placehold.co/400x400/png?text=RAM", price = 6199.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
-            ComponentDataModel(id = 5, vendorName = "TechStore", category = "STORAGE", productName = "Samsung 990 PRO 2TB", productImage = "https://placehold.co/400x400/png?text=SSD", price = 5499.0, inStock = true, specs = mapOf("Type" to "NVMe", "Capacity" to "2TB")),
-            ComponentDataModel(id = 6, vendorName = "TechStore", category = "PSU", productName = "Corsair RM850x", productImage = "https://placehold.co/400x400/png?text=PSU", price = 4299.0, inStock = true, specs = mapOf("Wattage" to "850")),
-            ComponentDataModel(id = 7, vendorName = "TechStore", category = "CASE", productName = "Lian Li O11 Dynamic", productImage = "https://placehold.co/400x400/png?text=Case", price = 3499.0, inStock = true, specs = mapOf("MaxGpuLengthMm" to "420", "MaxCoolerHeightMm" to "167")),
-            ComponentDataModel(id = 8, vendorName = "TechStore", category = "COOLER", productName = "Noctua NH-D15", productImage = "https://placehold.co/400x400/png?text=Cooler", price = 4200.0, inStock = true, specs = mapOf("HeightMm" to "165")),
-        )
-
-        val mockBuildCategories = listOf(
-            BuildCategoryDto("gaming", "Gaming", "High FPS, max settings", 3, "GAMING"),
-            BuildCategoryDto("programming", "Programming", "Fast compile, multitasking", 3, "PROGRAMMING"),
-            BuildCategoryDto("content_creation", "Content Creation", "4K editing, rendering", 3, "CONTENT_CREATION"),
-            BuildCategoryDto("office", "Office", "Productivity & speed", 3, "OFFICE"),
-            BuildCategoryDto("ai_workstation", "AI & Workstation", "ML training, inference", 3, "AI_WORKSTATION"),
-            BuildCategoryDto("dream_builds", "Dream Builds", "No budget limits", 3, "DREAM_BUILDS"),
-        )
+        val supportedCategoryNames = setOf("CPU", "MOTHERBOARD", "GPU", "PSU", "CASE", "COOLER", "MEMORY")
 
         val seedBuilds: Map<String, List<BuildDto>> = mapOf(
             "gaming" to listOf(
                 BuildDto(
-                    id = "gaming_1",
-                    categoryId = "gaming",
+                    id = 12,
+                    name = "My Gaming Rig",
+                    totalPrice = 45230.00,
+                    compatible = false,
+                    items = listOf(
+                        // FIXED: Appended 'L' to IDs to properly match Kotlin's Long type
+                        BuildItemDto(101L, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
+                        BuildItemDto(202L, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
+                        BuildItemDto(307L, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
+                        BuildItemDto(306L, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
+                        BuildItemDto(304L, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0)
+                    ),
+                    issues = listOf(
+                        BuildIssueDto(
+                            category = "MOTHERBOARD",
+                            reason = "CPU socket (AM5) does not match motherboard socket (LGA1700)."
+                        )
+                    ),
+                    alternatives = mapOf(
+                        "MOTHERBOARD" to listOf(
+                            AlternativeDto(id = 33L, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                        ),
+                        "CPU" to listOf(
+                            AlternativeDto(id = 21L, name = "Intel Core i5 12400F...", price = 8000.00)
+                        )
+                    ),
+                    createdAt = "2026-07-20T12:17:17.000000",
+                    updatedAt = "2026-07-20T12:17:17.000000"
+                ),
+                BuildDto(
+                    id = 1,
                     name = "Ultimate 4K Gaming Rig",
-                    price = 128500.0,
-                    imageUrl = "https://picsum.photos/seed/gaming1/400/300",
-                    performanceScore = 99,
-                    avgFps = 165,
-                    compatibilityPercent = 100,
-                    specs = listOf(
-                        ComponentDataModel(id = 101, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 9 7950X", productImage = "https://picsum.photos/seed/cpu1/100/100", price = 35000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
-                        ComponentDataModel(id = 102, vendorName = "TechStore", category = "MOTHERBOARD", productName = "ASUS ROG Crosshair X670E", productImage = "https://placehold.co/400x400/png?text=X670E", price = 18000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
-                        ComponentDataModel(id = 103, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4090", productImage = "https://picsum.photos/seed/gpu1/100/100", price = 45000.0, inStock = true, specs = mapOf("VRAM" to "24GB")),
-                        ComponentDataModel(id = 104, vendorName = "TechStore", category = "MEMORY", productName = "64 GB DDR5", productImage = "https://picsum.photos/seed/ram1/100/100", price = 6500.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(id = 105, vendorName = "TechStore", category = "STORAGE", productName = "2 TB NVMe", productImage = "https://picsum.photos/seed/storage1/100/100", price = 3000.0, inStock = true, specs = mapOf("Type" to "NVMe")),
-                        ComponentDataModel(id = 106, vendorName = "TechStore", category = "PSU", productName = "Corsair AX1600i Titanium", productImage = "https://placehold.co/400x400/png?text=1600W", price = 9000.0, inStock = true, specs = mapOf("Wattage" to "1600")),
-                        ComponentDataModel(id = 107, vendorName = "TechStore", category = "CASE", productName = "Lian Li O11 Vision", productImage = "https://placehold.co/400x400/png?text=Vision", price = 4500.0, inStock = true, specs = mapOf("FormFactor" to "ATX")),
-                        ComponentDataModel(id = 108, vendorName = "TechStore", category = "COOLER", productName = "ASUS ROG RYUJIN III AIO", productImage = "https://placehold.co/400x400/png?text=AIO", price = 7500.0, inStock = true, specs = mapOf("Type" to "Liquid"))
+                    totalPrice = 125500.0,
+                    compatible = true,
+                    items = listOf(
+                        BuildItemDto(101L, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
+                        BuildItemDto(102L, "ASUS ROG Crosshair X670E", "MOTHERBOARD", 18000.0, 1, 18000.0),
+                        BuildItemDto(103L, "NVIDIA RTX 4090", "GPU", 45000.0, 1, 45000.0),
+                        BuildItemDto(104L, "64 GB DDR5", "MEMORY", 6500.0, 1, 6500.0),
+                        BuildItemDto(106L, "Corsair AX1600i Titanium", "PSU", 9000.0, 1, 9000.0),
+                        BuildItemDto(107L, "Lian Li O11 Vision", "CASE", 4500.0, 1, 4500.0),
+                        BuildItemDto(108L, "ASUS ROG RYUJIN III AIO", "COOLER", 7500.0, 1, 7500.0),
                     ),
+                    issues = null,
+                    alternatives = null,
+                    createdAt = "2026-07-20T12:17:17.000000",
+                    updatedAt = "2026-07-20T12:17:17.000000",
                 ),
                 BuildDto(
-                    id = "gaming_2",
-                    categoryId = "gaming",
+                    id = 2,
                     name = "Mid-Range 1440p Master",
-                    price = 56500.0,
-                    imageUrl = "https://picsum.photos/seed/gaming2/400/300",
-                    performanceScore = 85,
-                    avgFps = 144,
-                    compatibilityPercent = 100,
-                    specs = listOf(
-                        ComponentDataModel(id = 201, vendorName = "TechStore", category = "CPU", productName = "Intel Core i5-13600K", productImage = "https://placehold.co/400x400/png?text=i5", price = 14000.0, inStock = true, specs = mapOf("Socket" to "LGA1700")),
-                        ComponentDataModel(id = 202, vendorName = "TechStore", category = "MOTHERBOARD", productName = "MSI MAG B760 TOMAHAWK", productImage = "https://placehold.co/400x400/png?text=B760", price = 6500.0, inStock = true, specs = mapOf("Socket" to "LGA1700")),
-                        ComponentDataModel(id = 203, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4070", productImage = "https://placehold.co/400x400/png?text=RTX4070", price = 22000.0, inStock = true, specs = mapOf("VRAM" to "12GB")),
-                        ComponentDataModel(id = 204, vendorName = "TechStore", category = "MEMORY", productName = "32 GB DDR5", productImage = "https://placehold.co/400x400/png?text=RAM", price = 4200.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(id = 205, vendorName = "TechStore", category = "STORAGE", productName = "1 TB NVMe", productImage = "https://placehold.co/400x400/png?text=SSD", price = 1800.0, inStock = true, specs = mapOf("Type" to "NVMe")),
-                        ComponentDataModel(id = 206, vendorName = "TechStore", category = "PSU", productName = "Corsair RM750e Gold", productImage = "https://placehold.co/400x400/png?text=750W", price = 3500.0, inStock = true, specs = mapOf("Wattage" to "750")),
-                        ComponentDataModel(id = 207, vendorName = "TechStore", category = "CASE", productName = "NZXT H5 Flow", productImage = "https://placehold.co/400x400/png?text=H5", price = 2500.0, inStock = true, specs = mapOf("FormFactor" to "ATX")),
-                        ComponentDataModel(id = 208, vendorName = "TechStore", category = "COOLER", productName = "DeepCool AK620 Air", productImage = "https://placehold.co/400x400/png?text=AK620", price = 2000.0, inStock = true, specs = mapOf("Type" to "Air"))
+                    totalPrice = 54700.0,
+                    compatible = true,
+                    items = listOf(
+                        BuildItemDto(201L, "Intel Core i5-13600K", "CPU", 14000.0, 1, 14000.0),
+                        BuildItemDto(202L, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
+                        BuildItemDto(203L, "NVIDIA RTX 4070", "GPU", 22000.0, 1, 22000.0),
+                        BuildItemDto(204L, "32 GB DDR5", "MEMORY", 4200.0, 1, 4200.0),
+                        BuildItemDto(206L, "Corsair RM750e Gold", "PSU", 3500.0, 1, 3500.0),
+                        BuildItemDto(207L, "NZXT H5 Flow", "CASE", 2500.0, 1, 2500.0),
+                        BuildItemDto(208L, "DeepCool AK620 Air", "COOLER", 2000.0, 1, 2000.0),
                     ),
+                    issues = null,
+                    alternatives = null,
+                    createdAt = "2026-07-20T12:17:17.000000",
+                    updatedAt = "2026-07-20T12:17:17.000000",
                 ),
                 BuildDto(
-                    id = "gaming_3",
-                    categoryId = "gaming",
+                    id = 3,
                     name = "Budget 1080p Blaster",
-                    price = 28700.0,
-                    imageUrl = "https://picsum.photos/seed/gaming3/400/300",
-                    performanceScore = 72,
-                    avgFps = 120,
-                    compatibilityPercent = 100,
-                    specs = listOf(
-                        ComponentDataModel(id = 301, vendorName = "TechStore", category = "CPU", productName = "AMD Ryzen 5 7600", productImage = "https://placehold.co/400x400/png?text=Ryzen5", price = 9000.0, inStock = true, specs = mapOf("Socket" to "AM5")),
-                        ComponentDataModel(id = 302, vendorName = "TechStore", category = "MOTHERBOARD", productName = "Gigabyte B650M DS3H", productImage = "https://placehold.co/400x400/png?text=B650M", price = 4500.0, inStock = true, specs = mapOf("Socket" to "AM5")),
-                        ComponentDataModel(id = 303, vendorName = "TechStore", category = "GPU", productName = "NVIDIA RTX 4060", productImage = "https://placehold.co/400x400/png?text=RTX4060", price = 9500.0, inStock = true, specs = mapOf("VRAM" to "8GB")),
-                        ComponentDataModel(id = 304, vendorName = "TechStore", category = "MEMORY", productName = "16 GB DDR5", productImage = "https://placehold.co/400x400/png?text=RAM", price = 1500.0, inStock = true, specs = mapOf("RamType" to "DDR5")),
-                        ComponentDataModel(id = 305, vendorName = "TechStore", category = "STORAGE", productName = "500 GB NVMe", productImage = "https://placehold.co/400x400/png?text=SSD", price = 1000.0, inStock = true, specs = mapOf("Type" to "NVMe")),
-                        ComponentDataModel(id = 306, vendorName = "TechStore", category = "PSU", productName = "EVGA 600 W1 White", productImage = "https://placehold.co/400x400/png?text=600W", price = 1500.0, inStock = true, specs = mapOf("Wattage" to "600")),
-                        ComponentDataModel(id = 307, vendorName = "TechStore", category = "CASE", productName = "Aerocool Cylon Mini", productImage = "https://placehold.co/400x400/png?text=Cylon", price = 1200.0, inStock = true, specs = mapOf("FormFactor" to "MicroATX")),
-                        ComponentDataModel(id = 308, vendorName = "TechStore", category = "COOLER", productName = "AMD Wraith Stealth", productImage = "https://placehold.co/400x400/png?text=Wraith", price = 500.0, inStock = true, specs = mapOf("Type" to "Air"))
+                    totalPrice = 27700.0,
+                    compatible = true,
+                    items = listOf(
+                        BuildItemDto(301L, "AMD Ryzen 5 7600", "CPU", 9000.0, 1, 9000.0),
+                        BuildItemDto(302L, "Gigabyte B650M DS3H", "MOTHERBOARD", 4500.0, 1, 4500.0),
+                        BuildItemDto(303L, "NVIDIA RTX 4060", "GPU", 9500.0, 1, 9500.0),
+                        BuildItemDto(304L, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0),
+                        BuildItemDto(306L, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
+                        BuildItemDto(307L, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
+                        BuildItemDto(308L, "AMD Wraith Stealth", "COOLER", 500.0, 1, 500.0),
                     ),
+                    issues = null,
+                    alternatives = null,
+                    createdAt = "2026-07-20T12:17:17.000000",
+                    updatedAt = "2026-07-20T12:17:17.000000",
                 ),
             ),
+        )
+
+        val mockBuildCategories = listOf(
+            BuildCategoryDto("gaming", "Gaming", "High FPS, max settings", 0, "GAMING"),
+            BuildCategoryDto("programming", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
+            BuildCategoryDto("content_creation", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
+            BuildCategoryDto("office", "Office", "Productivity & speed", 0, "OFFICE"),
+            BuildCategoryDto("ai_workstation", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
+            BuildCategoryDto("dream_builds", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
         )
     }
 }

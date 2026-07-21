@@ -21,7 +21,7 @@ data class PickerComponentUiModel(
 fun Component.toPickerUiModel(): PickerComponentUiModel = PickerComponentUiModel(
     id = id,
     vendorName = vendorName,
-    category = category, 
+    category = category,
     productName = productName,
     productImage = productImage,
     price = price,
