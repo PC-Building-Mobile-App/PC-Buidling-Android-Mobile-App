@@ -26,5 +26,5 @@ fun BuildDto.toDomain(
     performanceScore = performanceScore,
     avgFps = avgFps,
     compatibilityPercent = compatibilityPercent,
-    specs = specs.map { it.toDomain() },
+    specs = specs.mapNotNull { it.toDomain() },
 )

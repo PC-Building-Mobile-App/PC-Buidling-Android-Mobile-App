@@ -141,7 +141,16 @@ private fun PickerComponentRow(
 private fun PickerComponentRowPreview() {
     AppTheme {
         PickerComponentRow(
-            component = PickerComponentUiModel(5, "GearHub", "GPU", "NVIDIA GeForce RTX 4070 Super", "", 32000.0, "32,000", true),
+            component = PickerComponentUiModel(
+                id = 5L,
+                vendorName = "GearHub",
+                category = ComponentCategoryType.GPU,
+                productName = "NVIDIA GeForce RTX 4070 Super",
+                productImage = "",
+                price = 32000.0,
+                priceFormatted = "32,000 EGP",
+                inStock = true
+            ),
             onClick = {},
         )
     }

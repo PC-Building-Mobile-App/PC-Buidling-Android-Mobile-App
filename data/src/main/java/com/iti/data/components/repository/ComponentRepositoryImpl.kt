@@ -53,7 +53,7 @@ class ComponentRepositoryImpl @Inject constructor(
         return mockDataSource.getComponents().map { dataModels ->
             dataModels
                 .filter { it.category.equals(category.name, ignoreCase = true) }
-                .map { it.toDomain() }
+                .mapNotNull { it.toDomain() }
         }
     }
 }

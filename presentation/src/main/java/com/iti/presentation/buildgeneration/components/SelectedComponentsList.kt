@@ -16,8 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
+import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.ui.theme.AppTheme
 
 @Composable
@@ -65,7 +67,8 @@ private fun SelectedComponentRow(component: PickerComponentUiModel, modifier: Mo
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = component.category,
+                // FIXED: Safely maps the Enum to a localized String!
+                text = stringResource(component.category.labelRes),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -84,8 +87,26 @@ private fun SelectedComponentsListPreview() {
     AppTheme {
         SelectedComponentsList(
             components = listOf(
-                PickerComponentUiModel(1, "TechStore", "CPU", "AMD Ryzen 7 7800X3D", "", 18500.0, "18,500", true),
-                PickerComponentUiModel(5, "GearHub", "GPU", "NVIDIA RTX 4070 Super", "", 32000.0, "32,000", true),
+                PickerComponentUiModel(
+                    id = 1L, // FIXED
+                    vendorName = "TechStore",
+                    category = ComponentCategoryType.CPU, // FIXED
+                    productName = "AMD Ryzen 7 7800X3D",
+                    productImage = "",
+                    price = 18500.0,
+                    priceFormatted = "18,500",
+                    inStock = true
+                ),
+                PickerComponentUiModel(
+                    id = 5L, // FIXED
+                    vendorName = "GearHub",
+                    category = ComponentCategoryType.GPU, // FIXED
+                    productName = "NVIDIA RTX 4070 Super",
+                    productImage = "",
+                    price = 32000.0,
+                    priceFormatted = "32,000",
+                    inStock = true
+                ),
             ),
             totalPriceFormatted = "50,500",
         )

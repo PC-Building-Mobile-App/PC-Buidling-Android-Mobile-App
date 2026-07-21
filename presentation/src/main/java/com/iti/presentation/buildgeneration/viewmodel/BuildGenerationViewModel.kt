@@ -86,7 +86,6 @@ class BuildGenerationViewModel @Inject constructor(
         }
         if (editingBuild != null) {
             resolveSlots(editingBuild.specs)
-
         }
     }
 
@@ -95,12 +94,8 @@ class BuildGenerationViewModel @Inject constructor(
             val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
                 ComponentSlotUiModel(
                     category = categoryType,
-                    component = components.find {
-                        it.category.equals(
-                            categoryType.name,
-                            ignoreCase = true
-                        )
-                    }
+                    // FIXED: Simple direct Enum comparison instead of messy String.equals()
+                    component = components.find { it.category == categoryType }
                 )
             }
             state.copy(slots = updatedSlots)
@@ -291,12 +286,10 @@ class BuildGenerationViewModel @Inject constructor(
             current.copy(
                 slots = current.slots.map { slot ->
                     if (slot.component != null) return@map slot
-                    val match = components.firstOrNull {
-                        it.category.equals(
-                            slot.category.name,
-                            ignoreCase = true
-                        )
-                    }
+
+                    // FIXED: Clean Enum matching!
+                    val match = components.firstOrNull { it.category == slot.category }
+
                     if (match != null) slot.copy(component = match.toPickerUiModel()) else slot
                 },
             )
