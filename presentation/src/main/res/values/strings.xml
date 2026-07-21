@@ -14,7 +14,7 @@
     <string name="filter_case">Case</string>
     <string name="filter_cooler">Cooler</string>
     <string name="filter_memory">Memory</string>
-    <string name="advanced_search">Advanced Search</string>
+    <string name="price_filter">Price Filter</string>
     <string name="min_price">Min Price (EGP)</string>
     <string name="max_price">Max Price (EGP)</string>
     <string name="in_stock_only">In Stock Only</string>

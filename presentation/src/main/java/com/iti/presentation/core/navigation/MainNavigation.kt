@@ -77,11 +77,17 @@ fun MainNavigation(
                     entry<HomeRoute> {
                         HomeScreen(
                             onNavigateToPartsWithQuery = { query ->
-                                // TODO: Pass query to Parts screen when inter-tab communication is implemented
-                                // For now, switches to the Parts tab
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                partsStack.clear()
+                                partsStack.add(PartsRoute(initialQuery = query))
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToParts = {
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                if (partsStack.firstOrNull() != PartsRoute()) {
+                                    partsStack.clear()
+                                    partsStack.add(PartsRoute())
+                                }
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToGenerateBuild = {
@@ -96,7 +102,9 @@ fun MainNavigation(
                                 )
                             },
                             onNavigateToPartsWithCategory = { categoryId ->
-                                // TODO: Pass category filter to Parts screen when inter-tab communication is implemented
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                partsStack.clear()
+                                partsStack.add(PartsRoute(initialCategoryId = categoryId))
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToHardwareNews = {
@@ -132,8 +140,10 @@ fun MainNavigation(
                         )
                     }
 
-                    entry<PartsRoute> {
+                    entry<PartsRoute> { route ->
                         PartsScreen(
+                            initialQuery = route.initialQuery,
+                            initialCategoryId = route.initialCategoryId,
                             onNavigateToDetail = { partId ->
                                 activeBackStack.navigateSingleTop(
                                     PartsDetailRoute(partId = partId),

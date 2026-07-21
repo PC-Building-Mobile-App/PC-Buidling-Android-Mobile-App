@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.javax.inject)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.paging.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

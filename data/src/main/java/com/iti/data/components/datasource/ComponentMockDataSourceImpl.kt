@@ -200,9 +200,11 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             val matchPrice = (minPrice == null || component.price >= minPrice) &&
                     (maxPrice == null || component.price <= maxPrice)
 
-            val matchStock = !params.inStockOnly || component.inStock
+            //val matchStock = !params.inStockOnly || component.inStock
 
-            matchQuery && matchCategory && matchPrice && matchStock
+          //  matchQuery && matchCategory && matchPrice && matchStock
+              matchQuery && matchCategory && matchPrice  
+
         }
     }
 }

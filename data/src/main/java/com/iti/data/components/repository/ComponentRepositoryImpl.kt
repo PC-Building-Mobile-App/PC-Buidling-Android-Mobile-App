@@ -1,20 +1,21 @@
 package com.iti.data.components.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.iti.data.components.datasource.ComponentDataSource
 import com.iti.data.components.datasource.ComponentRemoteDataSource
 import com.iti.data.components.mapper.toDomain
-import com.iti.data.util.safeCall
+import com.iti.data.components.remote.ProductPagingSource
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.repository.ComponentRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.Result
-import kotlin.time.Duration.Companion.milliseconds
 
 class ComponentRepositoryImpl @Inject constructor(
     private val mockDataSource: ComponentDataSource,
@@ -27,6 +28,7 @@ class ComponentRepositoryImpl @Inject constructor(
         val dataModels = result.getOrThrow()
         emit(dataModels.toDomain())
     }
+
     override fun getComponents(): Flow<List<Component>> {
         return mockDataSource.getComponents().map { dataModels ->
             dataModels.toDomain()
@@ -39,14 +41,18 @@ class ComponentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchComponents(params: SearchParams): Result<List<Component>> = safeCall {
-        // todo(Switch to real RemoteDataSource once backend is done)
-        delay(600.milliseconds)
-
-        val filteredData = mockDataSource.searchComponents(params)
-
-        filteredData.toDomain()
-
+    override fun searchComponents(params: SearchParams): Flow<PagingData<Component>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ProductPagingSource(remoteDataSource, params)
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toDomain()!! }
+        }
     }
 
     override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> {

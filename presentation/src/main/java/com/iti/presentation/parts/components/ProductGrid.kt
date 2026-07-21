@@ -14,6 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import com.iti.presentation.R
 import com.iti.presentation.core.pccomponents.ProductCard
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
@@ -21,12 +24,15 @@ import com.iti.presentation.core.pccomponents.ProductCardSkeleton
 
 @Composable
 fun ProductGrid(
-    products: List<ComponentUiModel>,
-    isLoading: Boolean,
+    products: LazyPagingItems<ComponentUiModel>,
     onProductClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (isLoading) {
+    val isLoadingInitial = products.loadState.refresh is LoadState.Loading
+    val isErrorInitial = products.loadState.refresh is LoadState.Error
+    val isEmpty = products.itemCount == 0 && products.loadState.append.endOfPaginationReached
+
+    if (isLoadingInitial) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = modifier.fillMaxSize(),
@@ -39,7 +45,15 @@ fun ProductGrid(
                 ProductCardSkeleton()
             }
         }
-    } else if (products.isEmpty()) {
+    } else if (isErrorInitial) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                text = "Something went wrong. Please try again.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+    } else if (isEmpty) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
                 text = stringResource(R.string.no_products_found),
@@ -55,11 +69,22 @@ fun ProductGrid(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(products, key = { it.id }) { component ->
-                ProductCard(
-                    component = component,
-                    onClick = { onProductClick(component.id.toString()) }
-                )
+            items(
+                count = products.itemCount,
+                key = products.itemKey { it.id }
+            ) { index ->
+                products[index]?.let { component ->
+                    ProductCard(
+                        component = component,
+                        onClick = { onProductClick(component.id.toString()) }
+                    )
+                }
+            }
+
+            if (products.loadState.append is LoadState.Loading) {
+                items(2) {
+                    ProductCardSkeleton()
+                }
             }
         }
     }
