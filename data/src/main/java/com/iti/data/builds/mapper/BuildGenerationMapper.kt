@@ -49,7 +49,7 @@ fun SaveBuildRequest.toDto(): SaveBuildRequestDto = SaveBuildRequestDto(
 
 fun GeneratedBuildDto.toDomain(
 ): GeneratedBuild = GeneratedBuild(
-    components = components.map { it.toDomain() },
+    components = components.mapNotNull { it.toDomain() },
     totalPrice = totalPrice,
     compatibilityReport = compatibilityReport.toDomain(),
 )

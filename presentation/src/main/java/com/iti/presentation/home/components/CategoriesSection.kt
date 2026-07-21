@@ -51,7 +51,7 @@ fun CategoriesSection(
             CategoriesSkeleton()
         } else {
             val displayedCategories = if (isExpanded) {
-                categories.take(6)
+                categories.take(7)
             } else {
                 categories.take(4)
             }

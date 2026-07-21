@@ -96,13 +96,13 @@ class BuildGenerationViewModel @Inject constructor(
     ) {
         updateState { state ->
             val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
-                val matchingComponent = components.find {
-                    it.category == categoryType
-                }
+                // Clean Enum comparison from Branch 1
+                val matchingComponent = components.find { it.category == categoryType }
                 val matchingIssue = issues.find {
                     it.category.equals(categoryType.name, ignoreCase = true)
                 }
                 val matchingAlternatives = alternatives[categoryType.name.uppercase()].orEmpty()
+
                 ComponentSlotUiModel(
                     category = categoryType,
                     component = matchingComponent,
@@ -248,6 +248,7 @@ class BuildGenerationViewModel @Inject constructor(
 
         val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
+            // Uses directly from Branch 2
             purpose = current.selectedCategoryTypes.toList(),
             brandPreference = current.selectedBrands.toList(),
             isEditingExistingBuild = current.isEditingExistingBuild,
@@ -302,12 +303,10 @@ class BuildGenerationViewModel @Inject constructor(
             current.copy(
                 slots = current.slots.map { slot ->
                     if (slot.component != null) return@map slot
-                    val match = components.firstOrNull {
-                        it.category.equals(
-                            slot.category.name,
-                            ignoreCase = true
-                        )
-                    }
+
+                    // Clean Enum comparison from Branch 1
+                    val match = components.firstOrNull { it.category == slot.category }
+
                     if (match != null) slot.copy(component = match.toUiModel()) else slot
                 },
             )

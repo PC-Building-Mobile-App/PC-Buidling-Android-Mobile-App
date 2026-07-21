@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
+import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.ui.theme.AppTheme
 
@@ -28,10 +29,17 @@ fun SelectedComponentsList(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.surfaceContainerHigh).padding(vertical = 8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .padding(vertical = 8.dp),
     ) {
         components.forEachIndexed { index, component ->
-            SelectedComponentRow(component = component, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
+            SelectedComponentRow(
+                component = component,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+            )
             if (index != components.lastIndex) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             }
@@ -39,7 +47,12 @@ fun SelectedComponentsList(
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-        Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = stringResource(R.string.total_price_label),
                 style = MaterialTheme.typography.labelMedium,
@@ -66,7 +79,8 @@ private fun SelectedComponentRow(component: ComponentUiModel, modifier: Modifier
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = component.subtitle.substringAfterLast("·").trim(),
+                // FIXED: Safely maps the Enum to a localized String, avoiding brittle substring parsing!
+                text = stringResource(component.category.labelRes),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

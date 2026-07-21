@@ -132,10 +132,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
             val alternatives = if (isIncompatible) {
                 mapOf(
                     "MOTHERBOARD" to listOf(
-                        AlternativeDto(id = 33, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                        AlternativeDto(id = 33L, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
                     ),
                     "CPU" to listOf(
-                        AlternativeDto(id = 21, name = "Intel Core i5 12400F...", price = 8000.00)
+                        AlternativeDto(id = 21L, name = "Intel Core i5 12400F...", price = 8000.00)
                     )
                 )
             } else null
@@ -212,11 +212,12 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     totalPrice = 45230.00,
                     compatible = false,
                     items = listOf(
-                        BuildItemDto(101, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
-                        BuildItemDto(202, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
-                        BuildItemDto(307, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
-                        BuildItemDto(306, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
-                        BuildItemDto(304, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0)
+                        // FIXED: Appended 'L' to IDs to properly match Kotlin's Long type
+                        BuildItemDto(101L, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
+                        BuildItemDto(202L, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
+                        BuildItemDto(307L, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
+                        BuildItemDto(306L, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
+                        BuildItemDto(304L, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0)
                     ),
                     issues = listOf(
                         BuildIssueDto(
@@ -226,10 +227,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     ),
                     alternatives = mapOf(
                         "MOTHERBOARD" to listOf(
-                            AlternativeDto(id = 33, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
+                            AlternativeDto(id = 33L, name = "ASUS TUF GAMING X870-PLUS WIFI...", price = 17500.00)
                         ),
                         "CPU" to listOf(
-                            AlternativeDto(id = 21, name = "Intel Core i5 12400F...", price = 8000.00)
+                            AlternativeDto(id = 21L, name = "Intel Core i5 12400F...", price = 8000.00)
                         )
                     ),
                     createdAt = "2026-07-20T12:17:17.000000",
@@ -241,13 +242,13 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     totalPrice = 125500.0,
                     compatible = true,
                     items = listOf(
-                        BuildItemDto(101, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
-                        BuildItemDto(102, "ASUS ROG Crosshair X670E", "MOTHERBOARD", 18000.0, 1, 18000.0),
-                        BuildItemDto(103, "NVIDIA RTX 4090", "GPU", 45000.0, 1, 45000.0),
-                        BuildItemDto(104, "64 GB DDR5", "MEMORY", 6500.0, 1, 6500.0),
-                        BuildItemDto(106, "Corsair AX1600i Titanium", "PSU", 9000.0, 1, 9000.0),
-                        BuildItemDto(107, "Lian Li O11 Vision", "CASE", 4500.0, 1, 4500.0),
-                        BuildItemDto(108, "ASUS ROG RYUJIN III AIO", "COOLER", 7500.0, 1, 7500.0),
+                        BuildItemDto(101L, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
+                        BuildItemDto(102L, "ASUS ROG Crosshair X670E", "MOTHERBOARD", 18000.0, 1, 18000.0),
+                        BuildItemDto(103L, "NVIDIA RTX 4090", "GPU", 45000.0, 1, 45000.0),
+                        BuildItemDto(104L, "64 GB DDR5", "MEMORY", 6500.0, 1, 6500.0),
+                        BuildItemDto(106L, "Corsair AX1600i Titanium", "PSU", 9000.0, 1, 9000.0),
+                        BuildItemDto(107L, "Lian Li O11 Vision", "CASE", 4500.0, 1, 4500.0),
+                        BuildItemDto(108L, "ASUS ROG RYUJIN III AIO", "COOLER", 7500.0, 1, 7500.0),
                     ),
                     issues = null,
                     alternatives = null,
@@ -260,13 +261,13 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     totalPrice = 54700.0,
                     compatible = true,
                     items = listOf(
-                        BuildItemDto(201, "Intel Core i5-13600K", "CPU", 14000.0, 1, 14000.0),
-                        BuildItemDto(202, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
-                        BuildItemDto(203, "NVIDIA RTX 4070", "GPU", 22000.0, 1, 22000.0),
-                        BuildItemDto(204, "32 GB DDR5", "MEMORY", 4200.0, 1, 4200.0),
-                        BuildItemDto(206, "Corsair RM750e Gold", "PSU", 3500.0, 1, 3500.0),
-                        BuildItemDto(207, "NZXT H5 Flow", "CASE", 2500.0, 1, 2500.0),
-                        BuildItemDto(208, "DeepCool AK620 Air", "COOLER", 2000.0, 1, 2000.0),
+                        BuildItemDto(201L, "Intel Core i5-13600K", "CPU", 14000.0, 1, 14000.0),
+                        BuildItemDto(202L, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
+                        BuildItemDto(203L, "NVIDIA RTX 4070", "GPU", 22000.0, 1, 22000.0),
+                        BuildItemDto(204L, "32 GB DDR5", "MEMORY", 4200.0, 1, 4200.0),
+                        BuildItemDto(206L, "Corsair RM750e Gold", "PSU", 3500.0, 1, 3500.0),
+                        BuildItemDto(207L, "NZXT H5 Flow", "CASE", 2500.0, 1, 2500.0),
+                        BuildItemDto(208L, "DeepCool AK620 Air", "COOLER", 2000.0, 1, 2000.0),
                     ),
                     issues = null,
                     alternatives = null,
@@ -279,13 +280,13 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                     totalPrice = 27700.0,
                     compatible = true,
                     items = listOf(
-                        BuildItemDto(301, "AMD Ryzen 5 7600", "CPU", 9000.0, 1, 9000.0),
-                        BuildItemDto(302, "Gigabyte B650M DS3H", "MOTHERBOARD", 4500.0, 1, 4500.0),
-                        BuildItemDto(303, "NVIDIA RTX 4060", "GPU", 9500.0, 1, 9500.0),
-                        BuildItemDto(304, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0),
-                        BuildItemDto(306, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
-                        BuildItemDto(307, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
-                        BuildItemDto(308, "AMD Wraith Stealth", "COOLER", 500.0, 1, 500.0),
+                        BuildItemDto(301L, "AMD Ryzen 5 7600", "CPU", 9000.0, 1, 9000.0),
+                        BuildItemDto(302L, "Gigabyte B650M DS3H", "MOTHERBOARD", 4500.0, 1, 4500.0),
+                        BuildItemDto(303L, "NVIDIA RTX 4060", "GPU", 9500.0, 1, 9500.0),
+                        BuildItemDto(304L, "16 GB DDR5", "MEMORY", 1500.0, 1, 1500.0),
+                        BuildItemDto(306L, "EVGA 600 W1 White", "PSU", 1500.0, 1, 1500.0),
+                        BuildItemDto(307L, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
+                        BuildItemDto(308L, "AMD Wraith Stealth", "COOLER", 500.0, 1, 500.0),
                     ),
                     issues = null,
                     alternatives = null,

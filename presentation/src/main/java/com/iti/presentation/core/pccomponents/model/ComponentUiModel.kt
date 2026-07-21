@@ -13,5 +13,9 @@ data class ComponentUiModel(
     val imageUrl: String,
     val tags: List<String>,
     val isInStock: Boolean,
-    val category: ComponentCategoryType
+    val sourceUrl: String? = null,
+    val matchedGlobalName: String? = null,
+    val category: ComponentCategoryType = ComponentCategoryType.CPU,
+    val price: Double = 32000.0,
+    val specs: Map<String, String> = emptyMap()
 )

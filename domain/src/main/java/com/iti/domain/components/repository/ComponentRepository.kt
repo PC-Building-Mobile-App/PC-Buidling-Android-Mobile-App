@@ -10,4 +10,5 @@ interface ComponentRepository {
     suspend fun searchComponents(params: SearchParams): Result<List<Component>>
     fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>>
 
+    fun getRandomComponents(category: String, limit: Int): Flow<List<Component>>
 }
