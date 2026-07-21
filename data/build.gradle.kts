@@ -38,6 +38,11 @@ android {
             "CURRENTS_API_BASE_URL",
             "\"${localProperties.getProperty("CURRENTS_API_BASE_URL", "")}\""
         )
+        buildConfigField(
+            "String",
+            "GEMINI_KEY",
+            "\"${localProperties.getProperty("GEMINI_KEY", "")}\""
+        )
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
