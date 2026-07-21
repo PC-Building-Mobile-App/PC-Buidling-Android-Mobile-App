@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
+import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.uicomponents.EmptyScreen
@@ -136,22 +137,3 @@ private fun PickerComponentRow(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PickerComponentRowPreview() {
-    AppTheme {
-        PickerComponentRow(
-            component = PickerComponentUiModel(
-                id = 5L,
-                vendorName = "GearHub",
-                category = ComponentCategoryType.GPU,
-                productName = "NVIDIA GeForce RTX 4070 Super",
-                productImage = "",
-                price = 32000.0,
-                priceFormatted = "32,000 EGP",
-                inStock = true
-            ),
-            onClick = {},
-        )
-    }
-}

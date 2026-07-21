@@ -5,7 +5,6 @@ import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
 import com.iti.data.builds.model.BuildIssueDto
 import com.iti.data.builds.model.BuildItemDto
-import com.iti.data.components.mapper.toDomain
 import com.iti.domain.builds.model.AlternativeOption
 import com.iti.domain.builds.model.Build
 import com.iti.domain.builds.model.BuildCategory
@@ -49,21 +48,9 @@ fun AlternativeDto.toDomain(): AlternativeOption = AlternativeOption(
     price = price,
 )
 
-// Merged both sets of properties (Mock data branch + Remote API branch)
 fun BuildDto.toDomain(): Build = Build(
-    // Common / Old Mock Properties
     id = id.toString(),
-    categoryId = categoryId,
     name = name,
-    price = price,
-    currency = currency,
-    imageUrl = imageUrl,
-    performanceScore = performanceScore,
-    avgFps = avgFps,
-    compatibilityPercent = compatibilityPercent,
-    specs = specs?.mapNotNull { it.toDomain() }.orEmpty(),
-
-    // New API Properties
     totalPrice = totalPrice,
     compatible = compatible,
     items = items?.mapNotNull { it.toDomain() }.orEmpty(),
