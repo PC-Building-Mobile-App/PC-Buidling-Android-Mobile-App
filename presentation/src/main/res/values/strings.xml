@@ -88,6 +88,7 @@
     <string name="price_format">%1$s EGP</string>
     <string name="generate_build_button">Generate Build</string>
     <string name="generate_remaining_button">Generate Remaining</string>
+    <string name="regenerate_build_button">Regenerate</string>
     <string name="generating_build">Generating…</string>
     <string name="picker_title_format">Select %1$s</string>
     <string name="picker_empty_title">No components found</string>

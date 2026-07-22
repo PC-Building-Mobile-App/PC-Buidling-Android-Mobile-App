@@ -19,7 +19,11 @@ object BuildGenerationContract {
         val category: BuildCategoryUiModel? = null,
         val categories: List<BuildCategoryUiModel> = emptyList(),
         val isCategoriesLoading: Boolean = false,
-        val slots: List<ComponentSlotUiModel> = ComponentCategoryType.entries.map { ComponentSlotUiModel(category = it) },
+        val slots: List<ComponentSlotUiModel> = ComponentCategoryType.entries.map {
+            ComponentSlotUiModel(
+                category = it
+            )
+        },
         val budget: Float = DEFAULT_BUDGET,
         val selectedCategoryTypes: Set<BuildCategoryType> = emptySet(),
         val selectedBrands: Set<String> = emptySet(),
@@ -36,13 +40,18 @@ object BuildGenerationContract {
         val isEditingExistingBuild: Boolean = false,
         val isResolvingEditingBuild: Boolean = false,
         val editingBuildId: String? = null,
+        val generatedSlotCategories: Set<ComponentCategoryType> = emptySet(),
     ) {
         val filledSlotsCount: Int get() = slots.count { it.component != null }
         val allSlotsFilled: Boolean get() = slots.isNotEmpty() && slots.all { it.component != null }
+        val showRegenerateFab: Boolean get() = generatedSlotCategories.isNotEmpty() && allSlotsFilled && !isSaving
     }
 
     sealed interface Event {
-        data class Initialize(val category: BuildCategoryUiModel?, val editingBuild: BuildUiModel? = null) : Event
+        data class Initialize(
+            val category: BuildCategoryUiModel?, val editingBuild: BuildUiModel? = null
+        ) : Event
+
         data class BudgetChanged(val budget: Float) : Event
         data class CategoryTypeToggled(val type: BuildCategoryType) : Event
         data class BrandToggled(val brand: String?) : Event
@@ -51,6 +60,7 @@ object BuildGenerationContract {
         data class ComponentPicked(val component: ComponentUiModel) : Event
         data class SlotCleared(val category: ComponentCategoryType) : Event
         data object GenerateClicked : Event
+        data object RegenerateClicked : Event
         data object SaveClicked : Event
         data class BuildNameChanged(val name: String) : Event
         data object ConfirmSaveClicked : Event
