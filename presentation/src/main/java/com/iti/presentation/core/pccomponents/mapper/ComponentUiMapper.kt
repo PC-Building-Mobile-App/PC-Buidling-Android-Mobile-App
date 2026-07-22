@@ -1,20 +1,35 @@
 package com.iti.presentation.core.pccomponents.mapper
 
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import java.text.NumberFormat
 import java.util.Locale
 
-fun Component.toUiModel(): ComponentUiModel = ComponentUiModel(
-    id = id,
-    subtitle = "$vendorName · $category",
-    productName = productName,
-    formattedPrice = formatPriceToEGP(price),
-    imageUrl = productImage,
-    tags = buildTags(this),
-    isInStock = inStock,
-    vendorName = vendorName
-)
+fun Component.toUiModel(): ComponentUiModel {
+    val formattedCategory = category.name.lowercase().replaceFirstChar { it.uppercase() }
+
+
+    val cleanProductImage = productImage.replace("null", "").trim()
+    val cleanImages = images.filter { it.isNotBlank() && it != "null" }
+
+    return ComponentUiModel(
+        id = id,
+        subtitle = "$formattedCategory · $vendorName",
+        productName = productName,
+        formattedPrice = formatPriceToEGP(price),
+        imageUrl = cleanProductImage,
+        tags = buildTags(this),
+        isInStock = inStock,
+        vendorName = vendorName,
+        sourceUrl = sourceUrl,
+        matchedGlobalName = matchedGlobalName,
+        category = category,
+        price = price,
+        specs = specs,
+        images = cleanImages
+    )
+}
 
 fun List<Component>.toUiModels(): List<ComponentUiModel> = map { it.toUiModel() }
 

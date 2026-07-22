@@ -2,6 +2,8 @@ package com.iti.data.components.di
 
 import com.iti.data.components.datasource.ComponentDataSource
 import com.iti.data.components.datasource.ComponentMockDataSourceImpl
+import com.iti.data.components.datasource.ComponentRemoteDataSource
+import com.iti.data.components.datasource.ComponentRemoteDataSourceImpl
 import com.iti.data.components.repository.ComponentRepositoryImpl
 import com.iti.domain.components.repository.ComponentRepository
 import dagger.Binds
@@ -16,9 +18,15 @@ abstract class ComponentDataModule {
 
     @Binds
     @Singleton
-    abstract fun bindComponentDataSource(
+    abstract fun bindComponentMockDataSource(
         impl: ComponentMockDataSourceImpl
     ): ComponentDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindComponentRemoteDataSource(
+        impl: ComponentRemoteDataSourceImpl
+    ): ComponentRemoteDataSource
 
     @Binds
     @Singleton

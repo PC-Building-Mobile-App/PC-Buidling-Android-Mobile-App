@@ -2,19 +2,20 @@ package com.iti.presentation.parts.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.usecase.SearchComponentsUseCase
 import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
-import com.iti.presentation.core.pccomponents.mapper.toUiModels
-import com.iti.presentation.core.toUiText
+import com.iti.presentation.core.pccomponents.mapper.toUiModel
 import com.iti.presentation.parts.PartsContract.Effect
 import com.iti.presentation.parts.PartsContract.Event
 import com.iti.presentation.parts.PartsContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -35,11 +36,15 @@ class PartsViewModel @Inject constructor(
     override fun createInitialState(): State = State()
 
     private val queryFlow = MutableStateFlow("")
-    private var searchJob: Job? = null
 
     init {
         val initialQuery: String? = savedStateHandle["initialQuery"]
-        
+        val initialCategoryId: String? = savedStateHandle["initialCategoryId"]
+
+        val initialCategory = initialCategoryId?.let { id ->
+            runCatching { ComponentCategoryType.valueOf(id.uppercase()) }.getOrNull()
+        }
+
         loadCategories()
 
         viewModelScope.launch {
@@ -47,15 +52,20 @@ class PartsViewModel @Inject constructor(
                 .debounce(400.milliseconds)
                 .distinctUntilChanged()
                 .collectLatest {
-                    performSearch(reset = true)
+                    performSearch()
                 }
         }
 
-        if (initialQuery != null) {
-            updateState { it.copy(query = initialQuery) }
-            queryFlow.value = initialQuery
+        if (initialQuery != null || initialCategory != null) {
+            updateState {
+                it.copy(
+                    query = initialQuery ?: "",
+                    selectedCategory = initialCategory
+                )
+            }
+            queryFlow.value = initialQuery ?: ""
         } else {
-            performSearch(reset = true)
+            performSearch()
         }
     }
 
@@ -65,38 +75,41 @@ class PartsViewModel @Inject constructor(
                 updateState { it.copy(query = event.query) }
                 queryFlow.value = event.query
             }
+
             is Event.SelectCategory -> {
                 updateState { it.copy(selectedCategory = event.category) }
-                performSearch(reset = true)
+                performSearch()
             }
-            is Event.LoadNextPage -> {
-                if (!state.value.isPagingLoading && !state.value.isLastPage) {
-                    performSearch(reset = false)
-                }
-            }
+
             is Event.Refresh -> {
-                performSearch(reset = true)
+                performSearch()
             }
+
             is Event.ToggleFilterSheet -> {
                 updateState { it.copy(isFilterSheetOpen = !it.isFilterSheetOpen) }
             }
+
             is Event.UpdateAdvancedFilters -> {
-                updateState { it.copy(
-                    minPrice = event.minPrice,
-                    maxPrice = event.maxPrice,
-                    inStockOnly = event.inStockOnly,
-                    isFilterSheetOpen = false
-                ) }
-                performSearch(reset = true)
+                updateState {
+                    it.copy(
+                        minPrice = event.minPrice,
+                        maxPrice = event.maxPrice,
+                        isFilterSheetOpen = false
+                    )
+                }
+                performSearch()
             }
+
             is Event.ResetFilters -> {
-                updateState { it.copy(
-                    minPrice = null,
-                    maxPrice = null,
-                    inStockOnly = false
-                ) }
-                performSearch(reset = true)
+                updateState {
+                    it.copy(
+                        minPrice = null,
+                        maxPrice = null
+                    )
+                }
+                performSearch()
             }
+
             is Event.ProductClicked -> {
                 sendEffect(Effect.NavigateToDetail(event.productId))
             }
@@ -115,48 +128,22 @@ class PartsViewModel @Inject constructor(
         }
     }
 
-    private fun performSearch(reset: Boolean) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            val currentState = state.value
-            val targetPage = if (reset) 0 else currentState.page + 1
-            
-            if (reset) {
-                updateState { it.copy(isInitialLoading = true, errorMessage = null, products = emptyList()) }
-            } else {
-                updateState { it.copy(isPagingLoading = true) }
-            }
+    private fun performSearch() {
+        val currentState = state.value
 
-            val params = SearchParams(
-                query = currentState.query,
-                category = currentState.selectedCategory,
-                minPrice = currentState.minPrice,
-                maxPrice = currentState.maxPrice,
-                inStockOnly = currentState.inStockOnly,
-                page = targetPage,
-                size = 20
-            )
+        val params = SearchParams(
+            query = currentState.query,
+            category = currentState.selectedCategory,
+            minPrice = currentState.minPrice,
+            maxPrice = currentState.maxPrice
+        )
 
-            searchComponentsUseCase(params).onSuccess { pageResult ->
-                val newProducts = pageResult.content.toUiModels()
-                updateState {
-                    it.copy(
-                        products = if (reset) newProducts else it.products + newProducts,
-                        page = pageResult.page,
-                        isLastPage = pageResult.page >= pageResult.totalPages - 1,
-                        isInitialLoading = false,
-                        isPagingLoading = false
-                    )
-                }
-            }.onFailure { throwable ->
-                updateState { 
-                    it.copy(
-                        errorMessage = throwable.toUiText(),
-                        isInitialLoading = false,
-                        isPagingLoading = false
-                    )
-                }
+        val productsFlow = searchComponentsUseCase(params)
+            .map { pagingData ->
+                pagingData.map { it.toUiModel() }
             }
-        }
+            .cachedIn(viewModelScope)
+
+        updateState { it.copy(products = productsFlow) }
     }
 }

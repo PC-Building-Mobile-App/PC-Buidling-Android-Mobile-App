@@ -1,5 +1,6 @@
 package com.iti.presentation.buildgeneration.model
 
+import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 import kotlinx.serialization.Serializable
 import java.text.NumberFormat
@@ -9,7 +10,7 @@ import java.util.Locale
 data class PickerComponentUiModel(
     val id: Long,
     val vendorName: String,
-    val category: String,
+    val category: ComponentCategoryType,
     val productName: String,
     val productImage: String,
     val price: Double,

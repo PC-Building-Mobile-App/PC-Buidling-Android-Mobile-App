@@ -33,6 +33,7 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.buildgeneration.model.labelRes
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.uicomponents.EmptyScreen
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.SuccessGreen
@@ -41,9 +42,9 @@ import com.iti.presentation.ui.theme.SuccessGreen
 @Composable
 fun ComponentPickerBottomSheet(
     category: ComponentCategoryType,
-    components: List<PickerComponentUiModel>,
+    components: List<ComponentUiModel>,
     isLoading: Boolean,
-    onComponentSelected: (PickerComponentUiModel) -> Unit,
+    onComponentSelected: (ComponentUiModel) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
@@ -88,7 +89,7 @@ fun ComponentPickerBottomSheet(
 
 @Composable
 private fun PickerComponentRow(
-    component: PickerComponentUiModel,
+    component: ComponentUiModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -97,12 +98,12 @@ private fun PickerComponentRow(
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .clickable(enabled = component.inStock, onClick = onClick)
+            .clickable(enabled = component.isInStock, onClick = onClick)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            model = component.productImage,
+            model = component.imageUrl,
             contentDescription = component.productName,
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(56.dp).clip(MaterialTheme.shapes.extraSmall).background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)),
@@ -122,27 +123,17 @@ private fun PickerComponentRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = if (component.inStock) stringResource(R.string.picker_in_stock) else stringResource(R.string.picker_out_of_stock),
+                text = if (component.isInStock) stringResource(R.string.picker_in_stock) else stringResource(R.string.picker_out_of_stock),
                 style = MaterialTheme.typography.labelLarge,
-                color = if (component.inStock) SuccessGreen else MaterialTheme.colorScheme.error,
+                color = if (component.isInStock) SuccessGreen else MaterialTheme.colorScheme.error,
             )
         }
 
         Text(
-            text = stringResource(R.string.price_format, component.priceFormatted),
+            text = stringResource(R.string.price_format, component.formattedPrice),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PickerComponentRowPreview() {
-    AppTheme {
-        PickerComponentRow(
-            component = PickerComponentUiModel(5, "GearHub", "GPU", "NVIDIA GeForce RTX 4070 Super", "", 32000.0, "32,000", true),
-            onClick = {},
-        )
-    }
-}

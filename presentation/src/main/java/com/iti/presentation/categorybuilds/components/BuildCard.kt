@@ -26,18 +26,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
-import com.iti.presentation.buildgeneration.model.PickerComponentUiModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.mypcs.model.accentColor
+import com.iti.presentation.mypcs.model.gradient
 
 @Composable
 fun BuildCard(
@@ -61,29 +59,9 @@ fun BuildCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp),
+                .height(120.dp)
+                .background(categoryType.gradient),
         ) {
-            AsyncImage(
-                model = build.imageUrl,
-                contentDescription = build.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background.copy(alpha = 0f),
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
-                            ),
-                        ),
-                    ),
-            )
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -99,7 +77,7 @@ fun BuildCard(
                 Text(
                     text = build.priceFormatted,
                     style = MaterialTheme.typography.titleMedium,
-                    color = accent,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }
@@ -110,21 +88,18 @@ fun BuildCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 StatChip(
-                    value = stringResource(R.string.build_score_format, build.performanceScore),
-                    label = stringResource(R.string.performance),
+                    value = if (build.compatible) "Compatible" else "Incompatible",
+                    label = "Status",
                     modifier = Modifier.weight(1f),
                 )
                 StatChip(
-                    value = stringResource(R.string.build_fps_format, build.avgFps),
-                    label = stringResource(R.string.avg_fps),
+                    value = if (build.issues.isEmpty()) "No Issues" else "${build.issues.size} Issues",
+                    label = "Issues",
                     modifier = Modifier.weight(1f),
                 )
                 StatChip(
-                    value = stringResource(
-                        R.string.build_percent_format,
-                        build.compatibilityPercent
-                    ),
-                    label = stringResource(R.string.compat),
+                    value = "${build.specs.size}",
+                    label = "Parts",
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -182,7 +157,7 @@ private fun StatChip(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SpecChips(specs: List<PickerComponentUiModel>) {
+private fun SpecChips(specs: List<ComponentUiModel>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)

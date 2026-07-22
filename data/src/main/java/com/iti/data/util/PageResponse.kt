@@ -1,6 +1,9 @@
-package com.iti.domain.components.model
+package com.iti.data.util
 
-data class PageResult<T>(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class PageResponse<T>(
     val content: List<T>,
     val page: Int,
     val size: Int,

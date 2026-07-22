@@ -1,23 +1,33 @@
 package com.iti.data.components.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.iti.data.components.datasource.ComponentDataSource
+import com.iti.data.components.datasource.ComponentRemoteDataSource
 import com.iti.data.components.mapper.toDomain
-import com.iti.data.util.safeCall
+import com.iti.data.components.remote.ProductPagingSource
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
-import com.iti.domain.components.model.PageResult
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.repository.ComponentRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.Result
-import kotlin.time.Duration.Companion.milliseconds
 
 class ComponentRepositoryImpl @Inject constructor(
-    private val mockDataSource: ComponentDataSource
+    private val mockDataSource: ComponentDataSource,
+    private val remoteDataSource: ComponentRemoteDataSource
+
 ) : ComponentRepository {
+
+    override fun getRandomComponents(category: String, limit: Int): Flow<List<Component>> = flow {
+        val result = remoteDataSource.getRandomComponents(category, limit)
+        val dataModels = result.getOrThrow()
+        emit(dataModels.toDomain())
+    }
 
     override fun getComponents(): Flow<List<Component>> {
         return mockDataSource.getComponents().map { dataModels ->
@@ -31,39 +41,25 @@ class ComponentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchComponents(params: SearchParams): Result<PageResult<Component>> = safeCall {
-        // todo(switch to real RemoteDataSource once backend is done)
-
-        delay(600.milliseconds)
-
-        val filteredData = mockDataSource.searchComponents(params)
-
-        val totalElements = filteredData.size
-        val totalPages = (totalElements + params.size - 1) / params.size
-
-        val start = params.page * params.size
-        val end = (start + params.size).coerceAtMost(totalElements)
-
-        val content = if (start < totalElements) {
-            filteredData.subList(start, end).map { it.toDomain() }
-        } else {
-            emptyList()
+    override fun searchComponents(params: SearchParams): Flow<PagingData<Component>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                ProductPagingSource(remoteDataSource, params)
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toDomain()!! }
         }
-
-        PageResult(
-            content = content,
-            page = params.page,
-            size = params.size,
-            totalElements = totalElements,
-            totalPages = totalPages
-        )
     }
 
     override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> {
         return mockDataSource.getComponents().map { dataModels ->
             dataModels
                 .filter { it.category.equals(category.name, ignoreCase = true) }
-                .map { it.toDomain() }
+                .mapNotNull { it.toDomain() }
         }
     }
 }

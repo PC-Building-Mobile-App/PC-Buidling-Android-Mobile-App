@@ -1,5 +1,8 @@
 package com.iti.presentation.core.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,22 +43,30 @@ fun MainNavigation(
     }
 
     val activeBackStack = backStacks.getValue(currentTab)
+    val currentRoute = activeBackStack.lastOrNull()
+    val isOnBuildGeneration = currentRoute is BuildGenerationRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomNavBar(
-                currentRoute = currentTab,
-                onItemClick = { tab ->
-                    if (tab == currentTab) {
-                        while (activeBackStack.size > 1) {
-                            activeBackStack.removeLastOrNull()
+            AnimatedVisibility(
+                visible = !isOnBuildGeneration,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                BottomNavBar(
+                    currentRoute = currentTab,
+                    onItemClick = { tab ->
+                        if (tab == currentTab) {
+                            while (activeBackStack.size > 1) {
+                                activeBackStack.removeLastOrNull()
+                            }
+                        } else {
+                            currentTab = tab
                         }
-                    } else {
-                        currentTab = tab
-                    }
-                },
-            )
+                    },
+                )
+            }
         },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -77,15 +88,20 @@ fun MainNavigation(
                     entry<HomeRoute> {
                         HomeScreen(
                             onNavigateToPartsWithQuery = { query ->
-                                // TODO: Pass query to Parts screen when inter-tab communication is implemented
-                                // For now, switches to the Parts tab
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                partsStack.clear()
+                                partsStack.add(PartsRoute(initialQuery = query))
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToParts = {
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                if (partsStack.firstOrNull() != PartsRoute()) {
+                                    partsStack.clear()
+                                    partsStack.add(PartsRoute())
+                                }
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToGenerateBuild = {
-                                // TODO: Navigate to actual build generation flow when implemented
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(),
                                 )
@@ -96,7 +112,9 @@ fun MainNavigation(
                                 )
                             },
                             onNavigateToPartsWithCategory = { categoryId ->
-                                // TODO: Pass category filter to Parts screen when inter-tab communication is implemented
+                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                partsStack.clear()
+                                partsStack.add(PartsRoute(initialCategoryId = categoryId))
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToHardwareNews = {
@@ -132,8 +150,10 @@ fun MainNavigation(
                         )
                     }
 
-                    entry<PartsRoute> {
+                    entry<PartsRoute> { route ->
                         PartsScreen(
+                            initialQuery = route.initialQuery,
+                            initialCategoryId = route.initialCategoryId,
                             onNavigateToDetail = { partId ->
                                 activeBackStack.navigateSingleTop(
                                     PartsDetailRoute(partId = partId),
@@ -143,7 +163,6 @@ fun MainNavigation(
                     }
 
                     entry<AiAssistantRoute> {
-                        // TODO: Replace with your AIScreen composable
                         ScreenPlaceholder(title = "AI Assistant")
                     }
 
@@ -163,13 +182,10 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
-                        // TODO: Replace with your ProfileScreen composable
                         ScreenPlaceholder(title = "Profile")
                     }
 
                     entry<PartsDetailRoute> { route ->
-                        // TODO: Replace with your PartsDetailScreen composable
-
                         ScreenPlaceholder(
                             title = "Part Detail",
                             subtitle = "Part ID: ${route.partId}",
@@ -190,7 +206,6 @@ fun MainNavigation(
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             },
-
                             onEditBuildClick = { build, category ->
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(
@@ -206,7 +221,7 @@ fun MainNavigation(
                         )
                     }
 
-                    entry<BuildGenerationRoute> { route ->
+                    entry<BuildGenerationRoute>{ route ->
                         BuildGenerationScreen(
                             category = route.category,
                             editingBuild = route.editingBuild,
@@ -217,7 +232,6 @@ fun MainNavigation(
                     }
 
                     entry<ComparisonRoute> { route ->
-                        // TODO: Replace with your ComparisonScreen composable
                         ScreenPlaceholder(
                             title = "Comparison",
                             subtitle = "${route.firstPartId} vs ${route.secondPartId}",

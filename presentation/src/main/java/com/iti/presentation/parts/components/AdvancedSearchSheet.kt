@@ -19,8 +19,7 @@ import java.util.Locale
 fun AdvancedSearchSheet(
     initialMinPrice: Double?,
     initialMaxPrice: Double?,
-    initialInStockOnly: Boolean,
-    onApply: (Double?, Double?, Boolean) -> Unit,
+    onApply: (Double?, Double?) -> Unit,
     onReset: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -28,7 +27,6 @@ fun AdvancedSearchSheet(
     var priceRange by remember { 
         mutableStateOf((initialMinPrice?.toFloat() ?: 0f)..(initialMaxPrice?.toFloat() ?: maxLimit)) 
     }
-    var inStockOnly by remember { mutableStateOf(initialInStockOnly) }
 
     val numberFormat = remember { NumberFormat.getNumberInstance(Locale.US) }
 
@@ -43,7 +41,7 @@ fun AdvancedSearchSheet(
                 .padding(bottom = 48.dp)
         ) {
             Text(
-                text = stringResource(R.string.advanced_search),
+                text = stringResource(R.string.price_filter),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -88,28 +86,6 @@ fun AdvancedSearchSheet(
                 )
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = inStockOnly,
-                    onCheckedChange = { inStockOnly = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = MaterialTheme.colorScheme.primary,
-                        uncheckedColor = MaterialTheme.colorScheme.outline
-                    )
-                )
-                Text(
-                    text = stringResource(R.string.in_stock_only),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            
             Spacer(modifier = Modifier.height(40.dp))
             
             Row(
@@ -133,7 +109,7 @@ fun AdvancedSearchSheet(
                 }
                 Button(
                     onClick = {
-                        onApply(priceRange.start.toDouble(), priceRange.endInclusive.toDouble(), inStockOnly)
+                        onApply(priceRange.start.toDouble(), priceRange.endInclusive.toDouble())
                     },
                     modifier = Modifier.weight(1f).height(56.dp),
                     shape = MaterialTheme.shapes.extraSmall,

@@ -3,8 +3,6 @@ package com.iti.presentation.buildgeneration.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,11 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -49,8 +43,10 @@ import com.iti.presentation.buildgeneration.components.BudgetSliderCard
 import com.iti.presentation.buildgeneration.components.BuildGenerationHeader
 import com.iti.presentation.buildgeneration.components.ComponentPickerBottomSheet
 import com.iti.presentation.buildgeneration.components.ComponentSlotCard
+import com.iti.presentation.buildgeneration.components.ComponentsSectionHeader
 import com.iti.presentation.buildgeneration.components.GenerateBuildButton
 import com.iti.presentation.buildgeneration.components.PurposeSelector
+import com.iti.presentation.buildgeneration.components.RegenerateActionBar
 import com.iti.presentation.buildgeneration.components.SaveBuildDialog
 import com.iti.presentation.buildgeneration.viewmodel.BuildGenerationViewModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
@@ -100,6 +96,18 @@ fun BuildGenerationScreen(
                 containerColor = MaterialTheme.colorScheme.background,
                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 modifier = Modifier.fillMaxSize(),
+                bottomBar = {
+                    AnimatedVisibility(
+                        visible = state.showRegenerateFab && !state.isSaving,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
+                    ) {
+                        RegenerateActionBar(
+                            isRegenerating = state.isGenerating,
+                            onClick = { viewModel.onEvent(Event.RegenerateClicked) },
+                        )
+                    }
+                },
             ) { paddingValues ->
                 BuildGenerationScreenContent(
                     state = state,
@@ -206,6 +214,7 @@ private fun BuildGenerationScreenContent(
                             onClick = { onEvent(Event.SlotClicked(slot.category)) },
                             onRemoveClick = { onEvent(Event.SlotCleared(slot.category)) },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                            alternatives = slot.alternatives,
                         )
                     }
                 }
@@ -225,7 +234,14 @@ private fun BuildGenerationScreenContent(
 
         if (state.allSlotsFilled) {
             val components = state.slots.mapNotNull { it.component }
-            val totalPriceFormatted = NumberFormat.getNumberInstance(Locale.US).format(components.sumOf { it.price }.toLong())
+            val totalPrice = components.sumOf { comp ->
+                comp.formattedPrice
+                    .replace("EGP", "")
+                    .replace(",", "")
+                    .trim()
+                    .toDoubleOrNull() ?: 0.0
+            }
+            val totalPriceFormatted = NumberFormat.getNumberInstance(Locale.US).format(totalPrice.toLong())
 
             item {
                 Row(
@@ -254,47 +270,6 @@ private fun BuildGenerationScreenContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ComponentsSectionHeader(
-    filledCount: Int,
-    totalCount: Int,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onToggleExpand
-            )
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-            Text(
-                text = stringResource(R.string.components_section_title),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Text(
-            text = stringResource(R.string.components_section_subtitle_format, filledCount, totalCount),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 

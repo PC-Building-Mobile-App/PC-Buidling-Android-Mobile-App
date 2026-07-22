@@ -35,5 +35,5 @@ class BuildsRepositoryImpl @Inject constructor(
 
     override suspend fun saveBuild(request: SaveBuildRequest): Result<Build> =
         remoteDataSource.saveBuild(request.toDto())
-            .map { it.toDomain().copy(categoryId = request.categoryId) }
+            .map { it.toDomain() }
 }
