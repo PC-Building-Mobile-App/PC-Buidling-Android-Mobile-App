@@ -2,6 +2,10 @@ package com.iti.presentation.buildgeneration.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -51,6 +55,7 @@ import com.iti.presentation.buildgeneration.components.ComponentPickerBottomShee
 import com.iti.presentation.buildgeneration.components.ComponentSlotCard
 import com.iti.presentation.buildgeneration.components.GenerateBuildButton
 import com.iti.presentation.buildgeneration.components.PurposeSelector
+import com.iti.presentation.buildgeneration.components.RegenerateBuildFab
 import com.iti.presentation.buildgeneration.components.SaveBuildDialog
 import com.iti.presentation.buildgeneration.viewmodel.BuildGenerationViewModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
@@ -112,6 +117,20 @@ fun BuildGenerationScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier.align(Alignment.TopCenter),
             ) { data -> AppSnackbar(data) }
+
+            AnimatedVisibility(
+                visible = state.showRegenerateFab,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 36.dp, end = 20.dp),
+            ) {
+                RegenerateBuildFab(
+                    isRegenerating = state.isGenerating,
+                    onClick = { viewModel.onEvent(Event.RegenerateClicked) },
+                )
+            }
         }
 
         val pickerCategory = state.pickerCategory

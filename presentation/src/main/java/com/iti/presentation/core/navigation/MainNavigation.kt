@@ -1,5 +1,11 @@
 package com.iti.presentation.core.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,22 +46,30 @@ fun MainNavigation(
     }
 
     val activeBackStack = backStacks.getValue(currentTab)
+    val currentRoute = activeBackStack.lastOrNull()
+    val isOnBuildGeneration = currentRoute is BuildGenerationRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomNavBar(
-                currentRoute = currentTab,
-                onItemClick = { tab ->
-                    if (tab == currentTab) {
-                        while (activeBackStack.size > 1) {
-                            activeBackStack.removeLastOrNull()
+            AnimatedVisibility(
+                visible = !isOnBuildGeneration,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                BottomNavBar(
+                    currentRoute = currentTab,
+                    onItemClick = { tab ->
+                        if (tab == currentTab) {
+                            while (activeBackStack.size > 1) {
+                                activeBackStack.removeLastOrNull()
+                            }
+                        } else {
+                            currentTab = tab
                         }
-                    } else {
-                        currentTab = tab
-                    }
-                },
-            )
+                    },
+                )
+            }
         },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -91,7 +105,6 @@ fun MainNavigation(
                                 currentTab = TopLevelRoute.PARTS
                             },
                             onNavigateToGenerateBuild = {
-                                // TODO: Navigate to actual build generation flow when implemented
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(),
                                 )
@@ -153,7 +166,6 @@ fun MainNavigation(
                     }
 
                     entry<AiAssistantRoute> {
-                        // TODO: Replace with your AIScreen composable
                         ScreenPlaceholder(title = "AI Assistant")
                     }
 
@@ -173,13 +185,10 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
-                        // TODO: Replace with your ProfileScreen composable
                         ScreenPlaceholder(title = "Profile")
                     }
 
                     entry<PartsDetailRoute> { route ->
-                        // TODO: Replace with your PartsDetailScreen composable
-
                         ScreenPlaceholder(
                             title = "Part Detail",
                             subtitle = "Part ID: ${route.partId}",
@@ -200,7 +209,6 @@ fun MainNavigation(
                             onBackClick = {
                                 activeBackStack.navigateBack()
                             },
-
                             onEditBuildClick = { build, category ->
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(
@@ -216,7 +224,15 @@ fun MainNavigation(
                         )
                     }
 
-                    entry<BuildGenerationRoute> { route ->
+                    entry<BuildGenerationRoute>(
+                        metadata = NavDisplay.transitionSpec {
+                            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { -it / 3 })
+                        } + NavDisplay.popTransitionSpec {
+                            slideInHorizontally(initialOffsetX = { -it / 3 }) togetherWith
+                                    slideOutHorizontally(targetOffsetX = { it })
+                        }
+                    ) { route ->
                         BuildGenerationScreen(
                             category = route.category,
                             editingBuild = route.editingBuild,
@@ -227,7 +243,6 @@ fun MainNavigation(
                     }
 
                     entry<ComparisonRoute> { route ->
-                        // TODO: Replace with your ComparisonScreen composable
                         ScreenPlaceholder(
                             title = "Comparison",
                             subtitle = "${route.firstPartId} vs ${route.secondPartId}",
