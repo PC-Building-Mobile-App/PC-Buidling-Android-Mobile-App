@@ -1,7 +1,7 @@
 package com.iti.data.auth.di
 
-import com.iti.data.auth.datasource.AuthMockDataSourceImpl
 import com.iti.data.auth.datasource.AuthRemoteDataSource
+import com.iti.data.auth.datasource.AuthRemoteDataSourceImpl
 import com.iti.data.auth.repository.AuthRepositoryImpl
 import com.iti.domain.auth.repository.AuthRepository
 import dagger.Binds
@@ -15,7 +15,7 @@ abstract class AuthDataModule {
 
     @Binds
     abstract fun bindAuthRemoteDataSource(
-        impl: AuthMockDataSourceImpl,
+        impl: AuthRemoteDataSourceImpl,
     ): AuthRemoteDataSource
 
     @Binds

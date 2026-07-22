@@ -88,8 +88,6 @@ class AuthViewModel @Inject constructor(
     private fun submit() {
         val current = state.value
         if (!current.isSubmitEnabled) return
-
-
         val emailError = EmailValidator.validate(current.email)
         if (emailError != null) {
             updateState { it.copy(emailError = emailError) }
@@ -133,6 +131,6 @@ class AuthViewModel @Inject constructor(
         is AuthException.InvalidCredentials -> message.orEmpty()
         is AuthException.EmailAlreadyExists -> message.orEmpty()
         is AuthException.Unauthorized -> message.orEmpty()
-        else -> "Something went wrong. Please try again."
+        else -> message?.takeIf { it.isNotBlank() } ?: "Something went wrong. Please try again."
     }
 }
