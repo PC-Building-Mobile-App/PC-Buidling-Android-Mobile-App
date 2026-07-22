@@ -2,10 +2,6 @@ package com.iti.presentation.buildgeneration.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -53,9 +49,10 @@ import com.iti.presentation.buildgeneration.components.BudgetSliderCard
 import com.iti.presentation.buildgeneration.components.BuildGenerationHeader
 import com.iti.presentation.buildgeneration.components.ComponentPickerBottomSheet
 import com.iti.presentation.buildgeneration.components.ComponentSlotCard
+import com.iti.presentation.buildgeneration.components.ComponentsSectionHeader
 import com.iti.presentation.buildgeneration.components.GenerateBuildButton
 import com.iti.presentation.buildgeneration.components.PurposeSelector
-import com.iti.presentation.buildgeneration.components.RegenerateBuildFab
+import com.iti.presentation.buildgeneration.components.RegenerateActionBar
 import com.iti.presentation.buildgeneration.components.SaveBuildDialog
 import com.iti.presentation.buildgeneration.viewmodel.BuildGenerationViewModel
 import com.iti.presentation.categorybuilds.model.BuildUiModel
@@ -105,6 +102,18 @@ fun BuildGenerationScreen(
                 containerColor = MaterialTheme.colorScheme.background,
                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 modifier = Modifier.fillMaxSize(),
+                bottomBar = {
+                    AnimatedVisibility(
+                        visible = state.showRegenerateFab && !state.isSaving,
+                        enter = expandVertically(),
+                        exit = shrinkVertically(),
+                    ) {
+                        RegenerateActionBar(
+                            isRegenerating = state.isGenerating,
+                            onClick = { viewModel.onEvent(Event.RegenerateClicked) },
+                        )
+                    }
+                },
             ) { paddingValues ->
                 BuildGenerationScreenContent(
                     state = state,
@@ -117,20 +126,6 @@ fun BuildGenerationScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier.align(Alignment.TopCenter),
             ) { data -> AppSnackbar(data) }
-
-            AnimatedVisibility(
-                visible = state.showRegenerateFab,
-                enter = fadeIn() + scaleIn(),
-                exit = fadeOut() + scaleOut(),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 36.dp, end = 20.dp),
-            ) {
-                RegenerateBuildFab(
-                    isRegenerating = state.isGenerating,
-                    onClick = { viewModel.onEvent(Event.RegenerateClicked) },
-                )
-            }
         }
 
         val pickerCategory = state.pickerCategory
@@ -281,47 +276,6 @@ private fun BuildGenerationScreenContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ComponentsSectionHeader(
-    filledCount: Int,
-    totalCount: Int,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onToggleExpand
-            )
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-            Text(
-                text = stringResource(R.string.components_section_title),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Text(
-            text = stringResource(R.string.components_section_subtitle_format, filledCount, totalCount),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 
