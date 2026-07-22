@@ -17,6 +17,7 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.parts.PartsContract
 import com.iti.presentation.parts.PartsContract.Event
 import com.iti.presentation.parts.components.AdvancedSearchSheet
+import com.iti.presentation.parts.components.AiOverviewCard
 import com.iti.presentation.parts.components.CategoryChipsRow
 import com.iti.presentation.parts.components.ProductGrid
 import com.iti.presentation.shared.SearchBarField
@@ -77,6 +78,19 @@ fun PartsScreen(
                     onFilterClick = { viewModel.onEvent(Event.ToggleFilterSheet) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
+                if (state.isAiVisible) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AiOverviewCard(
+                        overview = state.aiOverview,
+                        isLoading = state.isAiLoading,
+                        isExpanded = state.isAiExpanded,
+                        errorMessage = state.aiErrorMessage,
+                        onToggleExpand = { viewModel.onEvent(Event.ToggleAiExpanded) },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 CategoryChipsRow(
                     categories = state.categories,
