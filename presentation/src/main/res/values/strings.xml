@@ -153,4 +153,10 @@
     <string name="create_account">Create account</string>
     <string name="name">NAME</string>
     <string name="password">PASSWORD</string>
+    <string name="confirm_password">CONFIRM PASSWORD</string>
+    <string name="re_enter_your_password">Re-enter your password</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_your_full_name">Enter your full name</string>
+    <string name="full_name">FULL NAME</string>
 </resources>
