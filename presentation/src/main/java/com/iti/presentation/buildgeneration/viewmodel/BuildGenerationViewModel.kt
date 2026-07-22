@@ -62,6 +62,7 @@ class BuildGenerationViewModel @Inject constructor(
             is Event.ComponentPicked -> pickComponent(event.component)
             is Event.SlotCleared -> clearSlot(event.category)
             is Event.GenerateClicked -> generateBuild()
+            is Event.RegenerateClicked -> regenerateBuild()
             is Event.SaveClicked -> onSave()
             is Event.BuildNameChanged -> updateState { it.copy(buildName = event.name) }
             is Event.ConfirmSaveClicked -> saveBuild()
@@ -300,17 +301,41 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun mergeGeneratedComponentsIntoSlots(components: List<Component>) {
         updateState { current ->
+            val newlyGeneratedCategories = mutableSetOf<ComponentCategoryType>()
+            val updatedSlots = current.slots.map { slot ->
+                if (slot.component != null) return@map slot
+                val match = components.firstOrNull { it.category == slot.category }
+                if (match != null) {
+                    newlyGeneratedCategories.add(slot.category)
+                    slot.copy(component = match.toUiModel())
+                } else slot
+            }
             current.copy(
-                slots = current.slots.map { slot ->
-                    if (slot.component != null) return@map slot
-
-                    // Clean Enum comparison from Branch 1
-                    val match = components.firstOrNull { it.category == slot.category }
-
-                    if (match != null) slot.copy(component = match.toUiModel()) else slot
-                },
+                slots = updatedSlots,
+                generatedSlotCategories = current.generatedSlotCategories + newlyGeneratedCategories,
             )
         }
+    }
+
+    private fun regenerateBuild() {
+        val current = state.value
+        val categoriesToRegenerate = current.generatedSlotCategories
+        if (categoriesToRegenerate.isEmpty()) return
+
+        updateState { state ->
+            state.copy(
+                slots = state.slots.map { slot ->
+                    if (slot.category in categoriesToRegenerate) slot.copy(
+                        component = null,
+                        warningMessage = null,
+                        alternatives = emptyList(),
+                    ) else slot
+                },
+                generatedSlotCategories = emptySet(),
+            )
+        }
+
+        generateBuild()
     }
 
     private fun onSave() {
@@ -376,7 +401,7 @@ class BuildGenerationViewModel @Inject constructor(
         viewModelScope.launch {
             saveBuildUseCase(request)
                 .onSuccess {
-                    updateState { it.copy(isSaving = false) }
+                    updateState { it.copy(isSaving = false, generatedSlotCategories = emptySet()) }
                     sendEffect(Effect.NavigateBack)
                 }
                 .onFailure { throwable ->
