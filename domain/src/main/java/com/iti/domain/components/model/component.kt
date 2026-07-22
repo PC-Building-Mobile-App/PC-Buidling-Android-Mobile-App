@@ -12,5 +12,6 @@ data class Component (
     val inStock: Boolean,
     val sourceUrl: String? = null,
     val matchedGlobalName: String? = null,
-    val specs: Map<String, String> = emptyMap()
+    val specs: Map<String, String> = emptyMap(),
+    val images: List<String> = emptyList()
 )

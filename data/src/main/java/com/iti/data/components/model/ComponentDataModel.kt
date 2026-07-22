@@ -14,6 +14,6 @@ data class ComponentDataModel(
     val sourceUrl: String? = null,
     val matchedGlobalName: String? = null,
     val specs: Map<String, String> = emptyMap(),
-    // The API doesn't return an image right now, so we give it a default empty value
-    val productImage: String = ""
+    @SerialName("imageUrl") val productImage: String = "",
+    val images: List<String> = emptyList()
 )

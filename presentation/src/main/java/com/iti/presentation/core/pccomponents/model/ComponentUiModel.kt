@@ -17,5 +17,6 @@ data class ComponentUiModel(
     val matchedGlobalName: String? = null,
     val category: ComponentCategoryType = ComponentCategoryType.CPU,
     val price: Double = 32000.0,
-    val specs: Map<String, String> = emptyMap()
+    val specs: Map<String, String> = emptyMap(),
+    val images: List<String> = emptyList()
 )
