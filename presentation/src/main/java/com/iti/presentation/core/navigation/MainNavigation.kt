@@ -3,9 +3,6 @@ package com.iti.presentation.core.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -224,15 +221,7 @@ fun MainNavigation(
                         )
                     }
 
-                    entry<BuildGenerationRoute>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(initialOffsetX = { it }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { -it / 3 })
-                        } + NavDisplay.popTransitionSpec {
-                            slideInHorizontally(initialOffsetX = { -it / 3 }) togetherWith
-                                    slideOutHorizontally(targetOffsetX = { it })
-                        }
-                    ) { route ->
+                    entry<BuildGenerationRoute>{ route ->
                         BuildGenerationScreen(
                             category = route.category,
                             editingBuild = route.editingBuild,
