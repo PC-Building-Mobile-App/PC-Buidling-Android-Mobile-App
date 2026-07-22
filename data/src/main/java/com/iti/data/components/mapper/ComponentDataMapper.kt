@@ -18,9 +18,9 @@ fun ComponentDataModel.toDomain(): Component? {
         inStock = inStock,
         sourceUrl = sourceUrl,
         matchedGlobalName = matchedGlobalName,
-        specs = specs
+        specs = specs,
+        images = images
     )
 }
 
-// Use mapNotNull to automatically drop any nulls (unsupported categories)
 fun List<ComponentDataModel>.toDomain(): List<Component> = mapNotNull { it.toDomain() }

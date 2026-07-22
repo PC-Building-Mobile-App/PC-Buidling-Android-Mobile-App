@@ -22,7 +22,8 @@ fun Component.toUiModel(): ComponentUiModel {
         matchedGlobalName = matchedGlobalName,
         category = category,
         price = price,
-        specs = specs
+        specs = specs,
+        images = images
     )
 }
 
