@@ -8,19 +8,18 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
 import com.iti.domain.components.model.SearchParams
 import com.iti.domain.components.usecase.SearchComponentsUseCase
+import com.iti.domain.ai.usecase.GetAiOverviewUseCase
 import com.iti.presentation.core.BaseViewModel
+import com.iti.presentation.core.UiText
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
 import com.iti.presentation.core.pccomponents.mapper.toUiModel
+import com.iti.presentation.R
 import com.iti.presentation.parts.PartsContract.Effect
 import com.iti.presentation.parts.PartsContract.Event
 import com.iti.presentation.parts.PartsContract.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -30,6 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class PartsViewModel @Inject constructor(
     private val searchComponentsUseCase: SearchComponentsUseCase,
     private val getCategoriesUseCase: GetComponentCategoriesUseCase,
+    private val getAiOverviewUseCase: GetAiOverviewUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<Event, State, Effect>() {
 
@@ -56,6 +56,19 @@ class PartsViewModel @Inject constructor(
                 }
         }
 
+        viewModelScope.launch {
+            queryFlow
+                .debounce(1000.milliseconds)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    if (query.length >= 3) {
+                        fetchAiOverview(query)
+                    } else {
+                        updateState { it.copy(aiOverview = null, isAiVisible = false) }
+                    }
+                }
+        }
+
         if (initialQuery != null || initialCategory != null) {
             updateState {
                 it.copy(
@@ -75,20 +88,13 @@ class PartsViewModel @Inject constructor(
                 updateState { it.copy(query = event.query) }
                 queryFlow.value = event.query
             }
-
             is Event.SelectCategory -> {
                 updateState { it.copy(selectedCategory = event.category) }
                 performSearch()
             }
-
-            is Event.Refresh -> {
-                performSearch()
-            }
-
-            is Event.ToggleFilterSheet -> {
-                updateState { it.copy(isFilterSheetOpen = !it.isFilterSheetOpen) }
-            }
-
+            is Event.Refresh -> performSearch()
+            is Event.ToggleFilterSheet -> updateState { it.copy(isFilterSheetOpen = !it.isFilterSheetOpen) }
+            is Event.ToggleAiExpanded -> updateState { it.copy(isAiExpanded = !it.isAiExpanded) }
             is Event.UpdateAdvancedFilters -> {
                 updateState {
                     it.copy(
@@ -99,38 +105,24 @@ class PartsViewModel @Inject constructor(
                 }
                 performSearch()
             }
-
             is Event.ResetFilters -> {
-                updateState {
-                    it.copy(
-                        minPrice = null,
-                        maxPrice = null
-                    )
-                }
+                updateState { it.copy(minPrice = null, maxPrice = null) }
                 performSearch()
             }
-
-            is Event.ProductClicked -> {
-                sendEffect(Effect.NavigateToDetail(event.productId))
-            }
+            is Event.ProductClicked -> sendEffect(Effect.NavigateToDetail(event.productId))
         }
     }
 
     private fun loadCategories() {
         viewModelScope.launch {
             getCategoriesUseCase()
-                .map { domainCategories ->
-                    domainCategories.toUiModels()
-                }
-                .collect { uiCategories ->
-                    updateState { it.copy(categories = uiCategories) }
-                }
+                .map { it.toUiModels() }
+                .collect { uiCategories -> updateState { it.copy(categories = uiCategories) } }
         }
     }
 
     private fun performSearch() {
         val currentState = state.value
-
         val params = SearchParams(
             query = currentState.query,
             category = currentState.selectedCategory,
@@ -139,11 +131,37 @@ class PartsViewModel @Inject constructor(
         )
 
         val productsFlow = searchComponentsUseCase(params)
-            .map { pagingData ->
-                pagingData.map { it.toUiModel() }
-            }
+            .map { pagingData -> pagingData.map { it.toUiModel() } }
             .cachedIn(viewModelScope)
 
         updateState { it.copy(products = productsFlow) }
+    }
+
+    private fun fetchAiOverview(query: String) {
+        viewModelScope.launch {
+            updateState { it.copy(isAiLoading = true, isAiVisible = true, isAiExpanded = true, aiErrorMessage = null) }
+            getAiOverviewUseCase(query).collect { result ->
+                result.fold(
+                    onSuccess = { overview ->
+                        updateState { it.copy(aiOverview = overview, isAiLoading = false) }
+                    },
+                    onFailure = { throwable ->
+                        val isQuotaError = throwable.message?.contains("429") == true || 
+                                         throwable.message?.contains("quota") == true
+                        val uiError = if (isQuotaError) {
+                            UiText.StringResource(R.string.ai_limit_reached)
+                        } else {
+                            UiText.StringResource(R.string.ai_unavailable)
+                        }
+                        updateState { 
+                            it.copy(
+                                isAiLoading = false, 
+                                aiErrorMessage = uiError
+                            ) 
+                        }
+                    }
+                )
+            }
+        }
     }
 }

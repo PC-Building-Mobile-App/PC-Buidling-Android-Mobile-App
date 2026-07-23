@@ -154,4 +154,9 @@
     <string name="create_account">Create account</string>
     <string name="name">NAME</string>
     <string name="password">PASSWORD</string>
+    <string name="ai_overview_title">AI Overview</string>
+    <string name="ai_overview_collapse">Collapse</string>
+    <string name="ai_overview_expand">Expand</string>
+    <string name="ai_limit_reached">AI limit reached. Please try again in a minute.</string>
+    <string name="ai_unavailable">AI insights unavailable right now.</string>
 </resources>

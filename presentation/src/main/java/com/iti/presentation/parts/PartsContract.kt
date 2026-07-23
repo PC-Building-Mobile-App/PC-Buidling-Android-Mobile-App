@@ -15,6 +15,7 @@ interface PartsContract {
         data class SelectCategory(val category: ComponentCategoryType?) : Event
         data object Refresh : Event
         data object ToggleFilterSheet : Event
+        data object ToggleAiExpanded : Event
         data class UpdateAdvancedFilters(
             val minPrice: Double?,
             val maxPrice: Double?
@@ -32,7 +33,12 @@ interface PartsContract {
         val errorMessage: UiText? = null,
         val minPrice: Double? = null,
         val maxPrice: Double? = null,
-        val isFilterSheetOpen: Boolean = false
+        val isFilterSheetOpen: Boolean = false,
+        val aiOverview: String? = null,
+        val aiErrorMessage: UiText? = null,
+        val isAiLoading: Boolean = false,
+        val isAiVisible: Boolean = false,
+        val isAiExpanded: Boolean = true
     )
 
     sealed interface Effect {

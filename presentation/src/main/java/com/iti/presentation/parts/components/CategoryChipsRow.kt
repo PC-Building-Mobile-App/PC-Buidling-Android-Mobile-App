@@ -1,11 +1,18 @@
 package com.iti.presentation.parts.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.*
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,12 +28,13 @@ fun CategoryChipsRow(
     selectedCategory: ComponentCategoryType?,
     onCategorySelected: (ComponentCategoryType?) -> Unit,
     modifier: Modifier = Modifier,
-    lazyListState: LazyListState = rememberLazyListState()
+    lazyListState: LazyListState = rememberLazyListState(),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp)
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
         state = lazyListState,
-        contentPadding = PaddingValues(horizontal = 20.dp),
+        contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
@@ -43,7 +51,11 @@ fun CategoryChipsRow(
         }
 
         items(categories) { item ->
-            val categoryType = try { ComponentCategoryType.valueOf(item.id) } catch (_: Exception) { null }
+            val categoryType = try {
+                ComponentCategoryType.valueOf(item.id)
+            } catch (_: Exception) {
+                null
+            }
             if (categoryType != null) {
                 val isSelected = categoryType == selectedCategory
                 FilterChip(
