@@ -9,6 +9,7 @@ import java.util.TimeZone
 fun HardwareNewsArticle.toUiModel(): HardwareNewsUiModel = HardwareNewsUiModel(
     id = id,
     title = title,
+    description = description,
     sourceBadge = formatSourceBadge(sourceName, author),
     imageUrl = imageUrl ?: "",
     articleUrl = url,
