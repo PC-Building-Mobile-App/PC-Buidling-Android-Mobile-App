@@ -188,10 +188,10 @@ private fun HardwareNewsScreenPreview() {
             state = State(
                 isLoading = false,
                 articles = listOf(
-                    HardwareNewsUiModel("1", "RTX 5090 rumored for Q1 2027", "NVIDIA", "", "", "Jul 15, 2026"),
-                    HardwareNewsUiModel("2", "AMD Zen 6 leaks show massive IPC gains", "AMD", "", "", "Jul 14, 2026"),
-                    HardwareNewsUiModel("3", "DDR6 RAM standard finalized by JEDEC", "Tech", "", "", "Jul 13, 2026"),
-                    HardwareNewsUiModel("4", "Intel Arrow Lake launch date confirmed", "Intel", "", "", "Jul 12, 2026"),
+                    HardwareNewsUiModel("1", "RTX 5090 rumored for Q1 2027", "NVIDIA", "", "", "","Jul 15, 2026"),
+                    HardwareNewsUiModel("2", "AMD Zen 6 leaks show massive IPC gains", "AMD", "", "","", "Jul 14, 2026"),
+                    HardwareNewsUiModel("3", "DDR6 RAM standard finalized by JEDEC", "Tech", "", "","", "Jul 13, 2026"),
+                    HardwareNewsUiModel("4", "Intel Arrow Lake launch date confirmed", "Intel", "", "","", "Jul 12, 2026"),
                 )
             ),
             onEvent = {},

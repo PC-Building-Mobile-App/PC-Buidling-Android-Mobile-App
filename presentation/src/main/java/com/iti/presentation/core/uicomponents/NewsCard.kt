@@ -139,7 +139,8 @@ private fun NewsCardPreview() {
                 sourceBadge = "NVIDIA",
                 imageUrl = "",
                 articleUrl = "https://example.com",
-                publishedDate = "Jul 15, 2026"
+                publishedDate = "Jul 15, 2026",
+                description = "Recent leaks suggest the RTX 5090 will feature 32GB of GDDR7 memory and an unprecedented core count, potentially doubling the performance of the RTX 4090 in specific rasterization tasks."
             ),
             onClick = {},
             modifier = Modifier.padding(20.dp)

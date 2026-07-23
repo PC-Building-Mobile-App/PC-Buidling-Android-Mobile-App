@@ -118,8 +118,8 @@ private fun LatestNewsSectionPreview() {
     AppTheme {
         LatestNewsSection(
             news = listOf(
-                HardwareNewsUiModel("1", "RTX 5090 rumored for Q1 2027", "NVIDIA", "", "https://example.com", "Jul 15, 2026"),
-                HardwareNewsUiModel("2", "AMD Zen 6 leaks show massive IPC gains", "AMD", "", "https://example.com", "Jul 14, 2026"),
+                HardwareNewsUiModel("1", "RTX 5090 rumored for Q1 2027", "NVIDIA", "", "https://example.com", "","Jul 15, 2026"),
+                HardwareNewsUiModel("2", "AMD Zen 6 leaks show massive IPC gains", "AMD", "", "https://example.com", "","Jul 14, 2026"),
             ),
             isLoading = false,
             onSeeAll = {},

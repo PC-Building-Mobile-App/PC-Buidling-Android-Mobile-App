@@ -59,6 +59,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.google.generativeai)
     implementation(libs.hilt.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)

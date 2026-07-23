@@ -2,31 +2,40 @@ package com.iti.presentation.parts.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import com.iti.presentation.R
 import com.iti.presentation.core.pccomponents.ProductCard
-import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.pccomponents.ProductCardSkeleton
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
+import com.iti.presentation.core.toUiText
 
 @Composable
 fun ProductGrid(
     products: LazyPagingItems<ComponentUiModel>,
     onProductClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    headerContent: @Composable () -> Unit = {}
 ) {
     val isLoadingInitial = products.loadState.refresh is LoadState.Loading
     val isErrorInitial = products.loadState.refresh is LoadState.Error
@@ -41,17 +50,34 @@ fun ProductGrid(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             userScrollEnabled = false
         ) {
+            item(span = { GridItemSpan(2) }) {
+                headerContent()
+            }
             items(6) {
                 ProductCardSkeleton()
             }
         }
     } else if (isErrorInitial) {
+        val error = (products.loadState.refresh as LoadState.Error).error
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = "Something went wrong. Please try again.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = error.toUiText().asString(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { products.retry() },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(text = stringResource(R.string.retry))
+                }
+            }
         }
     } else if (isEmpty) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -69,6 +95,10 @@ fun ProductGrid(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item(span = { GridItemSpan(2) }) {
+                headerContent()
+            }
+
             items(
                 count = products.itemCount,
                 key = products.itemKey { it.id }

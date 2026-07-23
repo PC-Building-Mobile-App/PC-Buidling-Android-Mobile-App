@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ComponentApiService @Inject constructor(
     private val httpClient: HttpClient
 ) {
-    private val baseUrl = "https://pc-builder-api-production-f3c6.up.railway.app/api"
+    private val baseUrl = "https://pc-builder-api-production-f3c6.up.railway.app"+"/api"
 
     suspend fun getRandomDeals(category: String, limit: Int): ApiResponse<List<ComponentDataModel>> {
         return httpClient.get("$baseUrl/products/deals/random") {
