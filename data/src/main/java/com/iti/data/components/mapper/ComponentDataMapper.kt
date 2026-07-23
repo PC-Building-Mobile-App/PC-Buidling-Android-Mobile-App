@@ -13,7 +13,7 @@ fun ComponentDataModel.toDomain(): Component? {
         vendorName = vendorName,
         category = enumCategory,
         productName = productName,
-        productImage = productImage,
+        productImage = productImage ?: "",
         price = price,
         inStock = inStock,
         sourceUrl = sourceUrl,

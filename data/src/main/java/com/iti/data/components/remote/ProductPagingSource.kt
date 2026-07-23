@@ -1,5 +1,6 @@
 package com.iti.data.components.remote
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.iti.data.components.datasource.ComponentRemoteDataSource
@@ -49,10 +50,12 @@ class ProductPagingSource(
                     )
                 },
                 onFailure = { throwable ->
+                    Log.e("ProductPagingSource", "Load failure: ${throwable.message}", throwable)
                     LoadResult.Error(throwable)
                 }
             )
         } catch (e: Exception) {
+            Log.e("ProductPagingSource", "Unexpected error: ${e.message}", e)
             LoadResult.Error(e)
         }
     }

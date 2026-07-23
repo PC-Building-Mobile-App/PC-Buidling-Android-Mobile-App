@@ -14,6 +14,6 @@ data class ComponentDataModel(
     val sourceUrl: String? = null,
     val matchedGlobalName: String? = null,
     val specs: Map<String, String> = emptyMap(),
-    @SerialName("imageUrl") val productImage: String = "",
+    @SerialName("imageUrl") val productImage: String? = null,
     val images: List<String> = emptyList()
 )

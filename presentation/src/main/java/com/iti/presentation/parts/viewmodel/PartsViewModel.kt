@@ -36,7 +36,6 @@ class PartsViewModel @Inject constructor(
     override fun createInitialState(): State = State()
 
     private val queryFlow = MutableStateFlow("")
-    private val categoryFlow = MutableStateFlow<ComponentCategoryType?>(null)
 
     init {
         val initialQuery: String? = savedStateHandle["initialQuery"]
@@ -46,7 +45,6 @@ class PartsViewModel @Inject constructor(
             runCatching { ComponentCategoryType.valueOf(id.uppercase()) }.getOrNull()
         }
 
-        categoryFlow.value = initialCategory
         loadCategories()
 
         viewModelScope.launch {
@@ -59,12 +57,12 @@ class PartsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            combine(queryFlow, categoryFlow) { query, category -> query to category }
+            queryFlow
                 .debounce(1000.milliseconds)
                 .distinctUntilChanged()
-                .collectLatest { (query, category) ->
-                    if (query.length >= 3 || category != null) {
-                        fetchAiOverview(category?.name ?: query)
+                .collectLatest { query ->
+                    if (query.length >= 3) {
+                        fetchAiOverview(query)
                     } else {
                         updateState { it.copy(aiOverview = null, isAiVisible = false) }
                     }
@@ -92,7 +90,6 @@ class PartsViewModel @Inject constructor(
             }
             is Event.SelectCategory -> {
                 updateState { it.copy(selectedCategory = event.category) }
-                categoryFlow.value = event.category
                 performSearch()
             }
             is Event.Refresh -> performSearch()
@@ -140,10 +137,10 @@ class PartsViewModel @Inject constructor(
         updateState { it.copy(products = productsFlow) }
     }
 
-    private fun fetchAiOverview(trigger: String) {
+    private fun fetchAiOverview(query: String) {
         viewModelScope.launch {
             updateState { it.copy(isAiLoading = true, isAiVisible = true, isAiExpanded = true, aiErrorMessage = null) }
-            getAiOverviewUseCase(trigger).collect { result ->
+            getAiOverviewUseCase(query).collect { result ->
                 result.fold(
                     onSuccess = { overview ->
                         updateState { it.copy(aiOverview = overview, isAiLoading = false) }

@@ -1,7 +1,11 @@
 package com.iti.presentation.parts.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,8 +24,8 @@ import com.iti.presentation.parts.components.AdvancedSearchSheet
 import com.iti.presentation.parts.components.AiOverviewCard
 import com.iti.presentation.parts.components.CategoryChipsRow
 import com.iti.presentation.parts.components.ProductGrid
-import com.iti.presentation.shared.SearchBarField
 import com.iti.presentation.parts.viewmodel.PartsViewModel
+import com.iti.presentation.shared.SearchBarField
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -67,46 +71,44 @@ fun PartsScreen(
 
     Scaffold(
         topBar = {
-            Column(
+            SearchBarField(
+                query = state.query,
+                onQueryChange = { viewModel.onEvent(Event.UpdateQuery(it)) },
+                onFilterClick = { viewModel.onEvent(Event.ToggleFilterSheet) },
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(top = 16.dp)
-            ) {
-                SearchBarField(
-                    query = state.query,
-                    onQueryChange = { viewModel.onEvent(Event.UpdateQuery(it)) },
-                    onFilterClick = { viewModel.onEvent(Event.ToggleFilterSheet) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                if (state.isAiVisible) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    AiOverviewCard(
-                        overview = state.aiOverview,
-                        isLoading = state.isAiLoading,
-                        isExpanded = state.isAiExpanded,
-                        errorMessage = state.aiErrorMessage,
-                        onToggleExpand = { viewModel.onEvent(Event.ToggleAiExpanded) },
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                CategoryChipsRow(
-                    categories = state.categories,
-                    selectedCategory = state.selectedCategory,
-                    onCategorySelected = { viewModel.onEvent(Event.SelectCategory(it)) },
-                    lazyListState = categoryListState
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+                    .padding(16.dp)
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         ProductGrid(
             products = pagingItems,
             onProductClick = { viewModel.onEvent(Event.ProductClicked(it)) },
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding),
+            headerContent = {
+                Column {
+                    if (state.isAiVisible) {
+                        AiOverviewCard(
+                            overview = state.aiOverview,
+                            isLoading = state.isAiLoading,
+                            isExpanded = state.isAiExpanded,
+                            errorMessage = state.aiErrorMessage,
+                            onToggleExpand = { viewModel.onEvent(Event.ToggleAiExpanded) }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    CategoryChipsRow(
+                        categories = state.categories,
+                        selectedCategory = state.selectedCategory,
+                        onCategorySelected = { viewModel.onEvent(Event.SelectCategory(it)) },
+                        lazyListState = categoryListState,
+                        contentPadding = PaddingValues(0.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
         )
 
         if (state.isFilterSheetOpen) {
