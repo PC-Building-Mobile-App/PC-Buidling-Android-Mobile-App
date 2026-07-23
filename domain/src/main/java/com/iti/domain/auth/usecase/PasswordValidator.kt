@@ -1,5 +1,4 @@
-package com.iti.presentation.auth
-
+package com.iti.domain.auth.usecase
 
 object PasswordValidator {
 

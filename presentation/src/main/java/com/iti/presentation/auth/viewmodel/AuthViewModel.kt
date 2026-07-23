@@ -7,8 +7,8 @@ import com.iti.domain.exceptions.AuthException
 import com.iti.presentation.auth.AuthContract.Effect
 import com.iti.presentation.auth.AuthContract.Event
 import com.iti.presentation.auth.AuthContract.State
-import com.iti.presentation.auth.EmailValidator
-import com.iti.presentation.auth.PasswordValidator
+import com.iti.domain.auth.usecase.EmailValidator
+import com.iti.domain.auth.usecase.PasswordValidator
 import com.iti.presentation.core.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch

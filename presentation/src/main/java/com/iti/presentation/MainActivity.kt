@@ -34,7 +34,9 @@ class MainActivity : ComponentActivity() {
             AppTheme {
                 val state by mainViewModel.state.collectAsStateWithLifecycle()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                ) { innerPadding ->
                     if (state.isLoading) {
                         SplashScreen(modifier = Modifier.padding(innerPadding))
                     } else {

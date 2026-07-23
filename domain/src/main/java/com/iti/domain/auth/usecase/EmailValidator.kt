@@ -1,4 +1,5 @@
-package com.iti.presentation.auth
+package com.iti.domain.auth.usecase
+
 object EmailValidator {
 
     private val EMAIL_REGEX = Regex(

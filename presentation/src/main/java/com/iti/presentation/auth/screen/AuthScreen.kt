@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -33,14 +34,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -57,7 +64,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.iti.presentation.R
 import com.iti.presentation.auth.AuthContract
 import com.iti.presentation.auth.viewmodel.AuthViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthScreen(
@@ -102,6 +111,7 @@ fun AuthScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
                 .padding(top = 48.dp, bottom = 24.dp),
@@ -179,7 +189,9 @@ fun AuthScreenContent(
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = fieldColors(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .bringIntoViewOnFocus(),
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -197,7 +209,9 @@ fun AuthScreenContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     shape = RoundedCornerShape(14.dp),
                     colors = fieldColors(),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .bringIntoViewOnFocus(),
                 )
                 if (state.emailError != null) {
                     Spacer(modifier = Modifier.height(6.dp))
@@ -240,7 +254,9 @@ fun AuthScreenContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     shape = RoundedCornerShape(14.dp),
                     colors = fieldColors(),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .bringIntoViewOnFocus(),
                 )
                 if (state.passwordError != null) {
                     Spacer(modifier = Modifier.height(6.dp))
@@ -284,7 +300,9 @@ fun AuthScreenContent(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         shape = RoundedCornerShape(14.dp),
                         colors = fieldColors(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .bringIntoViewOnFocus(),
                     )
                     if (state.confirmPasswordError != null) {
                         Spacer(modifier = Modifier.height(6.dp))
@@ -302,6 +320,18 @@ fun AuthScreenContent(
                         text = state.errorMessage,
                         color = colorScheme.error,
                         fontSize = 13.sp,
+                    )
+                }
+
+                if (state.isLoginMode) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.forgot_password),
+                        color = colorScheme.primary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
 
@@ -410,3 +440,19 @@ private fun fieldColors() = OutlinedTextFieldDefaults.colors(
     errorBorderColor = MaterialTheme.colorScheme.error,
     errorContainerColor = MaterialTheme.colorScheme.surfaceContainer,
 )
+
+private fun Modifier.bringIntoViewOnFocus(): Modifier = composed {
+    val requester = remember { BringIntoViewRequester() }
+    val coroutineScope = rememberCoroutineScope()
+
+    this
+        .bringIntoViewRequester(requester)
+        .onFocusEvent { focusState ->
+            if (focusState.isFocused) {
+                coroutineScope.launch {
+                    delay(300)
+                    requester.bringIntoView()
+                }
+            }
+        }
+}
