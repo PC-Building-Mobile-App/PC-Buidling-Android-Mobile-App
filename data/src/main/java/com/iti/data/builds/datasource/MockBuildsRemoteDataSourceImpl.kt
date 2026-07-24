@@ -48,27 +48,20 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getBuildsByCategory(categoryId: String): Result<List<BuildDto>> = safeCall {
         delay(1500.milliseconds)
-        mutex.withLock { savedBuilds[categoryId]?.toList() ?: emptyList() }
+        mutex.withLock { savedBuilds[categoryId.uppercase()]?.toList() ?: emptyList() }
     }
 
     override suspend fun generateBuild(request: GenerateBuildRequestDto): Result<GeneratedBuildDto> = safeCall {
         delay(2500.milliseconds)
         val fullCatalog = catalog()
-        val existing = fullCatalog.filter { it.id in request.existingComponentIds }
-        val coveredCategories = existing.map { it.category }.toSet()
 
-        val components = if (request.mode == "NEW") {
-            fullCatalog.distinctByCategory()
-        } else {
-            existing + fullCatalog
-                .filter { it.category !in coveredCategories }
-                .distinctByCategory()
-        }
+        val components = fullCatalog.distinctByCategory()
 
         GeneratedBuildDto(
             components = components,
             totalPrice = components.sumOf { it.price },
-            compatibilityReport = CompatibilityReportDto(compatible = true),
+            reasoning = "Generated build based on prompt: ${request.prompt}",
+            compatibilityOk = true,
         )
     }
 
@@ -107,17 +100,12 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         val now = "2026-07-20T12:17:17.000000"
 
         mutex.withLock {
-            val existingEntry = request.buildId?.let { id -> findBuildById(id) }
-            val previousItems = existingEntry?.second?.items.orEmpty()
-
-            val items = request.componentIds.mapNotNull { id ->
-                fullCatalog.firstOrNull { it.id == id }?.toItem()
-                    ?: previousItems.firstOrNull { it.id == id }
+            val items = request.items.mapNotNull { itemReq ->
+                fullCatalog.firstOrNull { it.id == itemReq.productId }?.toItem()
             }
             val totalPrice = items.sumOf { it.subtotal }
 
-            val isIncompatible = request.name.equals("My Gaming Rig", ignoreCase = true) ||
-                    items.any { it.productName.contains("AMD Ryzen 9") } && items.any { it.productName.contains("ASUS ROG Crosshair") }.not() && request.name.contains("Incompatible")
+            val isIncompatible = request.name.equals("My Gaming Rig", ignoreCase = true)
 
             val compatible = !isIncompatible
             val issues = if (isIncompatible) {
@@ -140,44 +128,22 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                 )
             } else null
 
-            if (existingEntry != null) {
-                val (oldCategoryId, oldBuild) = existingEntry
-                val updated = oldBuild.copy(
-                    name = request.name,
-                    totalPrice = totalPrice,
-                    compatible = compatible,
-                    items = items,
-                    issues = issues,
-                    alternatives = alternatives,
-                    updatedAt = now,
-                )
-                savedBuilds[oldCategoryId]?.removeAll { it.id == updated.id }
-                savedBuilds.getOrPut(request.categoryId) { mutableListOf() }.add(0, updated)
-                updated
-            } else {
-                val newBuild = BuildDto(
-                    id = buildIdCounter.incrementAndGet().toInt(),
-                    name = request.name,
-                    totalPrice = totalPrice,
-                    compatible = compatible,
-                    items = items,
-                    issues = issues,
-                    alternatives = alternatives,
-                    createdAt = now,
-                    updatedAt = now,
-                )
-                savedBuilds.getOrPut(request.categoryId) { mutableListOf() }.add(0, newBuild)
-                newBuild
-            }
+            val newBuild = BuildDto(
+                id = buildIdCounter.incrementAndGet().toInt(),
+                name = request.name,
+                type = request.type,
+                typeDisplayName = request.type,
+                totalPrice = totalPrice,
+                compatible = compatible,
+                items = items,
+                issues = issues,
+                alternatives = alternatives,
+                createdAt = now,
+                updatedAt = now,
+            )
+            savedBuilds.getOrPut(request.type.uppercase()) { mutableListOf() }.add(0, newBuild)
+            newBuild
         }
-    }
-
-    private fun findBuildById(buildId: String): Pair<String, BuildDto>? {
-        savedBuilds.forEach { (categoryId, builds) ->
-            val match = builds.firstOrNull { it.id.toString() == buildId }
-            if (match != null) return categoryId to match
-        }
-        return null
     }
 
     private fun categoryForSavedItemId(id: Long): String? {
@@ -205,14 +171,15 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         val supportedCategoryNames = setOf("CPU", "MOTHERBOARD", "GPU", "PSU", "CASE", "COOLER", "MEMORY")
 
         val seedBuilds: Map<String, List<BuildDto>> = mapOf(
-            "gaming" to listOf(
+            "GAMING" to listOf(
                 BuildDto(
                     id = 12,
                     name = "My Gaming Rig",
+                    type = "GAMING",
+                    typeDisplayName = "Gaming",
                     totalPrice = 45230.00,
                     compatible = false,
                     items = listOf(
-                        // FIXED: Appended 'L' to IDs to properly match Kotlin's Long type
                         BuildItemDto(101L, "AMD Ryzen 9 7950X", "CPU", 35000.0, 1, 35000.0),
                         BuildItemDto(202L, "MSI MAG B760 TOMAHAWK", "MOTHERBOARD", 6500.0, 1, 6500.0),
                         BuildItemDto(307L, "Aerocool Cylon Mini", "CASE", 1200.0, 1, 1200.0),
@@ -239,6 +206,8 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                 BuildDto(
                     id = 1,
                     name = "Ultimate 4K Gaming Rig",
+                    type = "GAMING",
+                    typeDisplayName = "Gaming",
                     totalPrice = 125500.0,
                     compatible = true,
                     items = listOf(
@@ -258,6 +227,8 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                 BuildDto(
                     id = 2,
                     name = "Mid-Range 1440p Master",
+                    type = "GAMING",
+                    typeDisplayName = "Gaming",
                     totalPrice = 54700.0,
                     compatible = true,
                     items = listOf(
@@ -277,6 +248,8 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
                 BuildDto(
                     id = 3,
                     name = "Budget 1080p Blaster",
+                    type = "GAMING",
+                    typeDisplayName = "Gaming",
                     totalPrice = 27700.0,
                     compatible = true,
                     items = listOf(
@@ -297,12 +270,12 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         )
 
         val mockBuildCategories = listOf(
-            BuildCategoryDto("gaming", "Gaming", "High FPS, max settings", 0, "GAMING"),
-            BuildCategoryDto("programming", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("content_creation", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
-            BuildCategoryDto("office", "Office", "Productivity & speed", 0, "OFFICE"),
-            BuildCategoryDto("ai_workstation", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
-            BuildCategoryDto("dream_builds", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
+            BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
+            BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
+            BuildCategoryDto("CONTENT_CREATION", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
+            BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
+            BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
+            BuildCategoryDto("DREAM_BUILDS", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
         )
     }
 }

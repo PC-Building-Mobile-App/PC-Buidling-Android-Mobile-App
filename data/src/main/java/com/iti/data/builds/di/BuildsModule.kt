@@ -1,7 +1,7 @@
 package com.iti.data.builds.di
 
 import com.iti.data.builds.datasource.BuildsRemoteDataSource
-import com.iti.data.builds.datasource.MockBuildsRemoteDataSourceImpl
+import com.iti.data.builds.datasource.BuildsRemoteDataSourceImpl
 import com.iti.data.builds.repository.BuildsRepositoryImpl
 import com.iti.domain.builds.repository.BuildsRepository
 import dagger.Binds
@@ -16,7 +16,7 @@ abstract class BuildsModule {
 
     @Binds
     @Singleton
-    abstract fun bindBuildsRemoteDataSource(impl: MockBuildsRemoteDataSourceImpl): BuildsRemoteDataSource
+    abstract fun bindBuildsRemoteDataSource(impl: BuildsRemoteDataSourceImpl): BuildsRemoteDataSource
 
     @Binds
     @Singleton

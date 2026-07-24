@@ -289,7 +289,7 @@ private fun ComponentWarningBanner(
             .clip(MaterialTheme.shapes.small)
             .background(WarningOrange.copy(alpha = 0.14f))
             .padding(horizontal = 10.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(

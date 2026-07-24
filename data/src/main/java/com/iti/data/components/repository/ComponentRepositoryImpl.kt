@@ -55,11 +55,13 @@ class ComponentRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> {
-        return mockDataSource.getComponents().map { dataModels ->
-            dataModels
-                .filter { it.category.equals(category.name, ignoreCase = true) }
-                .mapNotNull { it.toDomain() }
-        }
+    override fun getComponentsByCategory(category: ComponentCategoryType): Flow<List<Component>> = flow {
+        val result = remoteDataSource.getAllProducts(
+            page = 0,
+            size = 50,
+            category = category.name
+        )
+        val dataModels = result.getOrThrow().content
+        emit(dataModels.toDomain())
     }
 }
