@@ -22,4 +22,24 @@ data class UserDto(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("email") val email: String,
+    @SerialName("role") val role: String = "USER",
+)
+
+@Serializable
+data class LoginRequestDto(
+    @SerialName("email") val email: String,
+    @SerialName("password") val password: String,
+)
+
+@Serializable
+data class RegisterRequestDto(
+    @SerialName("name") val name: String,
+    @SerialName("email") val email: String,
+    @SerialName("password") val password: String,
+)
+
+@Serializable
+data class ErrorResponseDto(
+    @SerialName("status") val status: Boolean = false,
+    @SerialName("message") val message: String = "",
 )

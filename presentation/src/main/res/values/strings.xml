@@ -159,4 +159,10 @@
     <string name="ai_overview_expand">Expand</string>
     <string name="ai_limit_reached">AI limit reached. Please try again in a minute.</string>
     <string name="ai_unavailable">AI insights unavailable right now.</string>
+    <string name="confirm_password">CONFIRM PASSWORD</string>
+    <string name="re_enter_your_password">Re-enter your password</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_your_full_name">Enter your full name</string>
+    <string name="full_name">FULL NAME</string>
 </resources>
