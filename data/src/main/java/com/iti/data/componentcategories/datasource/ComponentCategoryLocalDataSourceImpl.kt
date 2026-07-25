@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 class ComponentCategoryLocalDataSourceImpl @Inject constructor() : ComponentCategoryDataSource {
 
-    // TODO: Replace with real Counts
     override fun getCategories(): Flow<List<ComponentCategoryDataModel>> {
         val staticCategories = listOf(
             ComponentCategoryDataModel(id = "CPU", name = "Processors", partsCount = 412),

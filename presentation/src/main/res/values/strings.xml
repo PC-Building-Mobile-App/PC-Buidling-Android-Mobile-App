@@ -165,4 +165,11 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="enter_your_full_name">Enter your full name</string>
     <string name="full_name">FULL NAME</string>
+    <string name="account">ACCOUNT</string>
+    <string name="saved_builds">Saved Builds</string>
+    <string name="language_region"><![CDATA[Language & Region]]></string>
+    <string name="sign_out">Sign Out</string>
+    <string name="choose_language">Choose language</string>
+    <string name="close">Close</string>
+    <string name="edit_profile">Edit profile</string>
 </resources>

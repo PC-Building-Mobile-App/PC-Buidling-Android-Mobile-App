@@ -31,6 +31,7 @@ import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
 import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
 import com.iti.presentation.parts.screens.PartsScreen
+import com.iti.presentation.profile.screens.ProfileScreen
 
 @Composable
 fun MainNavigation(
@@ -182,7 +183,11 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
-                        ScreenPlaceholder(title = "Profile")
+                        ProfileScreen(
+                            onNavigateToSavedBuilds = {
+                                currentTab = TopLevelRoute.MY_PCS
+                            },
+                        )
                     }
 
                     entry<PartsDetailRoute> { route ->

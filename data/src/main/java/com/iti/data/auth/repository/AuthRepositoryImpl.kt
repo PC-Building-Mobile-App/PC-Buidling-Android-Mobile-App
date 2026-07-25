@@ -32,5 +32,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun isLoggedIn(): Flow<Boolean> = tokenStorage.isLoggedIn
 
+    override fun observeCurrentUser(): Flow<AuthUser?> = tokenStorage.currentUser
+
     override suspend fun logout() = tokenStorage.clearSession()
 }
