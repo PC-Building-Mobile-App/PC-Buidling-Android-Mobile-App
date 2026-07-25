@@ -165,4 +165,5 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="enter_your_full_name">Enter your full name</string>
     <string name="full_name">FULL NAME</string>
+    <string name="generate_build_purpose_required_message">Select a purpose before generating a build</string>
 </resources>

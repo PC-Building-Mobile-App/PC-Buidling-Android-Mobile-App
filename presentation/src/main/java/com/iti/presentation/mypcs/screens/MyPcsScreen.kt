@@ -41,12 +41,21 @@ import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun MyPcsScreen(
+    modifier: Modifier = Modifier,
+    shouldRefresh: Boolean = false,
+    onRefreshHandled: () -> Unit = {},
     onNewBuildClick: () -> Unit,
     onCategoryClick: (BuildCategoryUiModel) -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: MyPcsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(shouldRefresh) {
+        if (shouldRefresh) {
+            viewModel.onEvent(Event.LoadBuildCategories)
+            onRefreshHandled()
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect { effect ->

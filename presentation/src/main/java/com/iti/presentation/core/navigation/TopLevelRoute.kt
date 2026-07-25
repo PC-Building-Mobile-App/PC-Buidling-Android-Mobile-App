@@ -28,7 +28,7 @@ enum class TopLevelRoute(
         unselectedIcon = R.drawable.ic_nav_ai,
     ),
     MY_PCS(
-        route = MyPcsRoute,
+        route = MyPcsRoute(),
         label = "My PCs",
         selectedIcon = R.drawable.ic_nav_my_pcs_filled,
         unselectedIcon = R.drawable.ic_nav_my_pcs,
