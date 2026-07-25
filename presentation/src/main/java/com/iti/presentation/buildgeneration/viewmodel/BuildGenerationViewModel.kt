@@ -242,11 +242,22 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun generateBuild() {
         val current = state.value
+
+        if (current.selectedCategoryType == null) {
+            sendEffect(
+                Effect.ShowMessage(
+                    message = UiText.StringResource(R.string.generate_build_purpose_required_message),
+                    isError = true
+                )
+            )
+            return
+        }
+
         val existingIds = current.slots.mapNotNull { it.component?.id }
 
         val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
-            purpose = current.selectedCategoryType?.let { listOf(it) } ?: emptyList(),
+            purpose = listOf(current.selectedCategoryType),
             brandPreference = current.selectedBrands.toList(),
             isEditingExistingBuild = current.isEditingExistingBuild,
             existingComponentIds = existingIds,

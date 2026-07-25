@@ -41,8 +41,8 @@ import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun MyPcsScreen(
-    shouldRefresh: Boolean = false,
     modifier: Modifier = Modifier,
+    shouldRefresh: Boolean = false,
     onRefreshHandled: () -> Unit = {},
     onNewBuildClick: () -> Unit,
     onCategoryClick: (BuildCategoryUiModel) -> Unit,
