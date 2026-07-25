@@ -165,13 +165,6 @@ private fun MyPcsScreenPreview() {
                         type = BuildCategoryType.PROGRAMMING
                     ),
                     BuildCategoryUiModel(
-                        id = "content_creation",
-                        name = "Content Creation",
-                        description = "4K editing, rendering",
-                        buildsCount = 2,
-                        type = BuildCategoryType.CONTENT_CREATION
-                    ),
-                    BuildCategoryUiModel(
                         id = "office",
                         name = "Office",
                         description = "Productivity & speed",
@@ -184,13 +177,6 @@ private fun MyPcsScreenPreview() {
                         description = "Deep learning, tensor computation",
                         buildsCount = 4,
                         type = BuildCategoryType.AI_WORKSTATION
-                    ),
-                    BuildCategoryUiModel(
-                        id = "dream_builds",
-                        name = "Dream Builds",
-                        description = "No budget limits, custom loops",
-                        buildsCount = 7,
-                        type = BuildCategoryType.DREAM_BUILDS
                     ),
                 ),
             ),

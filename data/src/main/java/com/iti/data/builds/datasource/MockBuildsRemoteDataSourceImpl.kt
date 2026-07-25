@@ -146,6 +146,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto> = safeCall {
+        saveBuild(request).getOrThrow()
+    }
+
     private fun categoryForSavedItemId(id: Long): String? {
         savedBuilds.values.forEach { builds ->
             builds.forEach { build ->
@@ -272,10 +276,8 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         val mockBuildCategories = listOf(
             BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
             BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("CONTENT_CREATION", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
             BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
             BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
-            BuildCategoryDto("DREAM_BUILDS", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
         )
     }
 }

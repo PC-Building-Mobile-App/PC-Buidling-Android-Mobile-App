@@ -175,8 +175,8 @@ private fun BuildGenerationScreenContent(
 
         item {
             PurposeSelector(
-                selectedCategoryTypes = state.selectedCategoryTypes,
-                onCategoryTypeToggled = { onEvent(Event.CategoryTypeToggled(it)) },
+                selectedCategoryType = state.selectedCategoryType,
+                onCategoryTypeSelected = { onEvent(Event.CategoryTypeToggled(it)) },
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
         }
