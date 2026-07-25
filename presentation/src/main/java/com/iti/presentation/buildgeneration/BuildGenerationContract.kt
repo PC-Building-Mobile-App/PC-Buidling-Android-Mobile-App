@@ -70,6 +70,7 @@ object BuildGenerationContract {
 
     sealed interface Effect {
         data object NavigateBack : Effect
+        data object NavigateBackWithSaveSuccess : Effect
         data class ShowMessage(val message: UiText, val isError: Boolean = true) : Effect
     }
 }

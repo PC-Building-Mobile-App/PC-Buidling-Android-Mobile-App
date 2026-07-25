@@ -398,7 +398,11 @@ class BuildGenerationViewModel @Inject constructor(
             saveBuildUseCase(request)
                 .onSuccess {
                     updateState { it.copy(isSaving = false, generatedSlotCategories = emptySet()) }
-                    sendEffect(Effect.NavigateBack)
+                    if (current.editingBuildId == null) {
+                        sendEffect(Effect.NavigateBackWithSaveSuccess)
+                    } else {
+                        sendEffect(Effect.NavigateBack)
+                    }
                 }
                 .onFailure { throwable ->
                     updateState {

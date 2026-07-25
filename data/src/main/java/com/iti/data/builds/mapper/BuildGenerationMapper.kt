@@ -20,7 +20,23 @@ import com.iti.domain.builds.model.SaveBuildRequest
 fun GenerateBuildRequest.toDto(): GenerateBuildRequestDto {
     val usageType = purpose.firstOrNull()?.name ?: BuildCategoryType.GAMING.name
     val brand = brandPreference.firstOrNull()
-    val promptText = "Build me a ${usageType.replace("_", " ").lowercase()} PC with budget ${budget.toInt()}"
+
+    val promptText = buildString {
+        append(
+            "Build me a ${
+                usageType.replace("_", " ").lowercase()
+            } PC with budget ${budget.toInt()}"
+        )
+        if (existingComponentIds.isNotEmpty()) {
+            append(
+                ", keeping these existing component IDs and filling in the rest: ${
+                    existingComponentIds.joinToString(
+                        ", "
+                    )
+                }"
+            )
+        }
+    }
 
     return GenerateBuildRequestDto(
         prompt = promptText,
