@@ -21,7 +21,6 @@ fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
     type = runCatching { BuildCategoryType.valueOf(type) }.getOrDefault(BuildCategoryType.GAMING),
 )
 
-// FIXED: Safely converts string to Enum and returns null if the category is unsupported
 fun BuildItemDto.toDomain(): Component? {
     val enumCategory = runCatching { ComponentCategoryType.valueOf(category.uppercase()) }.getOrNull()
         ?: return null
@@ -31,9 +30,10 @@ fun BuildItemDto.toDomain(): Component? {
         vendorName = "",
         category = enumCategory,
         productName = productName,
-        productImage = "",
+        productImage = imageUrl ?: "",
         price = price,
         inStock = true,
+        images = images,
     )
 }
 

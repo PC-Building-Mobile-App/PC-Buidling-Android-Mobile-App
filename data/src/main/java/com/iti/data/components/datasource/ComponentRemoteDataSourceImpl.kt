@@ -11,9 +11,12 @@ class ComponentRemoteDataSourceImpl @Inject constructor(
     private val apiService: ComponentApiService
 ) : ComponentRemoteDataSource {
 
-    override suspend fun getRandomComponents(category: String, limit: Int): Result<List<ComponentDataModel>> = safeCall {
+    override suspend fun getRandomComponents(
+        category: String,
+        limit: Int
+    ): Result<List<ComponentDataModel>> = safeCall {
         val response = apiService.getRandomDeals(category, limit)
-        if (response.status) {
+        if (response.status && response.data != null) {
             response.data
         } else {
             throw ServerException.Generic(
@@ -29,7 +32,7 @@ class ComponentRemoteDataSourceImpl @Inject constructor(
         category: String?
     ): Result<PageResponse<ComponentDataModel>> = safeCall {
         val response = apiService.getAllProducts(page, size, category)
-        if (response.status) {
+        if (response.status && response.data != null) {
             response.data
         } else {
             throw ServerException.Generic(
@@ -55,7 +58,7 @@ class ComponentRemoteDataSourceImpl @Inject constructor(
             page,
             size
         )
-        if (response.status) {
+        if (response.status && response.data != null) {
             response.data
         } else {
             throw ServerException.Generic(

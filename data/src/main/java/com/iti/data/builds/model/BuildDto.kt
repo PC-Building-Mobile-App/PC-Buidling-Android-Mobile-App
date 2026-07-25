@@ -7,11 +7,13 @@ import kotlinx.serialization.Serializable
 data class BuildDto(
     val id: Int,
     val name: String,
+    val type: String = "",
+    val typeDisplayName: String = "",
     val totalPrice: Double,
     val compatible: Boolean,
     val items: List<BuildItemDto>,
-    val issues: List<BuildIssueDto>?,
-    val alternatives: Map<String, List<AlternativeDto>>?,
+    val issues: List<BuildIssueDto>? = null,
+    val alternatives: Map<String, List<AlternativeDto>>? = null,
     val createdAt: String,
     val updatedAt: String,
 )
@@ -24,6 +26,8 @@ data class BuildItemDto(
     val price: Double,
     val quantity: Int,
     val subtotal: Double,
+    val imageUrl: String? = null,
+    val images: List<String> = emptyList(),
 )
 
 @Serializable
