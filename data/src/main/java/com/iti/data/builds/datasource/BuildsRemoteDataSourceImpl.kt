@@ -81,6 +81,18 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto> = safeCall {
+        val response = apiService.updateBuild(buildId, request)
+        if (response.status && response.data != null) {
+            response.data
+        } else {
+            throw ServerException.Generic(
+                message = response.message,
+                code = 400
+            )
+        }
+    }
+
     private companion object {
         val mockBuildCategories = listOf(
             BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),

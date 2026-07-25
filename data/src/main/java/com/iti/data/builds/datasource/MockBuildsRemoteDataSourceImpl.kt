@@ -146,6 +146,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto> = safeCall {
+        saveBuild(request).getOrThrow()
+    }
+
     private fun categoryForSavedItemId(id: Long): String? {
         savedBuilds.values.forEach { builds ->
             builds.forEach { build ->

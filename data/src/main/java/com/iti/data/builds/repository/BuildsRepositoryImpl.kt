@@ -33,7 +33,14 @@ class BuildsRepositoryImpl @Inject constructor(
     override suspend fun checkCompatibility(request: CompatibilityCheckRequest): Result<CompatibilityReport> =
         remoteDataSource.checkCompatibility(request.toDto()).map { it.toDomain() }
 
-    override suspend fun saveBuild(request: SaveBuildRequest): Result<Build> =
-        remoteDataSource.saveBuild(request.toDto())
-            .map { it.toDomain() }
+    override suspend fun saveBuild(request: SaveBuildRequest): Result<Build> {
+        val dto = request.toDto()
+        val buildId = request.buildId
+        val result = if (!buildId.isNullOrBlank()) {
+            remoteDataSource.updateBuild(buildId, dto)
+        } else {
+            remoteDataSource.saveBuild(dto)
+        }
+        return result.map { it.toDomain() }
+    }
 }

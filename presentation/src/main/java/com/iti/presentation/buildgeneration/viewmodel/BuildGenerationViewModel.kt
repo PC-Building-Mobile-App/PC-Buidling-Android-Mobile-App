@@ -249,7 +249,6 @@ class BuildGenerationViewModel @Inject constructor(
 
         val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
-            // Uses directly from Branch 2
             purpose = current.selectedCategoryTypes.toList(),
             brandPreference = current.selectedBrands.toList(),
             isEditingExistingBuild = current.isEditingExistingBuild,

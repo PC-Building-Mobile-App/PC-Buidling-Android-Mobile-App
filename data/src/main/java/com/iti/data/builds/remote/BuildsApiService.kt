@@ -16,6 +16,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -57,6 +58,15 @@ class BuildsApiService @Inject constructor(
     suspend fun saveBuild(request: SaveBuildRequestDto): ApiResponse<BuildDto> {
         val authHeader = getAuthHeader()
         return httpClient.post("$baseUrl/bundles") {
+            contentType(ContentType.Application.Json)
+            authHeader?.let { header(HttpHeaders.Authorization, it) }
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): ApiResponse<BuildDto> {
+        val authHeader = getAuthHeader()
+        return httpClient.put("$baseUrl/bundles/$buildId") {
             contentType(ContentType.Application.Json)
             authHeader?.let { header(HttpHeaders.Authorization, it) }
             setBody(request)

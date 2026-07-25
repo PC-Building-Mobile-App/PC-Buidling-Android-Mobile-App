@@ -32,6 +32,6 @@ fun Throwable.toAppException(): AppException {
 
         is IOException -> NetworkException.NoInternet
         is AppException -> this
-        else -> AppException.Unknown(this.message ?: "An unexpected error occurred", this)
+        else -> AppException.Unknown("An unexpected error occurred", this)
     }
 }

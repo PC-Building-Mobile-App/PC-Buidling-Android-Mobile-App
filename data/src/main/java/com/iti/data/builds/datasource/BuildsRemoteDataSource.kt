@@ -14,4 +14,5 @@ interface BuildsRemoteDataSource {
     suspend fun generateBuild(request: GenerateBuildRequestDto): Result<GeneratedBuildDto>
     suspend fun checkCompatibility(request: CompatibilityCheckRequestDto): Result<CompatibilityReportDto>
     suspend fun saveBuild(request: SaveBuildRequestDto): Result<BuildDto>
+    suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto>
 }
