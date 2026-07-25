@@ -29,7 +29,7 @@ object CategoryBuildsContract {
         data object NavigateBack : Effect
         data class NavigateToNewBuild(val category: BuildCategoryUiModel) : Effect
         data class NavigateToEditBuild(val build: BuildUiModel) : Effect
-        data class ShareBuild(val buildId: String) : Effect
-        data class ExportBuild(val buildId: String) : Effect
+        data class ShareBuild(val build: BuildUiModel) : Effect
+        data class ExportBuild(val build: BuildUiModel) : Effect
     }
 }
