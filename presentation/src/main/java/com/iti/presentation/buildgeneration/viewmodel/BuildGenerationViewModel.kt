@@ -75,7 +75,7 @@ class BuildGenerationViewModel @Inject constructor(
         updateState {
             it.copy(
                 category = category,
-                selectedCategoryTypes = category?.type?.let { type -> setOf(type) } ?: emptySet(),
+                selectedCategoryType = category?.type,
                 isEditingExistingBuild = editingBuild != null,
                 editingBuildId = editingBuild?.id,
                 budget = editingBuild?.totalPrice?.toFloat() ?: it.budget,
@@ -97,7 +97,6 @@ class BuildGenerationViewModel @Inject constructor(
     ) {
         updateState { state ->
             val updatedSlots = ComponentCategoryType.entries.map { categoryType ->
-                // Clean Enum comparison from Branch 1
                 val matchingComponent = components.find { it.category == categoryType }
                 val matchingIssue = issues.find {
                     it.category.equals(categoryType.name, ignoreCase = true)
@@ -137,9 +136,7 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun toggleCategoryType(type: BuildCategoryType) {
         updateState { current ->
-            val updated = current.selectedCategoryTypes.toMutableSet()
-            if (!updated.add(type)) updated.remove(type)
-            current.copy(selectedCategoryTypes = updated)
+            current.copy(selectedCategoryType = if (current.selectedCategoryType == type) null else type)
         }
     }
 
@@ -249,7 +246,7 @@ class BuildGenerationViewModel @Inject constructor(
 
         val request = GenerateBuildRequest.create(
             budget = current.budget.toDouble(),
-            purpose = current.selectedCategoryTypes.toList(),
+            purpose = current.selectedCategoryType?.let { listOf(it) } ?: emptyList(),
             brandPreference = current.selectedBrands.toList(),
             isEditingExistingBuild = current.isEditingExistingBuild,
             existingComponentIds = existingIds,
@@ -350,7 +347,7 @@ class BuildGenerationViewModel @Inject constructor(
         }
 
         val targetCategoryId = current.category?.id
-            ?: current.categories.firstOrNull { it.type in current.selectedCategoryTypes }?.id
+            ?: current.categories.firstOrNull { it.type == current.selectedCategoryType }?.id
 
         if (targetCategoryId == null) {
             sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_missing_category_message)))
@@ -379,7 +376,7 @@ class BuildGenerationViewModel @Inject constructor(
         }
 
         val targetCategoryId = current.category?.id
-            ?: current.categories.firstOrNull { it.type in current.selectedCategoryTypes }?.id
+            ?: current.categories.firstOrNull { it.type == current.selectedCategoryType }?.id
 
         if (targetCategoryId == null) {
             sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_missing_category_message)))

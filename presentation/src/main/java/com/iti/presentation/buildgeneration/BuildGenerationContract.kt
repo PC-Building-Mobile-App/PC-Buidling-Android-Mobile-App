@@ -25,7 +25,7 @@ object BuildGenerationContract {
             )
         },
         val budget: Float = DEFAULT_BUDGET,
-        val selectedCategoryTypes: Set<BuildCategoryType> = emptySet(),
+        val selectedCategoryType: BuildCategoryType? = null,
         val selectedBrands: Set<String> = emptySet(),
         val isGenerating: Boolean = false,
         val generatedBuild: GeneratedBuildUiModel? = null,

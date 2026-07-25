@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -42,10 +44,11 @@ import com.iti.presentation.ui.theme.AppTheme
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PurposeSelector(
-    selectedCategoryTypes: Set<BuildCategoryType>,
-    onCategoryTypeToggled: (BuildCategoryType) -> Unit,
+    selectedCategoryType: BuildCategoryType?,
+    onCategoryTypeSelected: (BuildCategoryType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val columns = 3
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.purpose_section_title),
@@ -53,19 +56,25 @@ fun PurposeSelector(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 8.dp),
         )
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            maxItemsInEachRow = 3
-        ) {
-            BuildCategoryType.entries.forEach { type ->
-                PurposeCard(
-                    type = type,
-                    selected = type in selectedCategoryTypes,
-                    onClick = { onCategoryTypeToggled(type) },
-                    modifier = Modifier.weight(1f)
-                )
+        BuildCategoryType.entries.chunked(columns).forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                rowItems.forEach { type ->
+                    PurposeCard(
+                        type = type,
+                        selected = type == selectedCategoryType,
+                        onClick = { onCategoryTypeSelected(type) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                repeat(columns - rowItems.size) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+            if (rowItems != BuildCategoryType.entries.chunked(columns).last()) {
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
@@ -156,6 +165,6 @@ private fun PurposeCard(
 @Composable
 private fun PurposeSelectorPreview() {
     AppTheme {
-        PurposeSelector(selectedCategoryTypes = setOf(BuildCategoryType.GAMING), onCategoryTypeToggled = {})
+        PurposeSelector(selectedCategoryType = BuildCategoryType.GAMING, onCategoryTypeSelected = {})
     }
 }
