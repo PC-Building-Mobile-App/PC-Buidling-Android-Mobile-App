@@ -146,21 +146,26 @@ object AiChatPdfUtil {
                 y += 24f
 
                 for (product in message.mentionedProducts) {
-                    ensureSpace(40f)
-                    
                     val bulletPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                         textSize = 12f
                         color = colorTextPrimary
                         typeface = Typeface.DEFAULT_BOLD
                     }
-                    canvas.drawText("• ${product.productName}", marginX, y, bulletPaint)
-                    y += 16f
-                    
                     val pricePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                         textSize = 11f
                         color = colorTextSecondary
                         typeface = Typeface.DEFAULT
                     }
+
+                    val nameLines = wrapText("• ${product.productName}", bulletPaint, pageWidth - marginX * 2)
+                    val blockHeight = nameLines.size * 16f + 20f
+                    ensureSpace(blockHeight)
+
+                    nameLines.forEach { line ->
+                        canvas.drawText(line, marginX, y, bulletPaint)
+                        y += 16f
+                    }
+                    
                     canvas.drawText("${product.category.name} | ${product.formattedPrice}", marginX + 15f, y, pricePaint)
                     y += 20f
                 }
