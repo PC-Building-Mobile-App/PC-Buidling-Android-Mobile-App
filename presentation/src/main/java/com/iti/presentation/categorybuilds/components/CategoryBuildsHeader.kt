@@ -25,10 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.domain.builds.model.BuildCategoryType
@@ -38,13 +40,16 @@ import com.iti.presentation.mypcs.model.gradient
 import com.iti.presentation.mypcs.model.iconRes
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.DeepBlack
+import com.iti.presentation.ui.theme.PrimaryGradient
 
 @Composable
 fun CategoryBuildsHeader(
     categoryName: String,
     categoryDescription: String,
     categoryType: BuildCategoryType,
+    isSelectionMode: Boolean,
     onBackClick: () -> Unit,
+    onCompareToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -120,7 +125,7 @@ fun CategoryBuildsHeader(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.category_builds_title, categoryName),
                     style = MaterialTheme.typography.titleLarge,
@@ -130,6 +135,28 @@ fun CategoryBuildsHeader(
                     text = categoryDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .then(
+                        if (isSelectionMode) {
+                            Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+                        } else {
+                            Modifier.background(brush = PrimaryGradient)
+                        }
+                    )
+                    .clickable(onClick = onCompareToggle)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = if (isSelectionMode) stringResource(R.string.cancel_label) 
+                           else stringResource(R.string.compare_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (isSelectionMode) MaterialTheme.colorScheme.onSurface else Color.White,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -144,7 +171,9 @@ private fun CategoryBuildsHeaderPreview() {
             categoryName = "Gaming",
             categoryDescription = "High FPS, max settings",
             categoryType = BuildCategoryType.GAMING,
+            isSelectionMode = false,
             onBackClick = {},
+            onCompareToggle = {},
         )
     }
 }

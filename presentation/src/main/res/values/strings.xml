@@ -165,4 +165,19 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="enter_your_full_name">Enter your full name</string>
     <string name="full_name">FULL NAME</string>
+    <string name="selected_builds">Selected Builds</string>
+    <string name="exit_compare">Exit Compare</string>
+    <string name="select_more_to_compare">Select %1$d more to compare</string>
+    <string name="compare_n">Compare (%1$d)</string>
+    <string name="comparison_results_title">Comparison Results</string>
+    <string name="ai_recommendation_title">AI Recommendation</string>
+    <string name="detailed_comparison_title">Detailed Comparison</string>
+    <string name="not_included_placeholder">Not included</string>
+    <string name="change_selection_action">Change Selection</string>
+    <string name="compare_label">Compare</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="build_label_format">BUILD %1$s</string>
+    <string name="compatible_status">Compatible</string>
+    <string name="incompatible_status">Incompatible</string>
+    <string name="difference_label">Difference</string>
 </resources>
