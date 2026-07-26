@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +32,7 @@ fun CategoryChipsRow(
         itemsIndexed(categories) { index, category ->
             val isSelected = index == selectedIndex
             val iconRes = getCategoryIcon(category)
-            
+
             FilterChip(
                 selected = isSelected,
                 onClick = { onCategorySelected(index) },
@@ -72,7 +71,7 @@ fun CategoryChipsRow(
 
 @Composable
 fun ComparisonHeader(
-    builds: List<Build>, 
+    builds: List<Build>,
     isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -97,8 +96,11 @@ fun ComparisonHeader(
         } else {
             builds.forEachIndexed { index, build ->
                 BuildComparisonCard(
-                    build = build, 
-                    label = stringResource(R.string.build_label_format, if (index == 0) "A" else "B"),
+                    build = build,
+                    label = stringResource(
+                        R.string.build_label_format,
+                        if (index == 0) "A" else "B"
+                    ),
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -124,7 +126,7 @@ fun ComparisonBottomBar(
                 .fillMaxWidth()
                 .height(54.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)),
             contentPadding = PaddingValues()
         ) {
             Box(
@@ -137,7 +139,7 @@ fun ComparisonBottomBar(
                     text = stringResource(R.string.change_selection_action),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

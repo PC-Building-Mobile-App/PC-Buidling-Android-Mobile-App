@@ -118,9 +118,7 @@ private fun CategoryBuildsScreenContent(
                     categoryName = state.category?.name.orEmpty(),
                     categoryDescription = state.category?.description.orEmpty(),
                     categoryType = state.category?.type ?: BuildCategoryType.GAMING,
-                    isSelectionMode = state.isSelectionMode,
                     onBackClick = { onEvent(Event.BackClicked) },
-                    onCompareToggle = { onEvent(Event.ToggleSelectionMode) }
                 )
             }
 

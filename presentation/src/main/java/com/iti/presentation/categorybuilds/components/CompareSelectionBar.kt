@@ -15,15 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.graphicsLayer
 import com.iti.presentation.R
 import com.iti.presentation.categorybuilds.model.BuildUiModel
-import com.iti.presentation.ui.theme.DeepBlack
 import com.iti.presentation.ui.theme.PrimaryGradient
 
 @Composable
@@ -99,7 +97,9 @@ fun CompareSelectionBar(
                         .padding(horizontal = 20.dp)
                         .height(54.dp),
                     shape = MaterialTheme.shapes.medium,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)
+                    ),
                     contentPadding = PaddingValues()
                 ) {
                     val alpha = if (selectedBuilds.size >= 2) 1f else 0.5f
@@ -118,7 +118,7 @@ fun CompareSelectionBar(
                             },
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = if (selectedBuilds.size >= 2) Color.White else Color.White.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -149,7 +149,7 @@ private fun SelectedBuildChip(
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Remove",
+                contentDescription = stringResource(R.string.remove_component),
                 modifier = Modifier
                     .size(16.dp)
                     .clickable(onClick = onRemove),

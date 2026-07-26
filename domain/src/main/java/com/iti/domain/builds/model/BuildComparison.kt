@@ -8,7 +8,3 @@ data class BuildComparison(
     val recommendation: String
 )
 
-data class ComparisonResult(
-    val builds: List<Build>,
-    val comparison: BuildComparison
-)

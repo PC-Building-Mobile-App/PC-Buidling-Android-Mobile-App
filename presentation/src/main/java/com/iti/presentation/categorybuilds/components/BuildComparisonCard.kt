@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -23,7 +22,9 @@ import com.iti.domain.builds.model.Build
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.ui.theme.PrimaryGradient
+import com.iti.presentation.ui.theme.SuccessGreen
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun BuildComparisonCard(
@@ -84,7 +85,7 @@ fun BuildComparisonCard(
                         text = label,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
                 }
@@ -99,14 +100,14 @@ fun BuildComparisonCard(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = stringResource(R.string.price_format, String.format(Locale.getDefault(), "%,d", build.totalPrice.toInt())),
+                    text = stringResource(R.string.price_format, String.format(LocalLocale.current.platformLocale, "%,d", build.totalPrice.toInt())),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val statusColor = if (build.compatible) Color(0xFF2FCB8B) else MaterialTheme.colorScheme.error
+                    val statusColor = if (build.compatible) SuccessGreen else MaterialTheme.colorScheme.error
                     Icon(
                         imageVector = if (build.compatible) Icons.Default.CheckCircle else Icons.Default.Error,
                         contentDescription = null,
