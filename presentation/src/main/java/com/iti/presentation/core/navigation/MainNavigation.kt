@@ -30,6 +30,7 @@ import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
 import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
 import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
+import com.iti.presentation.partdetails.PartDetailsScreen
 import com.iti.presentation.parts.screens.PartsScreen
 import com.iti.presentation.profile.screens.ProfileScreen
 
@@ -51,6 +52,7 @@ fun MainNavigation(
     val activeBackStack = backStacks.getValue(currentTab)
     val currentRoute = activeBackStack.lastOrNull()
     val isOnBuildGeneration = currentRoute is BuildGenerationRoute
+    val isOnDetailScreen = currentRoute is PartsDetailRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -68,12 +70,15 @@ fun MainNavigation(
                                 activeBackStack.removeLastOrNull()
                             }
                         } else {
+                            val newStack = backStacks.getValue(tab)
+                            newStack.clear()
+                            newStack.add(tab.route)
                             currentTab = tab
                         }
                     },
                 )
             }
-        },
+        }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             NavDisplay(
@@ -82,6 +87,9 @@ fun MainNavigation(
                     if (activeBackStack.size > 1) {
                         activeBackStack.removeLastOrNull()
                     } else if (currentTab != TopLevelRoute.HOME) {
+                        val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                        homeStack.clear()
+                        homeStack.add(HomeRoute)  // ← fixed: no parentheses
                         currentTab = TopLevelRoute.HOME
                     }
                 },
@@ -112,9 +120,9 @@ fun MainNavigation(
                                     BuildGenerationRoute(),
                                 )
                             },
-                            onNavigateToComponentDetail = { componentId ->
+                            onNavigateToComponentDetail = { componentJson ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = componentId.toString()),
+                                    PartsDetailRoute(componentJson = componentJson),
                                 )
                             },
                             onNavigateToPartsWithCategory = { categoryId ->
@@ -160,9 +168,9 @@ fun MainNavigation(
                         PartsScreen(
                             initialQuery = route.initialQuery,
                             initialCategoryId = route.initialCategoryId,
-                            onNavigateToDetail = { partId ->
+                            onNavigateToDetail = { componentJson ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = partId),
+                                    PartsDetailRoute(componentJson = componentJson),
                                 )
                             },
                         )
@@ -203,16 +211,13 @@ fun MainNavigation(
                     }
 
                     entry<PartsDetailRoute> { route ->
-                        ScreenPlaceholder(
-                            title = "Part Detail",
-                            subtitle = "Part ID: ${route.partId}",
-                            onAction = {
-                                activeBackStack.navigateSingleTop(
-                                    ComparisonRoute(
-                                        firstPartId = route.partId,
-                                        secondPartId = "other-part-id",
-                                    ),
-                                )
+                        PartDetailsScreen(
+                            componentJson = route.componentJson,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            },
+                            onAddToBuildClick = { component ->
+                                activeBackStack.navigateSingleTop(BuildGenerationRoute())
                             },
                         )
                     }

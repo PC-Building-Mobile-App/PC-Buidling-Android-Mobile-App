@@ -10,6 +10,7 @@ import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.toUiText
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
 import com.iti.presentation.core.pccomponents.mapper.toUiModels
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.home.HomeContract.Effect
 import com.iti.presentation.home.HomeContract.Event
 import com.iti.presentation.home.HomeContract.State
@@ -18,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +50,10 @@ class HomeViewModel @Inject constructor(
             is Event.CategoryClicked -> sendEffect(Effect.NavigateToPartsWithCategory(event.category.id))
             is Event.SeeAllNewsClicked -> sendEffect(Effect.NavigateToHardwareNews)
             is Event.NewsClicked -> sendEffect(Effect.NavigateToNewsDetail(event.newsId))
-            is Event.ComponentClicked -> sendEffect(Effect.NavigateToComponentDetail(event.componentId))
+            is Event.ComponentClicked -> {
+                val json = Json.encodeToString(ComponentUiModel.serializer(), event.component)
+                sendEffect(Effect.NavigateToComponentDetail(json))
+            }
         }
     }
 
