@@ -173,4 +173,6 @@
     <string name="choose_language">Choose language</string>
     <string name="close">Close</string>
     <string name="edit_profile">Edit profile</string>
+    <string name="ai_generate_build_button">Generate build with AI</string>
+    <string name="ai_badge_label">AI</string>
 </resources>

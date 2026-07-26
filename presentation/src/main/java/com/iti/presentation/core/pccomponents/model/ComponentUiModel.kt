@@ -20,3 +20,10 @@ data class ComponentUiModel(
     val specs: Map<String, String> = emptyMap(),
     val images: List<String> = emptyList()
 )
+
+val ComponentUiModel.priceValue: Double
+    get() = formattedPrice
+        .replace("EGP", "")
+        .replace(",", "")
+        .trim()
+        .toDoubleOrNull() ?: 0.0

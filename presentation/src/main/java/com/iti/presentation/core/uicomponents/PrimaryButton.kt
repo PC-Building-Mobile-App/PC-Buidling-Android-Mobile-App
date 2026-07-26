@@ -1,4 +1,4 @@
-package com.iti.presentation.core.components
+package com.iti.presentation.core.uicomponents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,12 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.IconOnGradient
 import com.iti.presentation.ui.theme.PrimaryGradient
 
@@ -44,9 +40,11 @@ fun PrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
+            .graphicsLayer {
+                alpha = if (enabled) 1f else 0.5f
+            }
             .clip(MaterialTheme.shapes.medium)
             .background(PrimaryGradient)
-            .alpha(if (enabled) 1f else 0.5f)
             .clickable(
                 enabled = isInteractive,
                 interactionSource = remember { MutableInteractionSource() },
@@ -82,37 +80,5 @@ fun PrimaryButton(
                 }
             }
         }
-    }
-}
-
-@Preview(name = "Default", showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PrimaryButtonPreview() {
-    AppTheme {
-        PrimaryButton(text = "Generate build", icon = Icons.Default.AutoAwesome, onClick = {})
-    }
-}
-
-@Preview(name = "Loading", showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PrimaryButtonLoadingPreview() {
-    AppTheme {
-        PrimaryButton(text = "Generate build", isLoading = true, onClick = {})
-    }
-}
-
-@Preview(name = "Disabled", showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PrimaryButtonDisabledPreview() {
-    AppTheme {
-        PrimaryButton(text = "Save build", enabled = false, onClick = {})
-    }
-}
-
-@Preview(name = "No icon", showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun PrimaryButtonNoIconPreview() {
-    AppTheme {
-        PrimaryButton(text = "Save build", onClick = {})
     }
 }
