@@ -53,12 +53,13 @@ fun MainNavigation(
     val currentRoute = activeBackStack.lastOrNull()
     val isOnBuildGeneration = currentRoute is BuildGenerationRoute
     val isOnDetailScreen = currentRoute is PartsDetailRoute
+    val isOnAiChat = currentRoute is AiAssistantRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             AnimatedVisibility(
-                visible = !isOnBuildGeneration,
+                visible = !isOnBuildGeneration && !isOnAiChat,
                 enter = expandVertically(),
                 exit = shrinkVertically(),
             ) {
@@ -89,7 +90,7 @@ fun MainNavigation(
                     } else if (currentTab != TopLevelRoute.HOME) {
                         val homeStack = backStacks.getValue(TopLevelRoute.HOME)
                         homeStack.clear()
-                        homeStack.add(HomeRoute)  // ← fixed: no parentheses
+                        homeStack.add(HomeRoute)
                         currentTab = TopLevelRoute.HOME
                     }
                 },
@@ -177,7 +178,32 @@ fun MainNavigation(
                     }
 
                     entry<AiAssistantRoute> {
-                        ScreenPlaceholder(title = "AI Assistant")
+                        com.iti.presentation.aichat.screens.AiChatScreen(
+                            onNavigateToBuild = {
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(),
+                                )
+                            },
+                            onNavigateToCompare = {
+                                activeBackStack.navigateSingleTop(
+                                    ComparisonRoute(
+                                        firstPartId = "",
+                                        secondPartId = "",
+                                    ),
+                                )
+                            },
+                            onNavigateToProductDetail = { componentJson ->
+                                activeBackStack.navigateSingleTop(
+                                    PartsDetailRoute(componentJson = componentJson),
+                                )
+                            },
+                            onBackClick = {
+                                val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                                homeStack.clear()
+                                homeStack.add(HomeRoute)
+                                currentTab = TopLevelRoute.HOME
+                            },
+                        )
                     }
 
                     entry<MyPcsRoute> { route ->

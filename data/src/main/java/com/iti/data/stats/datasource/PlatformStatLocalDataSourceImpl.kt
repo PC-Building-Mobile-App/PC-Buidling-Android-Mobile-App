@@ -18,7 +18,7 @@ class PlatformStatLocalDataSourceImpl @Inject constructor() : PlatformStatDataSo
             PlatformStatDataModel(
                 id = "PARTS",
                 label = "PARTS",
-                count = 1390,
+                count = 1446,
                 isApproximated = false
             ),
             PlatformStatDataModel(

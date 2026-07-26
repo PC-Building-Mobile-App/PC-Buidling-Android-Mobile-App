@@ -173,6 +173,18 @@
     <string name="close">إغلاق</string>
     <string name="edit_profile">تعديل الملف الشخصي</string>
     <string name="generate_build_purpose_required_message">اختر غرضاً قبل إنشاء التجميعة</string>
+
+    <string name="ai_dashboard_title">لوحة تحكم الذكاء الاصطناعي</string>
+    <string name="ai_dashboard_subtitle">بدعم من ذكاء بناء الحواسيب</string>
+    <string name="ai_build_generator">منشئ التجميعات بالذكاء الاصطناعي</string>
+    <string name="ai_build_generator_subtitle">أخبرني بميزانيتك واستخدامك</string>
+    <string name="ai_compare_builds">مقارنة التجميعات</string>
+    <string name="ai_compare_builds_subtitle">ابحث عن التجميعة الأفضل قيمة</string>
+    <string name="ai_chat_placeholder">اسألني عن أي شيء…</string>
+    <string name="ai_thinking">يفكر الذكاء الاصطناعي…</string>
+    <string name="ai_export">تصدير</string>
+    <string name="ai_share_title">مشاركة رد الذكاء الاصطناعي</string>
+
     <string name="ai_generate_build_button">توليد تجميعة بالذكاء الاصطناعي</string>
     <string name="ai_badge_label">AI</string>
 </resources>
