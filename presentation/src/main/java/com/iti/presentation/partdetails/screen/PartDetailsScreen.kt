@@ -89,7 +89,11 @@ fun PartDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        // Extra bottom clearance: BottomNavBar's AI FAB floats
+                        // ~28dp above the nav bar itself, so without this the
+                        // button visually collides with it.
+                        .padding(bottom = 28.dp),
                 ) {
                     Button(
                         onClick = { viewModel.onEvent(PartDetailsContract.Event.AddToBuildClicked) },
