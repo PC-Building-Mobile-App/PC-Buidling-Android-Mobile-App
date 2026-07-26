@@ -1,5 +1,6 @@
 package com.iti.data.components.remote
 
+import com.iti.data.BuildConfig
 import com.iti.data.components.model.ComponentDataModel
 import com.iti.data.util.ApiResponse
 import com.iti.data.util.PageResponse
@@ -12,7 +13,7 @@ import javax.inject.Inject
 class ComponentApiService @Inject constructor(
     private val httpClient: HttpClient
 ) {
-    private val baseUrl = "https://pc-builder-api-production-f3c6.up.railway.app"+"/api"
+    private val baseUrl = BuildConfig.APP_API_BASE_URL +"/api"
 
     suspend fun getRandomDeals(category: String, limit: Int): ApiResponse<List<ComponentDataModel>> {
         return httpClient.get("$baseUrl/products/deals/random") {
