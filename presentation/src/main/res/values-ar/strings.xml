@@ -191,4 +191,6 @@
 
     <string name="ai_generate_build_button">توليد تجميعة بالذكاء الاصطناعي</string>
     <string name="ai_badge_label">AI</string>
+    <string name="network_back_online">تم استعادة الاتصال بالإنترنت</string>
+    <string name="network_no_internet">لا يوجد اتصال بالإنترنت</string>
 </resources>

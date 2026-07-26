@@ -7,10 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,11 +24,19 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import com.iti.presentation.R
 import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
+import com.iti.presentation.core.connectivity.ConnectivityViewModel
+import com.iti.presentation.core.uicomponents.AppSnackbar
+import com.iti.presentation.core.uicomponents.SnackbarController
 import com.iti.presentation.hardwarenews.screens.HardwareNewsScreen
 import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
 import com.iti.presentation.home.screens.HomeScreen
@@ -37,6 +49,7 @@ import com.iti.presentation.profile.screens.ProfileScreen
 @Composable
 fun MainNavigation(
     onNavigateToAuth: () -> Unit = {},
+    connectivityViewModel: ConnectivityViewModel = hiltViewModel(),
 ) {
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
@@ -55,246 +68,275 @@ fun MainNavigation(
     val isOnDetailScreen = currentRoute is PartsDetailRoute
     val isOnAiChat = currentRoute is AiAssistantRoute
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            AnimatedVisibility(
-                visible = !isOnBuildGeneration && !isOnAiChat,
-                enter = expandVertically(),
-                exit = shrinkVertically(),
-            ) {
-                BottomNavBar(
-                    currentRoute = currentTab,
-                    onItemClick = { tab ->
-                        if (tab == currentTab) {
-                            while (activeBackStack.size > 1) {
-                                activeBackStack.removeLastOrNull()
+    val isConnected by connectivityViewModel.isConnected.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarController = remember(snackbarHostState) { SnackbarController(snackbarHostState) }
+
+    val backOnlineMessage = stringResource(R.string.network_back_online)
+    val noInternetMessage = stringResource(R.string.network_no_internet)
+
+    var previousConnected by remember { mutableStateOf<Boolean?>(null) }
+    LaunchedEffect(isConnected) {
+        val prev = previousConnected
+        previousConnected = isConnected
+        if (prev == null) return@LaunchedEffect
+        if (isConnected) {
+            snackbarController.showSuccess(backOnlineMessage)
+        } else {
+            snackbarController.showError(noInternetMessage)
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = !isOnBuildGeneration && !isOnAiChat,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    BottomNavBar(
+                        currentRoute = currentTab,
+                        onItemClick = { tab ->
+                            if (tab == currentTab) {
+                                while (activeBackStack.size > 1) {
+                                    activeBackStack.removeLastOrNull()
+                                }
+                            } else {
+                                val newStack = backStacks.getValue(tab)
+                                newStack.clear()
+                                newStack.add(tab.route)
+                                currentTab = tab
                             }
-                        } else {
-                            val newStack = backStacks.getValue(tab)
-                            newStack.clear()
-                            newStack.add(tab.route)
-                            currentTab = tab
+                        },
+                    )
+                }
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                NavDisplay(
+                    backStack = activeBackStack,
+                    onBack = {
+                        if (activeBackStack.size > 1) {
+                            activeBackStack.removeLastOrNull()
+                        } else if (currentTab != TopLevelRoute.HOME) {
+                            val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                            homeStack.clear()
+                            homeStack.add(HomeRoute)
+                            currentTab = TopLevelRoute.HOME
+                        }
+                    },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
+                    entryProvider = entryProvider {
+
+                        entry<HomeRoute> {
+                            HomeScreen(
+                                onNavigateToPartsWithQuery = { query ->
+                                    val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                    partsStack.clear()
+                                    partsStack.add(PartsRoute(initialQuery = query))
+                                    currentTab = TopLevelRoute.PARTS
+                                },
+                                onNavigateToParts = {
+                                    val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                    if (partsStack.firstOrNull() != PartsRoute()) {
+                                        partsStack.clear()
+                                        partsStack.add(PartsRoute())
+                                    }
+                                    currentTab = TopLevelRoute.PARTS
+                                },
+                                onNavigateToGenerateBuild = {
+                                    activeBackStack.navigateSingleTop(
+                                        BuildGenerationRoute(),
+                                    )
+                                },
+                                onNavigateToComponentDetail = { componentJson ->
+                                    activeBackStack.navigateSingleTop(
+                                        PartsDetailRoute(componentJson = componentJson),
+                                    )
+                                },
+                                onNavigateToPartsWithCategory = { categoryId ->
+                                    val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
+                                    partsStack.clear()
+                                    partsStack.add(PartsRoute(initialCategoryId = categoryId))
+                                    currentTab = TopLevelRoute.PARTS
+                                },
+                                onNavigateToHardwareNews = {
+                                    activeBackStack.navigateSingleTop(HardwareNewsListRoute)
+                                },
+                                onNavigateToNewsDetail = { articleId ->
+                                    activeBackStack.navigateSingleTop(
+                                        HardwareNewsDetailRoute(articleId = articleId),
+                                    )
+                                },
+                            )
+                        }
+
+                        entry<HardwareNewsListRoute> {
+                            HardwareNewsScreen(
+                                onArticleClick = { articleId ->
+                                    activeBackStack.navigateSingleTop(
+                                        HardwareNewsDetailRoute(articleId = articleId),
+                                    )
+                                },
+                                onBackClick = {
+                                    activeBackStack.navigateBack()
+                                },
+                            )
+                        }
+
+                        entry<HardwareNewsDetailRoute> { route ->
+                            HardwareNewsDetailScreen(
+                                articleId = route.articleId,
+                                onBackClick = {
+                                    activeBackStack.navigateBack()
+                                },
+                            )
+                        }
+
+                        entry<PartsRoute> { route ->
+                            PartsScreen(
+                                initialQuery = route.initialQuery,
+                                initialCategoryId = route.initialCategoryId,
+                                onNavigateToDetail = { componentJson ->
+                                    activeBackStack.navigateSingleTop(
+                                        PartsDetailRoute(componentJson = componentJson),
+                                    )
+                                },
+                            )
+                        }
+
+                        entry<AiAssistantRoute> {
+                            com.iti.presentation.aichat.screens.AiChatScreen(
+                                onNavigateToBuild = {
+                                    activeBackStack.navigateSingleTop(
+                                        BuildGenerationRoute(),
+                                    )
+                                },
+                                onNavigateToCompare = {
+                                    activeBackStack.navigateSingleTop(
+                                        ComparisonRoute(
+                                            firstPartId = "",
+                                            secondPartId = "",
+                                        ),
+                                    )
+                                },
+                                onNavigateToProductDetail = { componentJson ->
+                                    activeBackStack.navigateSingleTop(
+                                        PartsDetailRoute(componentJson = componentJson),
+                                    )
+                                },
+                                onBackClick = {
+                                    val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                                    homeStack.clear()
+                                    homeStack.add(HomeRoute)
+                                    currentTab = TopLevelRoute.HOME
+                                },
+                            )
+                        }
+
+                        entry<MyPcsRoute> { route ->
+                            MyPcsScreen(
+                                shouldRefresh = route.shouldRefresh,
+                                onRefreshHandled = {
+                                    val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                    if (myPcsStack.isNotEmpty() && myPcsStack[0] is MyPcsRoute) {
+                                        myPcsStack[0] = MyPcsRoute(shouldRefresh = false)
+                                    }
+                                },
+                                onNewBuildClick = {
+                                    activeBackStack.navigateSingleTop(
+                                        BuildGenerationRoute(category = null)
+                                    )
+                                },
+                                onCategoryClick = { category ->
+                                    activeBackStack.navigateSingleTop(
+                                        BuildCategoryRoute(category = category),
+                                    )
+                                },
+                            )
+                        }
+
+                        entry<ProfileRoute> {
+                            ProfileScreen(
+                                onNavigateToSavedBuilds = {
+                                    currentTab = TopLevelRoute.MY_PCS
+                                },
+                            )
+                        }
+
+                        entry<PartsDetailRoute> { route ->
+                            PartDetailsScreen(
+                                componentJson = route.componentJson,
+                                onBackClick = {
+                                    activeBackStack.navigateBack()
+                                },
+                                onAddToBuildClick = { component ->
+                                    activeBackStack.navigateSingleTop(BuildGenerationRoute())
+                                },
+                            )
+                        }
+
+                        entry<BuildCategoryRoute> { route ->
+                            CategoryBuildsScreen(
+                                category = route.category,
+                                onBackClick = {
+                                    activeBackStack.navigateBack()
+                                },
+                                onEditBuildClick = { build, category ->
+                                    activeBackStack.navigateSingleTop(
+                                        BuildGenerationRoute(
+                                            editingBuild = build,
+                                            category = category)
+                                    )
+                                },
+                                onNewBuildClick = { category ->
+                                    activeBackStack.navigateSingleTop(
+                                        BuildGenerationRoute(category = category)
+                                    )
+                                },
+                            )
+                        }
+
+                        entry<BuildGenerationRoute>{ route ->
+                            BuildGenerationScreen(
+                                category = route.category,
+                                editingBuild = route.editingBuild,
+                                onBackClick = {
+                                    activeBackStack.navigateBack()
+                                },
+                                onBackWithSaveSuccess = {
+                                    val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                    if (myPcsStack.isNotEmpty()) {
+                                        myPcsStack[0] = MyPcsRoute(shouldRefresh = true)
+                                    }
+                                    activeBackStack.navigateBack()
+                                }
+                            )
+                        }
+
+                        entry<ComparisonRoute> { route ->
+                            ScreenPlaceholder(
+                                title = "Comparison",
+                                subtitle = "${route.firstPartId} vs ${route.secondPartId}",
+                            )
                         }
                     },
                 )
             }
         }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            NavDisplay(
-                backStack = activeBackStack,
-                onBack = {
-                    if (activeBackStack.size > 1) {
-                        activeBackStack.removeLastOrNull()
-                    } else if (currentTab != TopLevelRoute.HOME) {
-                        val homeStack = backStacks.getValue(TopLevelRoute.HOME)
-                        homeStack.clear()
-                        homeStack.add(HomeRoute)
-                        currentTab = TopLevelRoute.HOME
-                    }
-                },
-                entryDecorators = listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberViewModelStoreNavEntryDecorator(),
-                ),
-                entryProvider = entryProvider {
 
-                    entry<HomeRoute> {
-                        HomeScreen(
-                            onNavigateToPartsWithQuery = { query ->
-                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
-                                partsStack.clear()
-                                partsStack.add(PartsRoute(initialQuery = query))
-                                currentTab = TopLevelRoute.PARTS
-                            },
-                            onNavigateToParts = {
-                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
-                                if (partsStack.firstOrNull() != PartsRoute()) {
-                                    partsStack.clear()
-                                    partsStack.add(PartsRoute())
-                                }
-                                currentTab = TopLevelRoute.PARTS
-                            },
-                            onNavigateToGenerateBuild = {
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(),
-                                )
-                            },
-                            onNavigateToComponentDetail = { componentJson ->
-                                activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(componentJson = componentJson),
-                                )
-                            },
-                            onNavigateToPartsWithCategory = { categoryId ->
-                                val partsStack = backStacks.getValue(TopLevelRoute.PARTS)
-                                partsStack.clear()
-                                partsStack.add(PartsRoute(initialCategoryId = categoryId))
-                                currentTab = TopLevelRoute.PARTS
-                            },
-                            onNavigateToHardwareNews = {
-                                activeBackStack.navigateSingleTop(HardwareNewsListRoute)
-                            },
-                            onNavigateToNewsDetail = { articleId ->
-                                activeBackStack.navigateSingleTop(
-                                    HardwareNewsDetailRoute(articleId = articleId),
-                                )
-                            },
-                        )
-                    }
-
-                    entry<HardwareNewsListRoute> {
-                        HardwareNewsScreen(
-                            onArticleClick = { articleId ->
-                                activeBackStack.navigateSingleTop(
-                                    HardwareNewsDetailRoute(articleId = articleId),
-                                )
-                            },
-                            onBackClick = {
-                                activeBackStack.navigateBack()
-                            },
-                        )
-                    }
-
-                    entry<HardwareNewsDetailRoute> { route ->
-                        HardwareNewsDetailScreen(
-                            articleId = route.articleId,
-                            onBackClick = {
-                                activeBackStack.navigateBack()
-                            },
-                        )
-                    }
-
-                    entry<PartsRoute> { route ->
-                        PartsScreen(
-                            initialQuery = route.initialQuery,
-                            initialCategoryId = route.initialCategoryId,
-                            onNavigateToDetail = { componentJson ->
-                                activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(componentJson = componentJson),
-                                )
-                            },
-                        )
-                    }
-
-                    entry<AiAssistantRoute> {
-                        com.iti.presentation.aichat.screens.AiChatScreen(
-                            onNavigateToBuild = {
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(),
-                                )
-                            },
-                            onNavigateToCompare = {
-                                activeBackStack.navigateSingleTop(
-                                    ComparisonRoute(
-                                        firstPartId = "",
-                                        secondPartId = "",
-                                    ),
-                                )
-                            },
-                            onNavigateToProductDetail = { componentJson ->
-                                activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(componentJson = componentJson),
-                                )
-                            },
-                            onBackClick = {
-                                val homeStack = backStacks.getValue(TopLevelRoute.HOME)
-                                homeStack.clear()
-                                homeStack.add(HomeRoute)
-                                currentTab = TopLevelRoute.HOME
-                            },
-                        )
-                    }
-
-                    entry<MyPcsRoute> { route ->
-                        MyPcsScreen(
-                            shouldRefresh = route.shouldRefresh,
-                            onRefreshHandled = {
-                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
-                                if (myPcsStack.isNotEmpty() && myPcsStack[0] is MyPcsRoute) {
-                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = false)
-                                }
-                            },
-                            onNewBuildClick = {
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(category = null)
-                                )
-                            },
-                            onCategoryClick = { category ->
-                                activeBackStack.navigateSingleTop(
-                                    BuildCategoryRoute(category = category),
-                                )
-                            },
-                        )
-                    }
-
-                    entry<ProfileRoute> {
-                        ProfileScreen(
-                            onNavigateToSavedBuilds = {
-                                currentTab = TopLevelRoute.MY_PCS
-                            },
-                        )
-                    }
-
-                    entry<PartsDetailRoute> { route ->
-                        PartDetailsScreen(
-                            componentJson = route.componentJson,
-                            onBackClick = {
-                                activeBackStack.navigateBack()
-                            },
-                            onAddToBuildClick = { component ->
-                                activeBackStack.navigateSingleTop(BuildGenerationRoute())
-                            },
-                        )
-                    }
-
-                    entry<BuildCategoryRoute> { route ->
-                        CategoryBuildsScreen(
-                            category = route.category,
-                            onBackClick = {
-                                activeBackStack.navigateBack()
-                            },
-                            onEditBuildClick = { build, category ->
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(
-                                        editingBuild = build,
-                                        category = category)
-                                )
-                            },
-                            onNewBuildClick = { category ->
-                                activeBackStack.navigateSingleTop(
-                                    BuildGenerationRoute(category = category)
-                                )
-                            },
-                        )
-                    }
-
-                    entry<BuildGenerationRoute>{ route ->
-                        BuildGenerationScreen(
-                            category = route.category,
-                            editingBuild = route.editingBuild,
-                            onBackClick = {
-                                activeBackStack.navigateBack()
-                            },
-                            onBackWithSaveSuccess = {
-                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
-                                if (myPcsStack.isNotEmpty()) {
-                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = true)
-                                }
-                                activeBackStack.navigateBack()
-                            }
-                        )
-                    }
-
-                    entry<ComparisonRoute> { route ->
-                        ScreenPlaceholder(
-                            title = "Comparison",
-                            subtitle = "${route.firstPartId} vs ${route.secondPartId}",
-                        )
-                    }
-                },
-            )
-        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 16.dp),
+        ) { data -> AppSnackbar(data) }
     }
 }
 

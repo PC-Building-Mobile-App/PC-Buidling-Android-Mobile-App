@@ -190,4 +190,6 @@
     <string name="ai_share_title">Share AI Response</string>
     <string name="ai_generate_build_button">Generate build with AI</string>
     <string name="ai_badge_label">AI</string>
+    <string name="network_back_online">Back online</string>
+    <string name="network_no_internet">No internet connection</string>
 </resources>

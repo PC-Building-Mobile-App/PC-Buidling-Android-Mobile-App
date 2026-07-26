@@ -51,9 +51,9 @@
     import com.iti.presentation.buildgeneration.model.totalPrice
     import com.iti.presentation.buildgeneration.viewmodel.BuildGenerationViewModel
     import com.iti.presentation.categorybuilds.model.BuildUiModel
-    import com.iti.presentation.components.AppSnackbar
-    import com.iti.presentation.components.LocalSnackbarController
-    import com.iti.presentation.components.SnackbarController
+    import com.iti.presentation.core.uicomponents.AppSnackbar
+    import com.iti.presentation.core.uicomponents.LocalSnackbarController
+    import com.iti.presentation.core.uicomponents.SnackbarController
     import com.iti.presentation.core.uicomponents.PrimaryButton
     import com.iti.presentation.mypcs.model.BuildCategoryUiModel
     import com.iti.presentation.ui.theme.AppTheme
