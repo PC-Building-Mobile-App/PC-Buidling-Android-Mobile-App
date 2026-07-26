@@ -3,6 +3,8 @@ package com.iti.data.builds.remote
 import com.iti.data.BuildConfig
 import com.iti.data.auth.local.AuthTokenStorage
 import com.iti.data.builds.model.BuildDto
+import com.iti.data.builds.model.CompareBuildsRequestDto
+import com.iti.data.builds.model.ComparisonDto
 import com.iti.data.builds.model.CompatibilityCheckRequestDto
 import com.iti.data.builds.model.CompatibilityReportDto
 import com.iti.data.builds.model.GenerateBuildRequestDto
@@ -55,6 +57,15 @@ class BuildsApiService @Inject constructor(
         }.body()
     }
 
+    suspend fun compareBuilds(request: CompareBuildsRequestDto): ApiResponse<ComparisonDto> {
+        val authHeader = getAuthHeader()
+        return httpClient.post("$baseUrl/ai/compare-builds") {
+            contentType(ContentType.Application.Json)
+            authHeader?.let { header(HttpHeaders.Authorization, it) }
+            setBody(request)
+        }.body()
+    }
+
     suspend fun saveBuild(request: SaveBuildRequestDto): ApiResponse<BuildDto> {
         val authHeader = getAuthHeader()
         return httpClient.post("$baseUrl/bundles") {
@@ -70,6 +81,13 @@ class BuildsApiService @Inject constructor(
             contentType(ContentType.Application.Json)
             authHeader?.let { header(HttpHeaders.Authorization, it) }
             setBody(request)
+        }.body()
+    }
+
+    suspend fun getBundleById(id: String): ApiResponse<BuildDto> {
+        val authHeader = getAuthHeader()
+        return httpClient.get("$baseUrl/bundles/$id") {
+            authHeader?.let { header(HttpHeaders.Authorization, it) }
         }.body()
     }
 

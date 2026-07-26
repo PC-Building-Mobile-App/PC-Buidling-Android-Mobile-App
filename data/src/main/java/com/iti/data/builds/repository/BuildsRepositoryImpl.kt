@@ -3,8 +3,10 @@ package com.iti.data.builds.repository
 import com.iti.data.builds.datasource.BuildsRemoteDataSource
 import com.iti.data.builds.mapper.toDomain
 import com.iti.data.builds.mapper.toDto
+import com.iti.data.builds.model.CompareBuildsRequestDto
 import com.iti.domain.builds.model.Build
 import com.iti.domain.builds.model.BuildCategory
+import com.iti.domain.builds.model.BuildComparison
 import com.iti.domain.builds.model.CompatibilityCheckRequest
 import com.iti.domain.builds.model.CompatibilityReport
 import com.iti.domain.builds.model.GenerateBuildRequest
@@ -43,4 +45,10 @@ class BuildsRepositoryImpl @Inject constructor(
         }
         return result.map { it.toDomain() }
     }
+
+    override suspend fun compareBuilds(buildIds: List<Int>, buildNames: List<String>): Result<BuildComparison> =
+        remoteDataSource.compareBuilds(CompareBuildsRequestDto(buildIds, buildNames)).map { it.toDomain() }
+
+    override suspend fun getBuildById(id: String): Result<Build> =
+        remoteDataSource.getBuildById(id).map { it.toDomain() }
 }
