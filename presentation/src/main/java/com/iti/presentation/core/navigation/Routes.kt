@@ -30,13 +30,15 @@ data class PartsRoute(
 data object AiAssistantRoute : Route
 
 @Serializable
-data object MyPcsRoute : Route
+data class MyPcsRoute(
+    val shouldRefresh: Boolean = false
+) : Route
 
 @Serializable
 data object ProfileRoute : Route
 
 @Serializable
-data class PartsDetailRoute(val partId: String) : Route
+data class PartsDetailRoute(val componentJson: String) : Route
 
 @Serializable
 data class BuildCategoryRoute(

@@ -5,6 +5,8 @@ import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
 import com.iti.data.builds.model.BuildIssueDto
 import com.iti.data.builds.model.BuildItemDto
+import com.iti.data.builds.model.CompareBuildsRequestDto
+import com.iti.data.builds.model.ComparisonDto
 import com.iti.data.builds.model.CompatibilityCheckRequestDto
 import com.iti.data.builds.model.CompatibilityIssueDto
 import com.iti.data.builds.model.CompatibilityReportDto
@@ -146,6 +148,37 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto> = safeCall {
+        saveBuild(request).getOrThrow()
+    }
+
+    override suspend fun compareBuilds(request: CompareBuildsRequestDto): Result<ComparisonDto> = safeCall {
+        delay(2000.milliseconds)
+        ComparisonDto(
+            buildIds = emptyList(),
+            buildNames = request.buildNames,
+            comparisonSummary = "AI Summary: Comparing ${request.buildNames.joinToString(" and ")}",
+            keyDifferences = listOf(
+                "Different CPU architectures: Intel vs AMD",
+                "Memory capacity variations",
+                "GPU performance tiers"
+            ),
+            recommendation = "Based on your needs, ${request.buildNames.firstOrNull() ?: "the first build"} is recommended."
+        )
+    }
+
+    override suspend fun getBuildById(id: String): Result<BuildDto> = safeCall {
+        delay(1000.milliseconds)
+        mutex.withLock {
+            var found: BuildDto? = null
+            savedBuilds.values.forEach { list ->
+                val match = list.find { it.id.toString() == id }
+                if (match != null) found = match
+            }
+            found ?: throw Exception("Build not found")
+        }
+    }
+
     private fun categoryForSavedItemId(id: Long): String? {
         savedBuilds.values.forEach { builds ->
             builds.forEach { build ->
@@ -272,10 +305,8 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         val mockBuildCategories = listOf(
             BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
             BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("CONTENT_CREATION", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
             BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
             BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
-            BuildCategoryDto("DREAM_BUILDS", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
         )
     }
 }

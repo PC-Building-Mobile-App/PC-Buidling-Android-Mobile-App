@@ -1,6 +1,7 @@
 package com.iti.presentation.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.iti.domain.auth.usecase.ObserveCurrentUserUseCase
 import com.iti.domain.componentcategories.usecase.GetComponentCategoriesUseCase
 import com.iti.domain.components.usecase.GetRandomComponentsUseCase
 import com.iti.domain.hardwarenews.usecase.GetLatestHardwareNewsUseCase
@@ -9,6 +10,7 @@ import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.toUiText
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
 import com.iti.presentation.core.pccomponents.mapper.toUiModels
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.home.HomeContract.Effect
 import com.iti.presentation.home.HomeContract.Event
 import com.iti.presentation.home.HomeContract.State
@@ -17,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +27,8 @@ class HomeViewModel @Inject constructor(
     private val getRandomComponentsUseCase: GetRandomComponentsUseCase,
     private val getCategoriesUseCase: GetComponentCategoriesUseCase,
     private val getLatestNewsUseCase: GetLatestHardwareNewsUseCase,
-    private val getPlatformStatsUseCase: GetPlatformStatsUseCase
+    private val getPlatformStatsUseCase: GetPlatformStatsUseCase,
+    private val observeCurrentUserUseCase: ObserveCurrentUserUseCase
 ) : BaseViewModel<Event, State, Effect>() {
 
     override fun createInitialState(): State = State()
@@ -46,7 +50,10 @@ class HomeViewModel @Inject constructor(
             is Event.CategoryClicked -> sendEffect(Effect.NavigateToPartsWithCategory(event.category.id))
             is Event.SeeAllNewsClicked -> sendEffect(Effect.NavigateToHardwareNews)
             is Event.NewsClicked -> sendEffect(Effect.NavigateToNewsDetail(event.newsId))
-            is Event.ComponentClicked -> sendEffect(Effect.NavigateToComponentDetail(event.componentId))
+            is Event.ComponentClicked -> {
+                val json = Json.encodeToString(ComponentUiModel.serializer(), event.component)
+                sendEffect(Effect.NavigateToComponentDetail(json))
+            }
         }
     }
 
@@ -56,16 +63,17 @@ class HomeViewModel @Inject constructor(
             val categoriesFlow = getCategoriesUseCase().catch { emit(emptyList()) }
             val newsFlow = getLatestNewsUseCase(limit = 10).catch { emit(emptyList()) }
             val statsFlow = getPlatformStatsUseCase().catch { emit(emptyList()) }
-
+            val userFlow = observeCurrentUserUseCase().catch { emit(null) }
             combine(
                 componentsFlow,
                 categoriesFlow,
                 newsFlow,
-                statsFlow
-            ) { components, categories, news, stats ->
+                statsFlow,
+                userFlow
+            ) { components, categories, news, stats, user ->
                 State(
                     isLoading = false,
-                    userName = state.value.userName,
+                    userName = user?.name ?: state.value.userName,
                     searchQuery = state.value.searchQuery,
                     isCategoriesExpanded = state.value.isCategoriesExpanded,
                     featuredComponents = components.toUiModels(),

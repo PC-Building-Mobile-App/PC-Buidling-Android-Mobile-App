@@ -123,10 +123,8 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
         val mockBuildCategories = listOf(
             BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
             BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("CONTENT_CREATION", "Content Creation", "4K editing, rendering", 0, "CONTENT_CREATION"),
             BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
             BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
-            BuildCategoryDto("DREAM_BUILDS", "Dream Builds", "No budget limits", 0, "DREAM_BUILDS"),
         )
     }
 }

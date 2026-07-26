@@ -59,8 +59,18 @@ class CategoryBuildsViewModel @Inject constructor(
                 }
             }
             is Event.EditClicked -> sendEffect(Effect.NavigateToEditBuild(event.build))
-            is Event.ShareClicked -> sendEffect(Effect.ShareBuild(event.buildId))
-            is Event.ExportClicked -> sendEffect(Effect.ExportBuild(event.buildId))
+            is Event.ShareClicked -> {
+                val build = state.value.builds.find { it.id == event.buildId }
+                if (build != null && build.specs.isNotEmpty()) {
+                    sendEffect(Effect.ShareBuild(build))
+                }
+            }
+            is Event.ExportClicked -> {
+                val build = state.value.builds.find { it.id == event.buildId }
+                if (build != null && build.specs.isNotEmpty()) {
+                    sendEffect(Effect.ExportBuild(build))
+                }
+            }
             is Event.ToggleSelectionMode -> selectionManager.toggleSelectionMode()
             is Event.BuildSelected -> selectionManager.toggleBuildSelection(event.build)
             is Event.CompareClicked -> {

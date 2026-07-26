@@ -6,6 +6,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -37,7 +38,9 @@ import com.iti.presentation.hardwarenews.screens.HardwareNewsScreen
 import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
 import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
+import com.iti.presentation.partdetails.PartDetailsScreen
 import com.iti.presentation.parts.screens.PartsScreen
+import com.iti.presentation.profile.screens.ProfileScreen
 
 @Composable
 fun MainNavigation(
@@ -51,19 +54,25 @@ fun MainNavigation(
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
     val backStacks: Map<TopLevelRoute, SnapshotStateList<Route>> = remember {
-        TopLevelRoute.entries.associateWith { tab -> mutableListOf(tab.route).toMutableStateList() }
+        TopLevelRoute.entries.associateWith { tab ->
+            when (tab) {
+                TopLevelRoute.MY_PCS -> mutableListOf(MyPcsRoute()).toMutableStateList()
+                else -> mutableListOf(tab.route).toMutableStateList()
+            }
+        }
     }
 
     val activeBackStack = backStacks.getValue(currentTab)
     val currentRoute = activeBackStack.lastOrNull()
     val isOnBuildGeneration = currentRoute is BuildGenerationRoute
     val isOnComparison = currentRoute is ComparisonRoute
+    val isOnAiChat = currentRoute is AiAssistantRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             AnimatedVisibility(
-                visible = !isOnBuildGeneration && !isSelectionMode,
+                visible = !isOnBuildGeneration && !isOnAiChat,
                 enter = expandVertically(),
                 exit = shrinkVertically(),
             ) {
@@ -78,6 +87,9 @@ fun MainNavigation(
                             if (currentTab == TopLevelRoute.MY_PCS) {
                                 selectionManager.clearSelection()
                             }
+                            val newStack = backStacks.getValue(tab)
+                            newStack.clear()
+                            newStack.add(tab.route)
                             currentTab = tab
                         }
                     },
@@ -92,6 +104,9 @@ fun MainNavigation(
                     if (activeBackStack.size > 1) {
                         activeBackStack.removeLastOrNull()
                     } else if (currentTab != TopLevelRoute.HOME) {
+                        val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                        homeStack.clear()
+                        homeStack.add(HomeRoute)
                         currentTab = TopLevelRoute.HOME
                     }
                 },
@@ -122,9 +137,9 @@ fun MainNavigation(
                                     BuildGenerationRoute(),
                                 )
                             },
-                            onNavigateToComponentDetail = { componentId ->
+                            onNavigateToComponentDetail = { componentJson ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = componentId.toString()),
+                                    PartsDetailRoute(componentJson = componentJson),
                                 )
                             },
                             onNavigateToPartsWithCategory = { categoryId ->
@@ -170,20 +185,49 @@ fun MainNavigation(
                         PartsScreen(
                             initialQuery = route.initialQuery,
                             initialCategoryId = route.initialCategoryId,
-                            onNavigateToDetail = { partId ->
+                            onNavigateToDetail = { componentJson ->
                                 activeBackStack.navigateSingleTop(
-                                    PartsDetailRoute(partId = partId),
+                                    PartsDetailRoute(componentJson = componentJson),
                                 )
                             },
                         )
                     }
 
                     entry<AiAssistantRoute> {
-                        ScreenPlaceholder(title = "AI Assistant")
+                        com.iti.presentation.aichat.screens.AiChatScreen(
+                            onNavigateToBuild = {
+                                activeBackStack.navigateSingleTop(
+                                    BuildGenerationRoute(),
+                                )
+                            },
+                            onNavigateToCompare = {
+                                // Transition to My PCs for build comparison
+                                currentTab = TopLevelRoute.MY_PCS
+                                selectionManager.toggleSelectionMode()
+                            },
+                            onNavigateToProductDetail = { componentJson ->
+                                activeBackStack.navigateSingleTop(
+                                    PartsDetailRoute(componentJson = componentJson),
+                                )
+                            },
+                            onBackClick = {
+                                val homeStack = backStacks.getValue(TopLevelRoute.HOME)
+                                homeStack.clear()
+                                homeStack.add(HomeRoute)
+                                currentTab = TopLevelRoute.HOME
+                            },
+                        )
                     }
 
-                    entry<MyPcsRoute> {
+                    entry<MyPcsRoute> { route ->
                         MyPcsScreen(
+                            shouldRefresh = route.shouldRefresh,
+                            onRefreshHandled = {
+                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                if (myPcsStack.isNotEmpty() && myPcsStack[0] is MyPcsRoute) {
+                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = false)
+                                }
+                            },
                             onNewBuildClick = {
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(category = null)
@@ -198,18 +242,21 @@ fun MainNavigation(
                     }
 
                     entry<ProfileRoute> {
-                        ScreenPlaceholder(title = "Profile")
+                        ProfileScreen(
+                            onNavigateToSavedBuilds = {
+                                currentTab = TopLevelRoute.MY_PCS
+                            },
+                        )
                     }
 
                     entry<PartsDetailRoute> { route ->
-                        ScreenPlaceholder(
-                            title = "Part Detail",
-                            subtitle = "Part ID: ${route.partId}",
-                            onAction = {
-                                // Placeholder
-                                activeBackStack.navigateSingleTop(
-                                    ComparisonRoute(buildIds = emptyList())
-                                )
+                        PartDetailsScreen(
+                            componentJson = route.componentJson,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            },
+                            onAddToBuildClick = { component ->
+                                activeBackStack.navigateSingleTop(BuildGenerationRoute())
                             },
                         )
                     }
@@ -246,6 +293,13 @@ fun MainNavigation(
                             editingBuild = route.editingBuild,
                             onBackClick = {
                                 activeBackStack.navigateBack()
+                            },
+                            onBackWithSaveSuccess = {
+                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                if (myPcsStack.isNotEmpty()) {
+                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = true)
+                                }
+                                activeBackStack.navigateBack()
                             }
                         )
                     }
@@ -275,29 +329,5 @@ fun MainNavigation(
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
-    }
-}
-
-@Composable
-internal fun ScreenPlaceholder(
-    title: String,
-    subtitle: String? = null,
-    onAction: (() -> Unit)? = null,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(if (onAction != null) Modifier.clickable { onAction() } else Modifier),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = buildString {
-                append(title)
-                if (subtitle != null) append("\n$subtitle")
-                if (onAction != null) append("\n(tap anywhere to navigate)")
-            },
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
     }
 }

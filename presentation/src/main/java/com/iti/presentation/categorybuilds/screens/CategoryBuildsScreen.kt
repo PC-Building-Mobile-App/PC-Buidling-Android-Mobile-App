@@ -1,5 +1,7 @@
 package com.iti.presentation.categorybuilds.screens
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.domain.builds.model.BuildCategoryType
@@ -30,6 +33,7 @@ import com.iti.presentation.categorybuilds.components.BuildsSkeleton
 import com.iti.presentation.categorybuilds.components.CategoryBuildsFab
 import com.iti.presentation.categorybuilds.components.CategoryBuildsHeader
 import com.iti.presentation.categorybuilds.model.BuildUiModel
+import com.iti.presentation.categorybuilds.utils.BuildUtil
 import com.iti.presentation.categorybuilds.viewmodel.CategoryBuildsViewModel
 import com.iti.presentation.core.uicomponents.EmptyScreen
 import com.iti.presentation.core.uicomponents.ErrorScreen
@@ -52,6 +56,8 @@ fun CategoryBuildsScreen(
         viewModel.onEvent(Event.Initialize(category))
     }
 
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -60,9 +66,10 @@ fun CategoryBuildsScreen(
                 is Effect.NavigateToEditBuild -> {
                     state.category?.let { onEditBuildClick(effect.build, it) }
                 }
-                is Effect.ShareBuild -> {}
-                is Effect.ExportBuild -> {}
+
                 is Effect.NavigateToComparison -> onNavigateToComparison(effect.buildIds)
+                is Effect.ShareBuild -> shareBuild(context, effect.build)
+                is Effect.ExportBuild -> exportBuild(context, effect.build)
             }
         }
     }
@@ -72,6 +79,26 @@ fun CategoryBuildsScreen(
         onEvent = viewModel::onEvent,
         modifier = modifier,
     )
+}
+
+private fun shareBuild(context: Context, build: BuildUiModel) {
+    val text = BuildUtil.formatBuildShareText(build)
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(intent, "Share Build"))
+}
+
+private fun exportBuild(context: Context, build: BuildUiModel) {
+    val file = BuildUtil.generateBuildPdf(context, build)
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "application/pdf"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(intent, "Export Build"))
 }
 
 @Composable

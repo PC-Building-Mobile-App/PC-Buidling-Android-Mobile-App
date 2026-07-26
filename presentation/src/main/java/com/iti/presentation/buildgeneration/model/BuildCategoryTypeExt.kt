@@ -9,8 +9,6 @@ val BuildCategoryType.labelRes: Int
     get() = when (this) {
         BuildCategoryType.GAMING -> R.string.category_type_gaming
         BuildCategoryType.PROGRAMMING -> R.string.category_type_programming
-        BuildCategoryType.CONTENT_CREATION -> R.string.category_type_content_creation
         BuildCategoryType.OFFICE -> R.string.category_type_office
         BuildCategoryType.AI_WORKSTATION -> R.string.category_type_ai_workstation
-        BuildCategoryType.DREAM_BUILDS -> R.string.category_type_dream_builds
     }

@@ -64,7 +64,7 @@ fun PartsScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is PartsContract.Effect.NavigateToDetail -> onNavigateToDetail(effect.productId)
+                is PartsContract.Effect.NavigateToDetail -> onNavigateToDetail(effect.componentJson)
             }
         }
     }
@@ -84,7 +84,9 @@ fun PartsScreen(
     ) { padding ->
         ProductGrid(
             products = pagingItems,
-            onProductClick = { viewModel.onEvent(Event.ProductClicked(it)) },
+            onProductClick = { component ->
+                viewModel.onEvent(Event.ProductClicked(component))
+            },
             modifier = Modifier.padding(padding),
             headerContent = {
                 Column {
