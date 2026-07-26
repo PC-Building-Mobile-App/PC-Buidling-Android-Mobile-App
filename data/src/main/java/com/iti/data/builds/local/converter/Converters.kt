@@ -1,7 +1,6 @@
 package com.iti.data.builds.local.converter
 
 import androidx.room.TypeConverter
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class Converters {

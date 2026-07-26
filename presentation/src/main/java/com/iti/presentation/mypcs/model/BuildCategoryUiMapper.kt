@@ -16,9 +16,6 @@ import com.iti.presentation.ui.theme.ProgrammingGradient
 import com.iti.presentation.ui.theme.ProgrammingGradientStart
 
 fun BuildCategory.toUiModel(): BuildCategoryUiModel = BuildCategoryUiModel(
-    id = id,
-    name = name,
-    description = description,
     buildsCount = buildsCount,
     type = type,
 )

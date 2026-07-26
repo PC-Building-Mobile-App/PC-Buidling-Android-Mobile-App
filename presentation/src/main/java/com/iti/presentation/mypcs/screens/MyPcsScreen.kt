@@ -128,7 +128,7 @@ private fun MyPcsScreenContent(
                 }
 
                 else -> {
-                    items(state.categories, key = { it.id }) { category ->
+                    items(state.categories, key = { it.type.name }) { category ->
                         BuildCategoryCard(
                             category = category,
                             onClick = { onEvent(Event.CategoryClicked(category)) },
@@ -152,6 +152,7 @@ private fun MyPcsScreenContent(
         }
     }
 }
+
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
 private fun MyPcsScreenPreview() {
@@ -160,30 +161,18 @@ private fun MyPcsScreenPreview() {
             state = State(
                 categories = listOf(
                     BuildCategoryUiModel(
-                        id = "gaming",
-                        name = "Gaming",
-                        description = "High FPS, max settings",
                         buildsCount = 3,
                         type = BuildCategoryType.GAMING
                     ),
                     BuildCategoryUiModel(
-                        id = "programming",
-                        name = "Programming",
-                        description = "Fast compile, multitasking",
                         buildsCount = 5,
                         type = BuildCategoryType.PROGRAMMING
                     ),
                     BuildCategoryUiModel(
-                        id = "office",
-                        name = "Office",
-                        description = "Productivity & speed",
                         buildsCount = 1,
                         type = BuildCategoryType.OFFICE
                     ),
                     BuildCategoryUiModel(
-                        id = "ai_workstation",
-                        name = "AI Workstation",
-                        description = "Deep learning, tensor computation",
                         buildsCount = 4,
                         type = BuildCategoryType.AI_WORKSTATION
                     ),

@@ -98,13 +98,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadBuildsCount() {
         viewModelScope.launch {
-            getBuildCategoriesUseCase()
-                .onSuccess { categories ->
+            getBuildCategoriesUseCase().collect { result ->
+                result.onSuccess { categories ->
                     updateState {
                         it.copy(buildsCount = categories.sumOf { category -> category.buildsCount })
                     }
                 }
-
+            }
         }
     }
 

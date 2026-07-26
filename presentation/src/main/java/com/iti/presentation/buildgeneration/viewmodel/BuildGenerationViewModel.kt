@@ -116,20 +116,23 @@ class BuildGenerationViewModel @Inject constructor(
     private fun loadCategories() {
         viewModelScope.launch {
             updateState { it.copy(isCategoriesLoading = true) }
-            getBuildCategoriesUseCase()
-                .onSuccess { domainCategories ->
-                    val uiModels = domainCategories.map { cat -> cat.toUiModel() }
-                    updateState {
-                        it.copy(
-                            isCategoriesLoading = false,
-                            categories = uiModels,
-                        )
-                    }
-                }
-                .onFailure { throwable ->
-                    updateState { it.copy(isCategoriesLoading = false) }
-                    sendEffect(Effect.ShowMessage(throwable.toUiText()))
-                }
+            getBuildCategoriesUseCase().collect { result ->
+                result.fold(
+                    onSuccess = { domainCategories ->
+                        val uiModels = domainCategories.map { cat -> cat.toUiModel() }
+                        updateState {
+                            it.copy(
+                                isCategoriesLoading = false,
+                                categories = uiModels,
+                            )
+                        }
+                    },
+                    onFailure = { throwable ->
+                        updateState { it.copy(isCategoriesLoading = false) }
+                        sendEffect(Effect.ShowMessage(throwable.toUiText()))
+                    },
+                )
+            }
         }
     }
 
@@ -251,6 +254,10 @@ class BuildGenerationViewModel @Inject constructor(
     }
 
     private fun regenerateAllSlots() {
+        val previousSlots = state.value.slots
+        val previousGeneratedSlotCategories = state.value.generatedSlotCategories
+        val previousGeneratedBuild = state.value.generatedBuild
+
         updateState { current ->
             current.copy(
                 slots = current.slots.map { slot ->
@@ -260,10 +267,21 @@ class BuildGenerationViewModel @Inject constructor(
                 generatedBuild = null,
             )
         }
-        generateBuild()
+
+        generateBuild(
+            onGenerationFailed = {
+                updateState {
+                    it.copy(
+                        slots = previousSlots,
+                        generatedSlotCategories = previousGeneratedSlotCategories,
+                        generatedBuild = previousGeneratedBuild,
+                    )
+                }
+            },
+        )
     }
 
-    private fun generateBuild() {
+    private fun generateBuild(onGenerationFailed: (() -> Unit)? = null) {
         val current = state.value
 
         if (current.selectedCategoryType == null) {
@@ -306,8 +324,7 @@ class BuildGenerationViewModel @Inject constructor(
                             )
                         )
                     } else {
-                        val issueMessage =
-                            generatedBuild.compatibilityReport.issues.firstOrNull()?.message
+                        val issueMessage = generatedBuild.compatibilityReport.issues.firstOrNull()?.message
                         sendEffect(
                             Effect.ShowMessage(
                                 message = issueMessage?.let { UiText.DynamicString(it) }
@@ -324,6 +341,7 @@ class BuildGenerationViewModel @Inject constructor(
                             errorMessage = throwable.toUiText()
                         )
                     }
+                    onGenerationFailed?.invoke()
                     sendEffect(Effect.ShowMessage(throwable.toUiText()))
                 }
         }
@@ -359,8 +377,8 @@ class BuildGenerationViewModel @Inject constructor(
             return
         }
 
-        val targetCategoryId = current.category?.id
-            ?: current.categories.firstOrNull { it.type == current.selectedCategoryType }?.id
+        val targetCategoryId = current.category?.type?.name
+            ?: current.selectedCategoryType?.name
 
         if (targetCategoryId == null) {
             sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_missing_category_message)))
@@ -388,8 +406,8 @@ class BuildGenerationViewModel @Inject constructor(
             return
         }
 
-        val targetCategoryId = current.category?.id
-            ?: current.categories.firstOrNull { it.type == current.selectedCategoryType }?.id
+        val targetCategoryId = current.category?.type?.name
+            ?: current.selectedCategoryType?.name
 
         if (targetCategoryId == null) {
             sendEffect(Effect.ShowMessage(UiText.StringResource(R.string.save_build_missing_category_message)))

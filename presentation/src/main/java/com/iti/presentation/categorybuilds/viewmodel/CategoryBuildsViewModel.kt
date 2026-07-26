@@ -63,7 +63,7 @@ class CategoryBuildsViewModel @Inject constructor(
         viewModelScope.launch {
             updateState { it.copy(isLoading = true, errorMessage = null) }
 
-            getBuildsByCategoryUseCase(category.id)
+            getBuildsByCategoryUseCase(category.type.name)
                 .onSuccess { builds ->
                     updateState { current ->
                         current.copy(isLoading = false, builds = builds.map { it.toUiModel() })
