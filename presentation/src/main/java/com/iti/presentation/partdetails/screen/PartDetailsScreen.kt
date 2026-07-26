@@ -1,7 +1,7 @@
 package com.iti.presentation.partdetails
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,32 +12,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +42,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -57,7 +55,8 @@ import com.iti.presentation.ui.theme.RoyalPurple
 import com.iti.presentation.ui.theme.SuccessGreen
 import kotlinx.serialization.json.Json
 
-@OptIn(ExperimentalMaterial3Api::class)
+private val HERO_IMAGE_HEIGHT = 340.dp
+
 @Composable
 fun PartDetailsScreen(
     componentJson: String,
@@ -82,24 +81,14 @@ fun PartDetailsScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Details", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = { viewModel.onEvent(PartDetailsContract.Event.BackClicked) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
-            )
-        },
+        // No TopAppBar — the back button floats over the full-bleed hero
+        // image instead, matching the mockup. See BackButtonOverlay below.
         bottomBar = {
-            state.component?.let { component ->
+            state.component?.let {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(16.dp),
                 ) {
                     Button(
@@ -107,10 +96,24 @@ fun PartDetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
-                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(),
+                        shape = RoundedCornerShape(16.dp),
                     ) {
-                        Text("Add to Build", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Brush.linearGradient(listOf(ElectricBlue, RoyalPurple))),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                "+  Add to Build",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
                     }
                 }
             }
@@ -126,84 +129,33 @@ fun PartDetailsScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(bottom = padding.calculateBottomPadding()),
             ) {
+                // Full-bleed hero image with the back button floating on top —
+                // no side padding, no rounded corners, extends under the
+                // status bar, matching the mockup exactly.
                 item {
-                    val imageList = component.images.ifEmpty { listOf(component.imageUrl) }
-                    var selectedIndex by remember { mutableIntStateOf(0) }
-
-                    Column {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
-                        ) {
-                            if (imageList.size == 1) {
-                                AsyncImage(
-                                    model = imageList.first(),
-                                    contentDescription = component.productName,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Fit,
-                                )
-                            } else {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxSize(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    items(imageList) { url ->
-                                        AsyncImage(
-                                            model = url,
-                                            contentDescription = component.productName,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .width(250.dp)
-                                                .clip(RoundedCornerShape(8.dp)),
-                                            contentScale = ContentScale.Crop,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        // Dot indicator for multiple images
-                        if (imageList.size > 1) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp),
-                                horizontalArrangement = Arrangement.Center,
-                            ) {
-                                imageList.forEachIndexed { index, _ ->
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(horizontal = 4.dp)
-                                            .width(8.dp)
-                                            .height(8.dp)
-                                            .clip(RoundedCornerShape(50))
-                                            .background(
-                                                if (index == selectedIndex)
-                                                    MaterialTheme.colorScheme.primary
-                                                else
-                                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                                            )
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    HeroImageGallery(
+                        images = component.images.ifEmpty { listOf(component.imageUrl) },
+                        productName = component.productName,
+                        onBackClick = { viewModel.onEvent(PartDetailsContract.Event.BackClicked) },
+                    )
                 }
 
-                // Name and price
                 item {
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 24.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .padding(20.dp),
+                    ) {
                         Text(
                             text = component.subtitle,
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -212,103 +164,205 @@ fun PartDetailsScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "Market Price",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = component.formattedPrice,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
-                            color = SuccessGreen,
+                            color = ElectricBlue,
                         )
                     }
                 }
 
-                // AI explanation
                 item {
-                    Card(
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, Brush.linearGradient(listOf(ElectricBlue, RoyalPurple)), RoundedCornerShape(12.dp)),
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 20.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        ElectricBlue.copy(alpha = 0.14f),
+                                        RoyalPurple.copy(alpha = 0.14f),
+                                    ),
+                                ),
+                            )
+                            .padding(16.dp),
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.AutoAwesome, contentDescription = "AI", tint = ElectricBlue)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("AI Assistant Summary", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = ElectricBlue)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "AI EXPLANATION",
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.5.sp,
+                                color = ElectricBlue,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                            if (state.isAiLoading) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(20.dp)
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .shimmerEffect(),
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.7f)
-                                        .height(20.dp)
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .shimmerEffect(),
-                                )
-                            } else {
-                                Text(
-                                    text = state.aiExplanation ?: "No summary available.",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
+                        if (state.isAiLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(18.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .shimmerEffect(),
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .height(18.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .shimmerEffect(),
+                            )
+                        } else {
+                            Text(
+                                text = state.aiExplanation ?: "No summary available.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }
 
-                // Specifications table styled like the image
                 if (state.specs.isNotEmpty()) {
                     item {
-                        Text(
-                            text = "Full Specifications",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-                        )
-                    }
-
-                    items(state.specs.toList()) { (key, value) ->
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .padding(horizontal = 20.dp)
+                                .padding(top = 20.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                                .padding(16.dp),
                         ) {
                             Text(
-                                text = key.replace("_", " ").replaceFirstChar { it.uppercase() },
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Normal,
-                                modifier = Modifier.weight(1f),
+                                text = "Full Specifications",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
-                            Text(
-                                text = value,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontWeight = FontWeight.SemiBold,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.weight(1f),
-                                textAlign = androidx.compose.ui.text.style.TextAlign.End,
-                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            state.specs.toList().forEachIndexed { index, (key, value) ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
+                                        text = key.replace("_", " ").replaceFirstChar { it.uppercase() },
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                    Text(
+                                        text = value,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.weight(1f),
+                                        textAlign = TextAlign.End,
+                                    )
+                                }
+                                if (index != state.specs.size - 1) {
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                                }
+                            }
                         }
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                            thickness = 0.5.dp,
-                        )
                     }
                 }
 
                 item { Spacer(modifier = Modifier.height(24.dp)) }
             }
+        }
+    }
+}
+
+@Composable
+private fun HeroImageGallery(
+    images: List<String>,
+    productName: String,
+    onBackClick: () -> Unit,
+) {
+    val pagerState = rememberPagerState(pageCount = { images.size })
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(HERO_IMAGE_HEIGHT)
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+        ) { page ->
+            AsyncImage(
+                model = images[page],
+                contentDescription = productName,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        }
+
+        if (images.size > 1) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                images.forEachIndexed { index, _ ->
+                    val isSelected = pagerState.currentPage == index
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(if (isSelected) 8.dp else 6.dp)
+                            .clip(CircleShape)
+                            .background(if (isSelected) ElectricBlue else ElectricBlue.copy(alpha = 0.35f)),
+                    )
+                }
+            }
+        }
+
+        // Subtle scrim so the floating back button stays legible over bright photos.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Black.copy(alpha = 0.45f), Color.Transparent),
+                    ),
+                ),
+        )
+
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(start = 16.dp, top = 4.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.45f)),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White,
+            )
         }
     }
 }
