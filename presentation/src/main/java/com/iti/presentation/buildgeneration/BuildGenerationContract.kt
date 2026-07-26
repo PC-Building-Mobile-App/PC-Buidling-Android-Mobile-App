@@ -25,7 +25,7 @@ object BuildGenerationContract {
             )
         },
         val budget: Float = DEFAULT_BUDGET,
-        val selectedCategoryTypes: Set<BuildCategoryType> = emptySet(),
+        val selectedCategoryType: BuildCategoryType? = null,
         val selectedBrands: Set<String> = emptySet(),
         val isGenerating: Boolean = false,
         val generatedBuild: GeneratedBuildUiModel? = null,
@@ -70,6 +70,7 @@ object BuildGenerationContract {
 
     sealed interface Effect {
         data object NavigateBack : Effect
+        data object NavigateBackWithSaveSuccess : Effect
         data class ShowMessage(val message: UiText, val isError: Boolean = true) : Effect
     }
 }

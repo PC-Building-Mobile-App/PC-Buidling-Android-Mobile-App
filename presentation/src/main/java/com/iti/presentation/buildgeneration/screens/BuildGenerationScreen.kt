@@ -66,6 +66,7 @@ fun BuildGenerationScreen(
     category: BuildCategoryUiModel? = null,
     editingBuild: BuildUiModel? = null,
     onBackClick: () -> Unit,
+    onBackWithSaveSuccess: () -> Unit = {},
     viewModel: BuildGenerationViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -82,6 +83,7 @@ fun BuildGenerationScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is Effect.NavigateBack -> onBackClick()
+                is Effect.NavigateBackWithSaveSuccess -> onBackWithSaveSuccess()
                 is Effect.ShowMessage -> {
                     if (effect.isError) snackbarController.showError(effect.message.asString(context))
                     else snackbarController.showSuccess(effect.message.asString(context))
@@ -175,8 +177,8 @@ private fun BuildGenerationScreenContent(
 
         item {
             PurposeSelector(
-                selectedCategoryTypes = state.selectedCategoryTypes,
-                onCategoryTypeToggled = { onEvent(Event.CategoryTypeToggled(it)) },
+                selectedCategoryType = state.selectedCategoryType,
+                onCategoryTypeSelected = { onEvent(Event.CategoryTypeToggled(it)) },
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
         }

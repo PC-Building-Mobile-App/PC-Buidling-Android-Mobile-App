@@ -40,7 +40,12 @@ fun MainNavigation(
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
     val backStacks: Map<TopLevelRoute, SnapshotStateList<Route>> = remember {
-        TopLevelRoute.entries.associateWith { tab -> mutableListOf(tab.route).toMutableStateList() }
+        TopLevelRoute.entries.associateWith { tab ->
+            when (tab) {
+                TopLevelRoute.MY_PCS -> mutableListOf(MyPcsRoute()).toMutableStateList()
+                else -> mutableListOf(tab.route).toMutableStateList()
+            }
+        }
     }
 
     val activeBackStack = backStacks.getValue(currentTab)
@@ -167,8 +172,15 @@ fun MainNavigation(
                         ScreenPlaceholder(title = "AI Assistant")
                     }
 
-                    entry<MyPcsRoute> {
+                    entry<MyPcsRoute> { route ->
                         MyPcsScreen(
+                            shouldRefresh = route.shouldRefresh,
+                            onRefreshHandled = {
+                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                if (myPcsStack.isNotEmpty() && myPcsStack[0] is MyPcsRoute) {
+                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = false)
+                                }
+                            },
                             onNewBuildClick = {
                                 activeBackStack.navigateSingleTop(
                                     BuildGenerationRoute(category = null)
@@ -231,6 +243,13 @@ fun MainNavigation(
                             category = route.category,
                             editingBuild = route.editingBuild,
                             onBackClick = {
+                                activeBackStack.navigateBack()
+                            },
+                            onBackWithSaveSuccess = {
+                                val myPcsStack = backStacks.getValue(TopLevelRoute.MY_PCS)
+                                if (myPcsStack.isNotEmpty()) {
+                                    myPcsStack[0] = MyPcsRoute(shouldRefresh = true)
+                                }
                                 activeBackStack.navigateBack()
                             }
                         )

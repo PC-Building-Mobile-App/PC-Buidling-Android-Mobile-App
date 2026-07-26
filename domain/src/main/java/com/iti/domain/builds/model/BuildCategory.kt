@@ -11,8 +11,6 @@ data class BuildCategory(
 enum class BuildCategoryType {
     GAMING,
     PROGRAMMING,
-    CONTENT_CREATION,
     OFFICE,
     AI_WORKSTATION,
-    DREAM_BUILDS,
 }
