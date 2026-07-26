@@ -3,39 +3,51 @@ package com.iti.presentation.core.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.ui.NavDisplay
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
+import com.iti.presentation.categorybuilds.SelectionManagerViewModel
+import com.iti.presentation.categorybuilds.components.CompareSelectionBar
 import com.iti.presentation.categorybuilds.screens.CategoryBuildsScreen
+import com.iti.presentation.categorybuilds.screens.ComparisonScreen
 import com.iti.presentation.hardwarenews.screens.HardwareNewsScreen
 import com.iti.presentation.hardwarenewsdetails.screens.HardwareNewsDetailScreen
 import com.iti.presentation.home.screens.HomeScreen
 import com.iti.presentation.mypcs.screens.MyPcsScreen
-import com.iti.presentation.buildgeneration.screens.BuildGenerationScreen
 import com.iti.presentation.parts.screens.PartsScreen
 
 @Composable
 fun MainNavigation(
     onNavigateToAuth: () -> Unit = {},
+    selectionViewModel: SelectionManagerViewModel = hiltViewModel(),
 ) {
+    val selectionManager = selectionViewModel.manager
+    val isSelectionMode by selectionManager.isSelectionMode.collectAsState()
+    val selectedBuilds by selectionManager.selectedBuilds.collectAsState()
+
     var currentTab by rememberSaveable { mutableStateOf(TopLevelRoute.HOME) }
 
     val backStacks: Map<TopLevelRoute, SnapshotStateList<Route>> = remember {
@@ -45,12 +57,13 @@ fun MainNavigation(
     val activeBackStack = backStacks.getValue(currentTab)
     val currentRoute = activeBackStack.lastOrNull()
     val isOnBuildGeneration = currentRoute is BuildGenerationRoute
+    val isOnComparison = currentRoute is ComparisonRoute
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             AnimatedVisibility(
-                visible = !isOnBuildGeneration,
+                visible = !isOnBuildGeneration && !isSelectionMode,
                 enter = expandVertically(),
                 exit = shrinkVertically(),
             ) {
@@ -62,6 +75,9 @@ fun MainNavigation(
                                 activeBackStack.removeLastOrNull()
                             }
                         } else {
+                            if (currentTab == TopLevelRoute.MY_PCS) {
+                                selectionManager.clearSelection()
+                            }
                             currentTab = tab
                         }
                     },
@@ -69,7 +85,7 @@ fun MainNavigation(
             }
         },
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             NavDisplay(
                 backStack = activeBackStack,
                 onBack = {
@@ -190,11 +206,9 @@ fun MainNavigation(
                             title = "Part Detail",
                             subtitle = "Part ID: ${route.partId}",
                             onAction = {
+                                // Placeholder
                                 activeBackStack.navigateSingleTop(
-                                    ComparisonRoute(
-                                        firstPartId = route.partId,
-                                        secondPartId = "other-part-id",
-                                    ),
+                                    ComparisonRoute(buildIds = emptyList())
                                 )
                             },
                         )
@@ -218,6 +232,11 @@ fun MainNavigation(
                                     BuildGenerationRoute(category = category)
                                 )
                             },
+                            onNavigateToComparison = { ids ->
+                                activeBackStack.navigateSingleTop(
+                                    ComparisonRoute(buildIds = ids)
+                                )
+                            }
                         )
                     }
 
@@ -232,12 +251,28 @@ fun MainNavigation(
                     }
 
                     entry<ComparisonRoute> { route ->
-                        ScreenPlaceholder(
-                            title = "Comparison",
-                            subtitle = "${route.firstPartId} vs ${route.secondPartId}",
+                        ComparisonScreen(
+                            buildIds = route.buildIds,
+                            onBackClick = {
+                                activeBackStack.navigateBack()
+                            }
                         )
                     }
                 },
+            )
+
+            CompareSelectionBar(
+                selectedBuilds = selectedBuilds,
+                isVisible = isSelectionMode && currentTab == TopLevelRoute.MY_PCS && !isOnComparison,
+                onRemove = { selectionManager.toggleBuildSelection(it) },
+                onCancel = { selectionManager.clearSelection() },
+                onCompare = {
+                    val ids = selectedBuilds.mapNotNull { it.id.toIntOrNull() }
+                    if (ids.size >= 2) {
+                        activeBackStack.navigateSingleTop(ComparisonRoute(buildIds = ids))
+                    }
+                },
+                modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
     }

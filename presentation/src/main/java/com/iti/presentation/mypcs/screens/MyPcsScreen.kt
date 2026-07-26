@@ -1,13 +1,18 @@
 package com.iti.presentation.mypcs.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,8 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -37,6 +45,7 @@ import com.iti.presentation.mypcs.components.NewBuildButton
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.mypcs.viewmodel.MyPcsViewModel
 import com.iti.presentation.ui.theme.AppTheme
+import com.iti.presentation.ui.theme.PrimaryGradient
 import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
@@ -65,7 +74,11 @@ fun MyPcsScreen(
 }
 
 @Composable
-private fun MyPcsHeader(onNewBuildClick: () -> Unit) {
+private fun MyPcsHeader(
+    isSelectionMode: Boolean,
+    onCompareToggle: () -> Unit,
+    onNewBuildClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,7 +86,7 @@ private fun MyPcsHeader(onNewBuildClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.my_pcs),
                 style = MaterialTheme.typography.headlineLarge.copy(
@@ -87,7 +100,34 @@ private fun MyPcsHeader(onNewBuildClick: () -> Unit) {
             )
         }
 
-        NewBuildButton(onClick = onNewBuildClick)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.medium)
+                    .then(
+                        if (isSelectionMode) {
+                            Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+                        } else {
+                            Modifier.background(brush = PrimaryGradient)
+                        }
+                    )
+                    .clickable(onClick = onCompareToggle)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = if (isSelectionMode) stringResource(R.string.cancel_label) 
+                           else stringResource(R.string.compare_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (isSelectionMode) MaterialTheme.colorScheme.onSurface 
+                            else Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            NewBuildButton(onClick = onNewBuildClick)
+        }
     }
 }
 
@@ -100,13 +140,22 @@ private fun MyPcsScreenContent(
     Box(modifier = modifier.fillMaxSize()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
+            contentPadding = PaddingValues(
+                start = 20.dp, 
+                end = 20.dp,
+                top = 24.dp, 
+                bottom = 24.dp
+            ),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
             item(span = { GridItemSpan(2) }) {
-                MyPcsHeader(onNewBuildClick = { onEvent(Event.NewBuildClicked) })
+                MyPcsHeader(
+                    isSelectionMode = state.isSelectionMode,
+                    onCompareToggle = { onEvent(Event.ToggleSelectionMode) },
+                    onNewBuildClick = { onEvent(Event.NewBuildClicked) }
+                )
             }
 
             when {
@@ -125,6 +174,12 @@ private fun MyPcsScreenContent(
                             onClick = { onEvent(Event.CategoryClicked(category)) },
                         )
                     }
+                }
+            }
+
+            if (state.isSelectionMode) {
+                item(span = { GridItemSpan(2) }) {
+                    Spacer(modifier = Modifier.height(140.dp))
                 }
             }
         }

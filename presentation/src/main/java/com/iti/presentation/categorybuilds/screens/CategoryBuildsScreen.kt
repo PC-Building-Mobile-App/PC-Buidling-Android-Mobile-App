@@ -3,7 +3,9 @@ package com.iti.presentation.categorybuilds.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +33,6 @@ import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.categorybuilds.viewmodel.CategoryBuildsViewModel
 import com.iti.presentation.core.uicomponents.EmptyScreen
 import com.iti.presentation.core.uicomponents.ErrorScreen
-import com.iti.presentation.core.UiText
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.ui.theme.AppTheme
 
@@ -40,6 +41,7 @@ fun CategoryBuildsScreen(
     onBackClick: () -> Unit,
     onNewBuildClick: (BuildCategoryUiModel) -> Unit,
     onEditBuildClick: (build: BuildUiModel, category: BuildCategoryUiModel) -> Unit,
+    onNavigateToComparison: (List<Int>) -> Unit,
     category: BuildCategoryUiModel,
     modifier: Modifier = Modifier,
     viewModel: CategoryBuildsViewModel = hiltViewModel(),
@@ -60,6 +62,7 @@ fun CategoryBuildsScreen(
                 }
                 is Effect.ShareBuild -> {}
                 is Effect.ExportBuild -> {}
+                is Effect.NavigateToComparison -> onNavigateToComparison(effect.buildIds)
             }
         }
     }
@@ -88,7 +91,9 @@ private fun CategoryBuildsScreenContent(
                     categoryName = state.category?.name.orEmpty(),
                     categoryDescription = state.category?.description.orEmpty(),
                     categoryType = state.category?.type ?: BuildCategoryType.GAMING,
+                    isSelectionMode = state.isSelectionMode,
                     onBackClick = { onEvent(Event.BackClicked) },
+                    onCompareToggle = { onEvent(Event.ToggleSelectionMode) }
                 )
             }
 
@@ -106,13 +111,21 @@ private fun CategoryBuildsScreenContent(
                             BuildCard(
                                 build = build,
                                 categoryType = state.category.type,
+                                isSelectionMode = state.isSelectionMode,
                                 onEditClick = { onEvent(Event.EditClicked(build)) },
                                 onShareClick = { onEvent(Event.ShareClicked(build.id)) },
                                 onExportClick = { onEvent(Event.ExportClicked(build.id)) },
+                                onSelect = { onEvent(Event.BuildSelected(build)) },
                                 modifier = Modifier.padding(horizontal = 20.dp),
                             )
                         }
                     }
+                }
+            }
+
+            if (state.isSelectionMode) {
+                item {
+                    Spacer(modifier = Modifier.height(140.dp))
                 }
             }
         }
@@ -142,7 +155,7 @@ private fun CategoryBuildsScreenContent(
             }
         }
 
-        if (!state.isLoading && state.errorMessage == null) {
+        if (!state.isLoading && state.errorMessage == null && !state.isSelectionMode) {
             state.category?.let { category ->
                 CategoryBuildsFab(
                     categoryType = category.type,
@@ -155,8 +168,6 @@ private fun CategoryBuildsScreenContent(
         }
     }
 }
-
-
 
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
@@ -172,46 +183,6 @@ private fun CategoryBuildsScreenLoadingPreview() {
                     buildsCount = 3,
                     type = BuildCategoryType.GAMING,
                 ),
-            ),
-            onEvent = {},
-        )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun CategoryBuildsScreenErrorPreview() {
-    AppTheme {
-        CategoryBuildsScreenContent(
-            state = State(
-                category = BuildCategoryUiModel(
-                    id = "gaming",
-                    name = "Gaming",
-                    description = "High FPS, max settings",
-                    buildsCount = 3,
-                    type = BuildCategoryType.GAMING,
-                ),
-                errorMessage = UiText.DynamicString("Something went wrong"),
-            ),
-            onEvent = {},
-        )
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
-@Composable
-private fun CategoryBuildsScreenEmptyPreview() {
-    AppTheme {
-        CategoryBuildsScreenContent(
-            state = State(
-                category = BuildCategoryUiModel(
-                    id = "gaming",
-                    name = "Gaming",
-                    description = "High FPS, max settings",
-                    buildsCount = 0,
-                    type = BuildCategoryType.GAMING,
-                ),
-                builds = emptyList(),
             ),
             onEvent = {},
         )
