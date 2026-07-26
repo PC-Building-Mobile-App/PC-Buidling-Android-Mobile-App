@@ -25,6 +25,6 @@ fun Component.toPickerUiModel(): PickerComponentUiModel = PickerComponentUiModel
     productName = productName,
     productImage = productImage,
     price = price,
-    priceFormatted = "${NumberFormat.getNumberInstance(Locale.US).format(price.toLong())} EGP", // Appended currency for cleaner UI
+    priceFormatted = "${NumberFormat.getNumberInstance(Locale.US).format(price.toLong())} EGP",
     inStock = inStock,
 )
