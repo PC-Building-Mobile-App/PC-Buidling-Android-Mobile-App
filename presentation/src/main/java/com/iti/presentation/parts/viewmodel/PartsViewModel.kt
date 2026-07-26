@@ -13,6 +13,7 @@ import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.UiText
 import com.iti.presentation.core.componentcategories.mapper.toUiModels
 import com.iti.presentation.core.pccomponents.mapper.toUiModel
+import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.R
 import com.iti.presentation.parts.PartsContract.Effect
 import com.iti.presentation.parts.PartsContract.Event
@@ -21,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -109,7 +111,10 @@ class PartsViewModel @Inject constructor(
                 updateState { it.copy(minPrice = null, maxPrice = null) }
                 performSearch()
             }
-            is Event.ProductClicked -> sendEffect(Effect.NavigateToDetail(event.productId))
+            is Event.ProductClicked -> {
+                val json = Json.encodeToString(ComponentUiModel.serializer(), event.component)
+                sendEffect(Effect.NavigateToDetail(json))
+            }
         }
     }
 
@@ -146,18 +151,18 @@ class PartsViewModel @Inject constructor(
                         updateState { it.copy(aiOverview = overview, isAiLoading = false) }
                     },
                     onFailure = { throwable ->
-                        val isQuotaError = throwable.message?.contains("429") == true || 
-                                         throwable.message?.contains("quota") == true
+                        val isQuotaError = throwable.message?.contains("429") == true ||
+                                throwable.message?.contains("quota") == true
                         val uiError = if (isQuotaError) {
                             UiText.StringResource(R.string.ai_limit_reached)
                         } else {
                             UiText.StringResource(R.string.ai_unavailable)
                         }
-                        updateState { 
+                        updateState {
                             it.copy(
-                                isAiLoading = false, 
+                                isAiLoading = false,
                                 aiErrorMessage = uiError
-                            ) 
+                            )
                         }
                     }
                 )
