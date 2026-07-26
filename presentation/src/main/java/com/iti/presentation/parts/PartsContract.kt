@@ -21,7 +21,7 @@ interface PartsContract {
             val maxPrice: Double?
         ) : Event
         data object ResetFilters : Event
-        data class ProductClicked(val productId: String) : Event
+        data class ProductClicked(val component: ComponentUiModel) : Event
     }
 
     data class State(
@@ -42,6 +42,6 @@ interface PartsContract {
     )
 
     sealed interface Effect {
-        data class NavigateToDetail(val productId: String) : Effect
+        data class NavigateToDetail(val componentJson: String) : Effect
     }
 }

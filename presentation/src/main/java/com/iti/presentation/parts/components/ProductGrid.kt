@@ -33,7 +33,7 @@ import com.iti.presentation.core.toUiText
 @Composable
 fun ProductGrid(
     products: LazyPagingItems<ComponentUiModel>,
-    onProductClick: (String) -> Unit,
+    onProductClick: (ComponentUiModel) -> Unit,
     modifier: Modifier = Modifier,
     headerContent: @Composable () -> Unit = {}
 ) {
@@ -106,7 +106,7 @@ fun ProductGrid(
                 products[index]?.let { component ->
                     ProductCard(
                         component = component,
-                        onClick = { onProductClick(component.id.toString()) }
+                        onClick = { onProductClick(component) }
                     )
                 }
             }
