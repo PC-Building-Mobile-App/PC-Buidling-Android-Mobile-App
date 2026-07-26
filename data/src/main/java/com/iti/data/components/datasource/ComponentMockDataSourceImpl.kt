@@ -183,7 +183,6 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
     }
 
     override suspend fun searchComponents(params: SearchParams): List<ComponentDataModel> {
-        //todo (Implement real remote search once the backend is done)
         val query = params.query?.trim()
         val category = params.category
         val minPrice = params.minPrice
@@ -200,11 +199,7 @@ class ComponentMockDataSourceImpl @Inject constructor() : ComponentDataSource {
             val matchPrice = (minPrice == null || component.price >= minPrice) &&
                     (maxPrice == null || component.price <= maxPrice)
 
-            //val matchStock = !params.inStockOnly || component.inStock
-
-          //  matchQuery && matchCategory && matchPrice && matchStock
-              matchQuery && matchCategory && matchPrice  
-
+            matchQuery && matchCategory && matchPrice
         }
     }
 }

@@ -10,7 +10,6 @@ class PlatformStatLocalDataSourceImpl @Inject constructor() : PlatformStatDataSo
     override fun getStats(): Flow<List<PlatformStatDataModel>> {
         val staticStats = listOf(
             PlatformStatDataModel(
-                // TODO: PROVIDE BUILD COUNT FROM API
                 id = "BUILDS",
                 label = "BUILDS",
                 count = 12000,
@@ -19,7 +18,7 @@ class PlatformStatLocalDataSourceImpl @Inject constructor() : PlatformStatDataSo
             PlatformStatDataModel(
                 id = "PARTS",
                 label = "PARTS",
-                count = 1390,
+                count = 1446,
                 isApproximated = false
             ),
             PlatformStatDataModel(

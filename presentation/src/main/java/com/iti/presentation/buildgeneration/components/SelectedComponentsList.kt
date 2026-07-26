@@ -79,7 +79,6 @@ private fun SelectedComponentRow(component: ComponentUiModel, modifier: Modifier
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                // FIXED: Safely maps the Enum to a localized String, avoiding brittle substring parsing!
                 text = stringResource(component.category.labelRes),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

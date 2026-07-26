@@ -12,11 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.iti.presentation.core.componentcategories.model.ComponentCategoryUiModel
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.home.HomeContract.Effect
 import com.iti.presentation.home.HomeContract.Event
@@ -27,10 +25,7 @@ import com.iti.presentation.home.components.HeroSection
 import com.iti.presentation.home.components.HomeHeader
 import com.iti.presentation.home.components.HomeSearchBar
 import com.iti.presentation.home.components.LatestNewsSection
-import com.iti.presentation.home.model.HardwareNewsUiModel
-import com.iti.presentation.home.model.PlatformStatUiModel
 import com.iti.presentation.home.viewmodel.HomeViewModel
-import com.iti.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -39,7 +34,7 @@ fun HomeScreen(
     onNavigateToPartsWithQuery: (String) -> Unit,
     onNavigateToParts: () -> Unit,
     onNavigateToGenerateBuild: () -> Unit,
-    onNavigateToComponentDetail: (Long) -> Unit,
+    onNavigateToComponentDetail: (String) -> Unit,
     onNavigateToPartsWithCategory: (String) -> Unit,
     onNavigateToHardwareNews: () -> Unit,
     onNavigateToNewsDetail: (String) -> Unit
@@ -52,7 +47,7 @@ fun HomeScreen(
                 is Effect.NavigateToPartsWithQuery -> onNavigateToPartsWithQuery(effect.query)
                 is Effect.NavigateToParts -> onNavigateToParts()
                 is Effect.NavigateToGenerateBuild -> onNavigateToGenerateBuild()
-                is Effect.NavigateToComponentDetail -> onNavigateToComponentDetail(effect.componentId)
+                is Effect.NavigateToComponentDetail -> onNavigateToComponentDetail(effect.componentJson)
                 is Effect.NavigateToPartsWithCategory -> onNavigateToPartsWithCategory(effect.categoryId)
                 is Effect.NavigateToHardwareNews -> onNavigateToHardwareNews()
                 is Effect.NavigateToNewsDetail -> onNavigateToNewsDetail(effect.articleId)
@@ -110,7 +105,11 @@ private fun HomeScreenContent(
                 components = state.featuredComponents,
                 isLoading = state.isLoading,
                 onSeeAll = { onEvent(Event.SeeAllComponentsClicked) },
-                onComponentClick = { onEvent(Event.ComponentClicked(it)) }
+                onComponentClick = { id ->
+                    state.featuredComponents.find { it.id == id }?.let { component ->
+                        onEvent(Event.ComponentClicked(component))
+                    }
+                }
             )
         }
 
@@ -136,4 +135,3 @@ private fun HomeScreenContent(
         }
     }
 }
-
