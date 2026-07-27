@@ -11,8 +11,11 @@ object CategoryBuildsContract {
         val category: BuildCategoryUiModel? = null,
         val builds: List<BuildUiModel> = emptyList(),
         val errorMessage: UiText? = null,
+        val isSelectionMode: Boolean = false,
+        val selectedBuildIds: Set<String> = emptySet(),
     ) {
         val isEmpty: Boolean get() = !isLoading && errorMessage == null && builds.isEmpty()
+        val canCompare: Boolean get() = selectedBuildIds.size >= 2
     }
 
     sealed interface Event {
@@ -23,12 +26,16 @@ object CategoryBuildsContract {
         data class EditClicked(val build: BuildUiModel) : Event
         data class ShareClicked(val buildId: String) : Event
         data class ExportClicked(val buildId: String) : Event
+        data object ToggleSelectionMode : Event
+        data class BuildSelected(val build: BuildUiModel) : Event
+        data object CompareClicked : Event
     }
 
     sealed interface Effect {
         data object NavigateBack : Effect
         data class NavigateToNewBuild(val category: BuildCategoryUiModel) : Effect
         data class NavigateToEditBuild(val build: BuildUiModel) : Effect
+        data class NavigateToComparison(val buildIds: List<Int>) : Effect
         data class ShareBuild(val build: BuildUiModel) : Effect
         data class ExportBuild(val build: BuildUiModel) : Effect
     }

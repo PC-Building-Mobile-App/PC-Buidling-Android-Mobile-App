@@ -2,6 +2,8 @@ package com.iti.data.builds.datasource
 
 import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
+import com.iti.data.builds.model.CompareBuildsRequestDto
+import com.iti.data.builds.model.ComparisonDto
 import com.iti.data.builds.model.CompatibilityCheckRequestDto
 import com.iti.data.builds.model.CompatibilityReportDto
 import com.iti.data.builds.model.GenerateBuildRequestDto
@@ -96,4 +98,31 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun compareBuilds(request: CompareBuildsRequestDto): Result<ComparisonDto> = safeCall {
+        val response = apiService.compareBuilds(request)
+        if (response.status && response.data != null) {
+            response.data
+        } else {
+            throw ServerException.Generic(
+                message = response.message,
+                code = 400
+            )
+        }
+    }
+
+    override suspend fun getBuildById(id: String): Result<BuildDto> = safeCall {
+        val response = apiService.getBundleById(id)
+        if (response.status && response.data != null) {
+            response.data
+        } else {
+            throw ServerException.Generic(
+                message = response.message,
+                code = 400
+            )
+        }
+    }
+
+
+
 }

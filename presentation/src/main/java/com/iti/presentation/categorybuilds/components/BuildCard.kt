@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,25 +40,30 @@ import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.mypcs.model.accentColor
 import com.iti.presentation.mypcs.model.gradient
+import com.iti.presentation.ui.theme.DeepBlack
 
 @Composable
 fun BuildCard(
     build: BuildUiModel,
     categoryType: BuildCategoryType,
+    isSelectionMode: Boolean,
     onEditClick: () -> Unit,
     onShareClick: () -> Unit,
     onExportClick: () -> Unit,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val shape = MaterialTheme.shapes.medium
-    val accent = categoryType.accentColor
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), shape),
+            .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), shape)
+            .clickable {
+                if (isSelectionMode) onSelect()
+            },
     ) {
         Box(
             modifier = Modifier

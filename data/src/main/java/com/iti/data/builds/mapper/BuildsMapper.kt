@@ -5,10 +5,12 @@ import com.iti.data.builds.model.BuildCategoryDto
 import com.iti.data.builds.model.BuildDto
 import com.iti.data.builds.model.BuildIssueDto
 import com.iti.data.builds.model.BuildItemDto
+import com.iti.data.builds.model.ComparisonDto
 import com.iti.domain.builds.model.AlternativeOption
 import com.iti.domain.builds.model.Build
 import com.iti.domain.builds.model.BuildCategory
 import com.iti.domain.builds.model.BuildCategoryType
+import com.iti.domain.builds.model.BuildComparison
 import com.iti.domain.builds.model.BuildIssue
 import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
@@ -16,6 +18,14 @@ import com.iti.domain.components.model.Component
 fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
     type = runCatching { BuildCategoryType.valueOf(type.uppercase()) }.getOrDefault(BuildCategoryType.GAMING),
     buildsCount = buildsCount,
+)
+
+fun ComparisonDto.toDomain(): BuildComparison = BuildComparison(
+    buildIds = buildIds,
+    buildNames = buildNames,
+    comparisonSummary = comparisonSummary,
+    keyDifferences = keyDifferences,
+    recommendation = recommendation
 )
 
 fun BuildItemDto.toDomain(): Component? {

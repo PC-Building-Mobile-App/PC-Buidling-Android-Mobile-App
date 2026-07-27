@@ -8,13 +8,15 @@ object MyPcsContract {
     data class State(
         val isLoading: Boolean = false,
         val categories: List<BuildCategoryUiModel> = emptyList(),
-        val errorMessage: UiText? = null
+        val errorMessage: UiText? = null,
+        val isSelectionMode: Boolean = false,
     )
 
     sealed interface Event {
         data object LoadBuildCategories : Event
         data class CategoryClicked(val category: BuildCategoryUiModel) : Event
         data object NewBuildClicked : Event
+        data object ToggleSelectionMode : Event
     }
 
     sealed interface Effect {

@@ -120,7 +120,7 @@ fun CategoryBuildsHeader(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.category_builds_title, stringResource(categoryType.labelRes)),
                     style = MaterialTheme.typography.titleLarge,

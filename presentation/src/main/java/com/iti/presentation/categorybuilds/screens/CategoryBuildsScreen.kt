@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -44,6 +46,7 @@ fun CategoryBuildsScreen(
     onBackClick: () -> Unit,
     onNewBuildClick: (BuildCategoryUiModel) -> Unit,
     onEditBuildClick: (build: BuildUiModel, category: BuildCategoryUiModel) -> Unit,
+    onNavigateToComparison: (List<Int>) -> Unit,
     category: BuildCategoryUiModel,
     modifier: Modifier = Modifier,
     viewModel: CategoryBuildsViewModel = hiltViewModel(),
@@ -64,6 +67,8 @@ fun CategoryBuildsScreen(
                 is Effect.NavigateToEditBuild -> {
                     state.category?.let { onEditBuildClick(effect.build, it) }
                 }
+
+                is Effect.NavigateToComparison -> onNavigateToComparison(effect.buildIds)
                 is Effect.ShareBuild -> shareBuild(context, effect.build)
                 is Effect.ExportBuild -> exportBuild(context, effect.build)
             }
@@ -130,13 +135,21 @@ private fun CategoryBuildsScreenContent(
                             BuildCard(
                                 build = build,
                                 categoryType = state.category.type,
+                                isSelectionMode = state.isSelectionMode,
                                 onEditClick = { onEvent(Event.EditClicked(build)) },
                                 onShareClick = { onEvent(Event.ShareClicked(build.id)) },
                                 onExportClick = { onEvent(Event.ExportClicked(build.id)) },
+                                onSelect = { onEvent(Event.BuildSelected(build)) },
                                 modifier = Modifier.padding(horizontal = 20.dp),
                             )
                         }
                     }
+                }
+            }
+
+            if (state.isSelectionMode) {
+                item {
+                    Spacer(modifier = Modifier.height(140.dp))
                 }
             }
         }
@@ -166,7 +179,7 @@ private fun CategoryBuildsScreenContent(
             }
         }
 
-        if (!state.isLoading && state.errorMessage == null) {
+        if (!state.isLoading && state.errorMessage == null && !state.isSelectionMode) {
             state.category?.let { category ->
                 CategoryBuildsFab(
                     categoryType = category.type,
@@ -196,6 +209,7 @@ private fun CategoryBuildsScreenLoadingPreview() {
         )
     }
 }
+
 
 @Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
 @Composable
