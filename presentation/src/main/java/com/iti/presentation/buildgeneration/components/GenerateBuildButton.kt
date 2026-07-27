@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.iti.presentation.R
-import com.iti.presentation.core.components.PrimaryButton
+import com.iti.presentation.core.uicomponents.PrimaryButton
 import com.iti.presentation.ui.theme.AppTheme
 
 @Composable

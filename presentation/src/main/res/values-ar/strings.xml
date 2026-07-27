@@ -185,4 +185,6 @@
     <string name="ai_export">تصدير</string>
     <string name="ai_share_title">مشاركة رد الذكاء الاصطناعي</string>
 
+    <string name="ai_generate_build_button">توليد تجميعة بالذكاء الاصطناعي</string>
+    <string name="ai_badge_label">AI</string>
 </resources>

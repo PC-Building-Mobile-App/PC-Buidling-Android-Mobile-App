@@ -11,8 +11,6 @@ import com.iti.presentation.core.BaseViewModel
 import com.iti.presentation.core.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.NumberFormat
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel

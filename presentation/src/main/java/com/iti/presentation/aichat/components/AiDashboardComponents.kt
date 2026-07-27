@@ -1,7 +1,6 @@
 package com.iti.presentation.aichat.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
 import com.iti.presentation.ui.theme.ElectricBlue
 import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.WarningOrange
 
 @Composable
 fun AiDashboardHeader(

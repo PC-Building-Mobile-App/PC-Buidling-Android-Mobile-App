@@ -61,8 +61,7 @@ class BuildGenerationViewModel @Inject constructor(
             }
             is Event.ComponentPicked -> pickComponent(event.component)
             is Event.SlotCleared -> clearSlot(event.category)
-            is Event.GenerateClicked -> generateBuild()
-            is Event.RegenerateClicked -> regenerateBuild()
+            is Event.GenerateClicked -> onAiGenerateClicked()
             is Event.SaveClicked -> onSave()
             is Event.BuildNameChanged -> updateState { it.copy(buildName = event.name) }
             is Event.ConfirmSaveClicked -> saveBuild()
@@ -136,6 +135,7 @@ class BuildGenerationViewModel @Inject constructor(
 
     private fun toggleCategoryType(type: BuildCategoryType) {
         updateState { current ->
+            if (current.isCategoryLocked) return@updateState current
             current.copy(selectedCategoryType = if (current.selectedCategoryType == type) null else type)
         }
     }
@@ -240,6 +240,29 @@ class BuildGenerationViewModel @Inject constructor(
         }
     }
 
+    private fun onAiGenerateClicked() {
+        val current = state.value
+        if (current.isGenerating || current.isSaving) return
+        if (current.allSlotsFilled) {
+            regenerateAllSlots()
+        } else {
+            generateBuild()
+        }
+    }
+
+    private fun regenerateAllSlots() {
+        updateState { current ->
+            current.copy(
+                slots = current.slots.map { slot ->
+                    slot.copy(component = null, warningMessage = null, alternatives = emptyList())
+                },
+                generatedSlotCategories = emptySet(),
+                generatedBuild = null,
+            )
+        }
+        generateBuild()
+    }
+
     private fun generateBuild() {
         val current = state.value
 
@@ -324,31 +347,10 @@ class BuildGenerationViewModel @Inject constructor(
         }
     }
 
-    private fun regenerateBuild() {
-        val current = state.value
-        val categoriesToRegenerate = current.generatedSlotCategories
-        if (categoriesToRegenerate.isEmpty()) return
-
-        updateState { state ->
-            state.copy(
-                slots = state.slots.map { slot ->
-                    if (slot.category in categoriesToRegenerate) slot.copy(
-                        component = null,
-                        warningMessage = null,
-                        alternatives = emptyList(),
-                    ) else slot
-                },
-                generatedSlotCategories = emptySet(),
-            )
-        }
-
-        generateBuild()
-    }
-
     private fun onSave() {
         val current = state.value
 
-        if (!current.allSlotsFilled) {
+        if (!current.canSave) {
             sendEffect(
                 Effect.ShowMessage(
                     UiText.StringResource(R.string.save_build_incomplete_slots_message)
@@ -371,7 +373,7 @@ class BuildGenerationViewModel @Inject constructor(
     private fun saveBuild() {
         val current = state.value
 
-        if (!current.allSlotsFilled) {
+        if (!current.canSave) {
             updateState { it.copy(isSaveDialogVisible = false) }
             sendEffect(
                 Effect.ShowMessage(

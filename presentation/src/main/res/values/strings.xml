@@ -184,4 +184,6 @@
     <string name="ai_thinking">AI is thinking…</string>
     <string name="ai_export">Export</string>
     <string name="ai_share_title">Share AI Response</string>
+    <string name="ai_generate_build_button">Generate build with AI</string>
+    <string name="ai_badge_label">AI</string>
 </resources>

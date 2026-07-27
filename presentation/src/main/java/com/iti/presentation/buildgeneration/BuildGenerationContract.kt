@@ -44,7 +44,8 @@ object BuildGenerationContract {
     ) {
         val filledSlotsCount: Int get() = slots.count { it.component != null }
         val allSlotsFilled: Boolean get() = slots.isNotEmpty() && slots.all { it.component != null }
-        val showRegenerateFab: Boolean get() = generatedSlotCategories.isNotEmpty() && allSlotsFilled && !isSaving
+        val canSave: Boolean get() = filledSlotsCount > 0
+        val isCategoryLocked: Boolean get() = category != null
     }
 
     sealed interface Event {
@@ -60,7 +61,6 @@ object BuildGenerationContract {
         data class ComponentPicked(val component: ComponentUiModel) : Event
         data class SlotCleared(val category: ComponentCategoryType) : Event
         data object GenerateClicked : Event
-        data object RegenerateClicked : Event
         data object SaveClicked : Event
         data class BuildNameChanged(val name: String) : Event
         data object ConfirmSaveClicked : Event
