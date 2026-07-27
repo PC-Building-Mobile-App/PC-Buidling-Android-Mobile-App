@@ -68,6 +68,10 @@
     <string name="category_type_office">مكتبي</string>
     <string name="category_type_ai_workstation">محطة ذكاء اصطناعي</string>
     <string name="category_type_dream_builds">تجميعة الأحلام</string>
+    <string name="category_desc_gaming">أداء عالٍ في الألعاب بأعلى إعدادات</string>
+    <string name="category_desc_programming">سرعة في التجميع وتعدد المهام</string>
+    <string name="category_desc_office">كفاءة وإنتاجية يومية</string>
+    <string name="category_desc_ai_workstation">تدريب نماذج الذكاء الاصطناعي والتعلم العميق</string>
     <string name="brand_section_title">الشركة المصنعة المفضلة</string>
     <string name="brand_intel">Intel</string>
     <string name="brand_amd">AMD</string>

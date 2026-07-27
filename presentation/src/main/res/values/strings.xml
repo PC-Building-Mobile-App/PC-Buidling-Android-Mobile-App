@@ -68,6 +68,10 @@
     <string name="category_type_office">Office</string>
     <string name="category_type_ai_workstation">AI Workstation</string>
     <string name="category_type_dream_builds">Dream Build</string>
+    <string name="category_desc_gaming">High FPS, max settings</string>
+    <string name="category_desc_programming">Fast compile, heavy multitasking</string>
+    <string name="category_desc_office">Efficient, daily productivity</string>
+    <string name="category_desc_ai_workstation">Deep learning &amp; AI model training</string>
     <string name="brand_section_title">BRAND PREFERENCE</string>
     <string name="brand_intel">Intel</string>
     <string name="brand_amd">AMD</string>

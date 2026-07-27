@@ -14,11 +14,8 @@ import com.iti.domain.componentcategories.model.ComponentCategoryType
 import com.iti.domain.components.model.Component
 
 fun BuildCategoryDto.toDomain(): BuildCategory = BuildCategory(
-    id = id,
-    name = name,
-    description = description,
+    type = runCatching { BuildCategoryType.valueOf(type.uppercase()) }.getOrDefault(BuildCategoryType.GAMING),
     buildsCount = buildsCount,
-    type = runCatching { BuildCategoryType.valueOf(type) }.getOrDefault(BuildCategoryType.GAMING),
 )
 
 fun BuildItemDto.toDomain(): Component? {

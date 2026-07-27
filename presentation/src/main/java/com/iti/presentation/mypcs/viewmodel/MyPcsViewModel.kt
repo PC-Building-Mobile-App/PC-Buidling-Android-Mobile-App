@@ -35,23 +35,26 @@ class MyPcsViewModel @Inject constructor(
         viewModelScope.launch {
             updateState { it.copy(isLoading = true, errorMessage = null) }
 
-            getBuildCategoriesUseCase()
-                .onSuccess { domainCategories ->
-                    updateState { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            categories = domainCategories.map { it.toUiModel() }
-                        )
-                    }
-                }
-                .onFailure { throwable ->
-                    updateState { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            errorMessage = throwable.toUiText()
-                        )
-                    }
-                }
+            getBuildCategoriesUseCase().collect { result ->
+                result.fold(
+                    onSuccess = { domainCategories ->
+                        updateState { currentState ->
+                            currentState.copy(
+                                isLoading = false,
+                                categories = domainCategories.map { it.toUiModel() },
+                            )
+                        }
+                    },
+                    onFailure = { throwable ->
+                        updateState { currentState ->
+                            currentState.copy(
+                                isLoading = false,
+                                errorMessage = throwable.toUiText(),
+                            )
+                        }
+                    },
+                )
+            }
         }
     }
 }
