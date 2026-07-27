@@ -43,7 +43,7 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         delay(2000.milliseconds)
         mutex.withLock {
             mockBuildCategories.map { category ->
-                category.copy(buildsCount = savedBuilds[category.id]?.size ?: 0)
+                category.copy(buildsCount = savedBuilds[category.type]?.size ?: 0)
             }
         }
     }
@@ -303,10 +303,10 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         )
 
         val mockBuildCategories = listOf(
-            BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
-            BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
-            BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
+            BuildCategoryDto("GAMING", 0),
+            BuildCategoryDto("PROGRAMMING", 0),
+            BuildCategoryDto("OFFICE", 0),
+            BuildCategoryDto("AI_WORKSTATION", 0),
         )
     }
 }

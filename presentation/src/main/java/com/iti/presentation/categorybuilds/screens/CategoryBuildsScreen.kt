@@ -35,6 +35,7 @@ import com.iti.presentation.categorybuilds.components.CategoryBuildsHeader
 import com.iti.presentation.categorybuilds.model.BuildUiModel
 import com.iti.presentation.categorybuilds.utils.BuildUtil
 import com.iti.presentation.categorybuilds.viewmodel.CategoryBuildsViewModel
+import com.iti.presentation.core.UiText
 import com.iti.presentation.core.uicomponents.EmptyScreen
 import com.iti.presentation.core.uicomponents.ErrorScreen
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
@@ -52,7 +53,7 @@ fun CategoryBuildsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(category.id) {
+    LaunchedEffect(category.type) {
         viewModel.onEvent(Event.Initialize(category))
     }
 
@@ -115,8 +116,6 @@ private fun CategoryBuildsScreenContent(
         ) {
             item {
                 CategoryBuildsHeader(
-                    categoryName = state.category?.name.orEmpty(),
-                    categoryDescription = state.category?.description.orEmpty(),
                     categoryType = state.category?.type ?: BuildCategoryType.GAMING,
                     onBackClick = { onEvent(Event.BackClicked) },
                 )
@@ -202,12 +201,44 @@ private fun CategoryBuildsScreenLoadingPreview() {
             state = State(
                 isLoading = true,
                 category = BuildCategoryUiModel(
-                    id = "gaming",
-                    name = "Gaming",
-                    description = "High FPS, max settings",
                     buildsCount = 3,
                     type = BuildCategoryType.GAMING,
                 ),
+            ),
+            onEvent = {},
+        )
+    }
+}
+
+
+@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
+@Composable
+private fun CategoryBuildsScreenErrorPreview() {
+    AppTheme {
+        CategoryBuildsScreenContent(
+            state = State(
+                category = BuildCategoryUiModel(
+                    buildsCount = 3,
+                    type = BuildCategoryType.GAMING,
+                ),
+                errorMessage = UiText.DynamicString("Something went wrong"),
+            ),
+            onEvent = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0B0B10)
+@Composable
+private fun CategoryBuildsScreenEmptyPreview() {
+    AppTheme {
+        CategoryBuildsScreenContent(
+            state = State(
+                category = BuildCategoryUiModel(
+                    buildsCount = 0,
+                    type = BuildCategoryType.GAMING,
+                ),
+                builds = emptyList(),
             ),
             onEvent = {},
         )

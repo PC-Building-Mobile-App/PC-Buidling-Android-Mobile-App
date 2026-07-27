@@ -2,7 +2,6 @@ package com.iti.presentation.aichat.mapper
 
 import com.iti.domain.aichat.model.AiChatResponse
 import com.iti.presentation.aichat.model.AiChatMessageUiModel
-import com.iti.presentation.core.pccomponents.mapper.toUiModel
 import com.iti.presentation.core.pccomponents.mapper.toUiModels
 import java.util.UUID
 

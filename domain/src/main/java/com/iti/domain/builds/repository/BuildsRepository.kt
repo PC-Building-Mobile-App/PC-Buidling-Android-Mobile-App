@@ -8,9 +8,10 @@ import com.iti.domain.builds.model.CompatibilityReport
 import com.iti.domain.builds.model.GenerateBuildRequest
 import com.iti.domain.builds.model.GeneratedBuild
 import com.iti.domain.builds.model.SaveBuildRequest
+import kotlinx.coroutines.flow.Flow
 
 interface BuildsRepository {
-    suspend fun getBuildCategories(): Result<List<BuildCategory>>
+    fun getBuildCategories(): Flow<Result<List<BuildCategory>>>
     suspend fun getBuildsByCategory(categoryId: String): Result<List<Build>>
     suspend fun generateBuild(request: GenerateBuildRequest): Result<GeneratedBuild>
     suspend fun checkCompatibility(request: CompatibilityCheckRequest): Result<CompatibilityReport>

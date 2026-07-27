@@ -11,6 +11,7 @@ import com.iti.data.builds.model.GeneratedBuildDto
 import com.iti.data.builds.model.SaveBuildRequestDto
 import com.iti.data.builds.remote.BuildsApiService
 import com.iti.data.util.safeCall
+import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.domain.exceptions.ServerException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,8 +27,11 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
             response.data.content.groupBy { it.type.uppercase() }.mapValues { it.value.size }
         } else emptyMap()
 
-        mockBuildCategories.map { category ->
-            category.copy(buildsCount = countsByType[category.id.uppercase()] ?: 0)
+        BuildCategoryType.entries.map { type ->
+            BuildCategoryDto(
+                type = type.name,
+                buildsCount = countsByType[type.name] ?: 0,
+            )
         }
     }
 
@@ -119,12 +123,6 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    private companion object {
-        val mockBuildCategories = listOf(
-            BuildCategoryDto("GAMING", "Gaming", "High FPS, max settings", 0, "GAMING"),
-            BuildCategoryDto("PROGRAMMING", "Programming", "Fast compile, multitasking", 0, "PROGRAMMING"),
-            BuildCategoryDto("OFFICE", "Office", "Productivity & speed", 0, "OFFICE"),
-            BuildCategoryDto("AI_WORKSTATION", "AI & Workstation", "ML training, inference", 0, "AI_WORKSTATION"),
-        )
-    }
+
+
 }

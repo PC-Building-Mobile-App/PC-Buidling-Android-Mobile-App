@@ -1,11 +1,8 @@
 package com.iti.domain.builds.model
 
 data class BuildCategory(
-    val id: String,
-    val name: String,
-    val description: String,
-    val buildsCount: Int,
     val type: BuildCategoryType,
+    val buildsCount: Int,
 )
 
 enum class BuildCategoryType {

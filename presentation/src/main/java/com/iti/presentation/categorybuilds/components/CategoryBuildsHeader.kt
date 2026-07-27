@@ -33,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
+import com.iti.presentation.buildgeneration.model.descriptionRes
+import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.mypcs.model.accentColor
 import com.iti.presentation.mypcs.model.gradient
 import com.iti.presentation.mypcs.model.iconRes
@@ -41,8 +43,6 @@ import com.iti.presentation.ui.theme.DeepBlack
 
 @Composable
 fun CategoryBuildsHeader(
-    categoryName: String,
-    categoryDescription: String,
     categoryType: BuildCategoryType,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,12 +122,12 @@ fun CategoryBuildsHeader(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.category_builds_title, categoryName),
+                    text = stringResource(R.string.category_builds_title, stringResource(categoryType.labelRes)),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
                 Text(
-                    text = categoryDescription,
+                    text = stringResource(categoryType.descriptionRes),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 )
@@ -141,8 +141,6 @@ fun CategoryBuildsHeader(
 private fun CategoryBuildsHeaderPreview() {
     AppTheme {
         CategoryBuildsHeader(
-            categoryName = "Gaming",
-            categoryDescription = "High FPS, max settings",
             categoryType = BuildCategoryType.GAMING,
             onBackClick = {},
         )

@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
+import com.iti.presentation.buildgeneration.model.descriptionRes
+import com.iti.presentation.buildgeneration.model.labelRes
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.mypcs.model.accentColor
 import com.iti.presentation.mypcs.model.gradient
@@ -91,7 +93,7 @@ fun BuildCategoryCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = category.name,
+                text = stringResource(category.type.labelRes),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontSize = 14.sp
                 ),
@@ -103,7 +105,7 @@ fun BuildCategoryCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = category.description,
+                text = stringResource(category.type.descriptionRes),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 11.sp
                 ),
@@ -141,9 +143,6 @@ private fun BuildCategoryCardPreview() {
     AppTheme {
         BuildCategoryCard(
             category = BuildCategoryUiModel(
-                id = "gaming",
-                name = "Gaming",
-                description = "High FPS, max settings",
                 buildsCount = 3,
                 type = BuildCategoryType.GAMING,
             ),
