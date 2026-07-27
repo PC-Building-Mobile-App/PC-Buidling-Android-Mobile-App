@@ -207,4 +207,33 @@
     <string name="ai_badge_label">AI</string>
     <string name="network_back_online">تم استعادة الاتصال بالإنترنت</string>
     <string name="network_no_internet">لا يوجد اتصال بالإنترنت</string>
+    <string name="error_generic">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
+
+    <string name="error_unauthorized_session">انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.</string>
+    <string name="error_invalid_credentials">البريد الإلكتروني أو كلمة المرور غير صحيحة.</string>
+    <string name="error_email_already_exists">يوجد حساب مسجل بالفعل بهذا البريد الإلكتروني.</string>
+
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.</string>
+    <string name="error_timeout">الخادم يستغرق وقتًا طويلًا للاستجابة.</string>
+
+    <string name="error_server_generic">%1$s</string>
+    <string name="error_server_unauthorized">غير مصرح لك بالوصول</string>
+    <string name="error_server_forbidden">الوصول محظور</string>
+    <string name="error_server_not_found">المورد غير موجود</string>
+    <string name="error_server_internal">خطأ داخلي في الخادم</string>
+    <string name="error_server_unavailable">الخدمة غير متوفرة مؤقتًا</string>
+
+    <string name="status_compatible">متوافق</string>
+    <string name="status_incompatible">غير متوافق</string>
+    <string name="label_status">الحالة</string>
+    <string name="label_issues">المشاكل</string>
+    <string name="label_parts">القطع</string>
+    <plurals name="specs_more_count">
+        <item quantity="zero">+%d</item>
+        <item quantity="one">+واحد آخر</item>
+        <item quantity="two">+اثنان آخران</item>
+        <item quantity="few">+%d أخرى</item>
+        <item quantity="many">+%d أخرى</item>
+        <item quantity="other">+%d أخرى</item>
+    </plurals>
 </resources>

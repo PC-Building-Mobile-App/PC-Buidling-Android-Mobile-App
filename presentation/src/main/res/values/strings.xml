@@ -208,4 +208,30 @@
     <string name="ai_badge_label">AI</string>
     <string name="network_back_online">Back online</string>
     <string name="network_no_internet">No internet connection</string>
+
+    <string name="error_generic">Something went wrong. Please try again.</string>
+
+    <string name="error_unauthorized_session">Session expired. Please login again.</string>
+    <string name="error_invalid_credentials">Invalid email or password.</string>
+    <string name="error_email_already_exists">An account with this email already exists.</string>
+
+    <string name="error_no_internet">No internet connection. Please check your network.</string>
+    <string name="error_timeout">The server is taking too long to respond.</string>
+
+    <string name="error_server_generic">%1$s</string>
+    <string name="error_server_unauthorized">Unauthorized access</string>
+    <string name="error_server_forbidden">Access forbidden</string>
+    <string name="error_server_not_found">Resource not found</string>
+    <string name="error_server_internal">Internal server error</string>
+    <string name="error_server_unavailable">Service temporarily unavailable</string>
+
+    <string name="status_compatible">Compatible</string>
+    <string name="status_incompatible">Incompatible</string>
+    <string name="label_status">Status</string>
+    <string name="label_issues">Issues</string>
+    <string name="label_parts">Parts</string>
+    <plurals name="specs_more_count">
+        <item quantity="one">+%d more</item>
+        <item quantity="other">+%d more</item>
+    </plurals>
 </resources>
