@@ -42,6 +42,7 @@ import com.iti.presentation.categorybuilds.model.AlternativeOptionUiModel
 import com.iti.presentation.core.UiText
 import com.iti.presentation.core.componentcategories.mapper.toIconResource
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
+import com.iti.presentation.core.pccomponents.model.priceValue
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.SuccessGreen
 import com.iti.presentation.ui.theme.WarningOrange
@@ -127,7 +128,7 @@ fun ComponentSlotCard(
             if (component != null) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = stringResource(R.string.price_format, component.formattedPrice),
+                        text = stringResource(R.string.price_format, component.priceValue),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
