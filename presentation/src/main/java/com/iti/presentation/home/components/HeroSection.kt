@@ -56,9 +56,9 @@ fun HeroSection(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f),
-                        Color(0xFF0B0B10)
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f),
+                        MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
             )
