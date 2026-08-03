@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.core.componentcategories.model.ComponentCategoryUiModel
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun HomeCategoryCard(
@@ -74,10 +73,11 @@ fun HomeCategoryCard(
                 Text(
                     text = category.subtitle,
                     style = MaterialTheme.typography.labelSmall,
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1
                 )
             }
         }
     }
 }
+

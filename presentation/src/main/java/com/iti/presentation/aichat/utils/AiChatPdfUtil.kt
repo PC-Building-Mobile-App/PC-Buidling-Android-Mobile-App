@@ -7,12 +7,8 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
-import androidx.compose.ui.graphics.toArgb
 import com.iti.presentation.R
 import com.iti.presentation.aichat.model.AiChatMessageUiModel
-import com.iti.presentation.ui.theme.DeepBlack
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.TextMuted
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
@@ -47,9 +43,9 @@ object AiChatPdfUtil {
         private var canvas: Canvas = page.canvas
         private var y = marginTop
 
-        private val colorPrimary = ElectricBlue.toArgb()
-        private val colorTextPrimary = DeepBlack.toArgb()
-        private val colorTextSecondary = TextMuted.toArgb()
+        private val colorPrimary = android.graphics.Color.parseColor("#4F8CFF")
+        private val colorTextPrimary = android.graphics.Color.parseColor("#0B0B0F")
+        private val colorTextSecondary = android.graphics.Color.parseColor("#64748B")
 
         private fun startNewPage(): PdfDocument.Page {
             val info = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
@@ -199,3 +195,5 @@ object AiChatPdfUtil {
         }
     }
 }
+
+

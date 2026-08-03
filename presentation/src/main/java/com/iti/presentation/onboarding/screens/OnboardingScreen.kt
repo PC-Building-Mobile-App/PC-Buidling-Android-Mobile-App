@@ -80,7 +80,7 @@ fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DeepBlack)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .padding(bottom = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -124,7 +124,7 @@ fun OnboardingScreen(
         ) {
             Text(
                 text = currentPage.title,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = Inter,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
@@ -134,7 +134,7 @@ fun OnboardingScreen(
 
             Text(
                 text = currentPage.description,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = Inter,
                 fontSize = 15.sp,
                 lineHeight = 22.sp
@@ -160,7 +160,7 @@ fun OnboardingScreen(
                         .size(width = widthAnimator.value, height = 6.dp)
                         .clip(CircleShape)
                         .background(
-                            if (isSelected) ElectricBlue else TextSecondary.copy(alpha = 0.3f)
+                            if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                         )
                 )
             }
@@ -217,7 +217,7 @@ fun OnboardingScreen(
             ) {
                 Text(
                     text = stringResource(R.string.skip),
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontFamily = Inter,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium

@@ -85,7 +85,7 @@ fun BuildCategoryCard(
                 Icon(
                     painter = painterResource(id = category.type.iconRes),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = androidx.compose.ui.graphics.Color.White,
                     modifier = Modifier.size(22.dp),
                 )
             }
@@ -95,10 +95,11 @@ fun BuildCategoryCard(
             Text(
                 text = stringResource(category.type.labelRes),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp
                 ),
-                color = MaterialTheme.colorScheme.onPrimary,
-                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
 

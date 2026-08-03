@@ -44,8 +44,6 @@ import com.iti.presentation.aichat.components.ChatInput
 import com.iti.presentation.aichat.components.UserChatBubble
 import com.iti.presentation.aichat.viewmodel.AiChatViewModel
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
 import com.iti.presentation.ui.theme.WarningOrange
 import kotlinx.coroutines.flow.collectLatest
 import androidx.core.content.FileProvider
@@ -154,7 +152,7 @@ private fun AiChatContent(
                         title = "AI Build Generator",
                         subtitle = "Tell me your budget & use case",
                         iconRes = R.drawable.ic_nav_ai,
-                        gradientColors = listOf(ElectricBlue, RoyalPurple),
+                        gradientColors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary),
                         onClick = { onEvent(Event.NavigateToBuild) },
                     )
 
@@ -236,3 +234,4 @@ private fun TypingIndicator(modifier: Modifier = Modifier) {
         )
     }
 }
+

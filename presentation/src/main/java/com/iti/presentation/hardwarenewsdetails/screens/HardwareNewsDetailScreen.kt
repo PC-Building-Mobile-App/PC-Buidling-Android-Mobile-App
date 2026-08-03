@@ -55,11 +55,7 @@ import com.iti.presentation.hardwarenewsdetails.HardwareNewsDetailContract.State
 import com.iti.presentation.hardwarenewsdetails.viewmodel.HardwareNewsDetailViewModel
 import com.iti.presentation.home.model.HardwareNewsUiModel
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.ElectricBlue
 import com.iti.presentation.ui.theme.PrimaryGradient
-import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.TextPrimary
-import com.iti.presentation.ui.theme.TextSecondary
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -184,7 +180,7 @@ private fun ArticleContent(
                                 .fillMaxSize()
                                 .background(
                                     brush = Brush.linearGradient(
-                                        listOf(ElectricBlue.copy(alpha = 0.5f), RoyalPurple.copy(alpha = 0.5f))
+                                        listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f))
                                     )
                                 )
                         )
@@ -195,7 +191,7 @@ private fun ArticleContent(
                                 .fillMaxSize()
                                 .background(
                                     brush = Brush.linearGradient(
-                                        listOf(ElectricBlue.copy(alpha = 0.7f), RoyalPurple.copy(alpha = 0.7f))
+                                        listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f))
                                     )
                                 )
                         )
@@ -207,7 +203,7 @@ private fun ArticleContent(
                         .fillMaxSize()
                         .background(
                             brush = Brush.linearGradient(
-                                listOf(ElectricBlue.copy(alpha = 0.7f), RoyalPurple.copy(alpha = 0.7f))
+                                listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f))
                             )
                         )
                 )
@@ -259,14 +255,14 @@ private fun ArticleContent(
                 Icon(
                     imageVector = Icons.Default.CalendarToday,
                     contentDescription = null,
-                    tint = TextSecondary,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(14.dp)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = article.publishedDate,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -324,14 +320,14 @@ private fun ArticleContent(
                         Text(
                             text = stringResource(R.string.read_full_article),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                             contentDescription = null,
-                            tint = TextPrimary,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -365,3 +361,4 @@ private fun HardwareNewsDetailPreview() {
         )
     }
 }
+

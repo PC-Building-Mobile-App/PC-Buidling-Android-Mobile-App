@@ -54,6 +54,7 @@ fun ProductCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
+            .height(290.dp)
             .shadow(
                 elevation = 4.dp,
                 shape = MaterialTheme.shapes.medium
@@ -139,11 +140,14 @@ fun ProductCard(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalAlignment = Alignment.Start
             ) {
+                val categoryText = component.category.name.ifBlank { component.subtitle }.trim().trim('.', '-', ' ').ifBlank { "Component" }
+                
                 Text(
-                    text = component.subtitle,
-                    style = MaterialTheme.typography.labelMedium,
+                    text = categoryText.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.5.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -152,9 +156,9 @@ fun ProductCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
-                    lineHeight = 20.sp,
-                    maxLines = 2,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    maxLines = 4,
                     minLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )

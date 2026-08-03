@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Shield
@@ -138,6 +139,15 @@ fun ProfileScreenContent(
             )
             RowDivider()
             AccountRow(
+                icon = Icons.Filled.DarkMode,
+                iconTint = colorScheme.secondary,
+                iconBackground = colorScheme.secondary.copy(alpha = 0.18f),
+                label = stringResource(R.string.app_theme),
+                trailingText = state.selectedTheme.displayName,
+                onClick = { onEvent(ProfileContract.Event.ThemeClicked) },
+            )
+            RowDivider()
+            AccountRow(
                 icon = Icons.AutoMirrored.Filled.Logout,
                 iconTint = colorScheme.error,
                 iconBackground = colorScheme.error.copy(alpha = 0.18f),
@@ -156,6 +166,54 @@ fun ProfileScreenContent(
             onDismiss = { onEvent(ProfileContract.Event.DismissLanguageDialog) },
         )
     }
+
+    if (state.isThemeDialogVisible) {
+        ThemePickerDialog(
+            selectedTheme = state.selectedTheme,
+            onThemeSelected = { onEvent(ProfileContract.Event.ThemeSelected(it)) },
+            onDismiss = { onEvent(ProfileContract.Event.DismissThemeDialog) },
+        )
+    }
+}
+
+@Composable
+private fun ThemePickerDialog(
+    selectedTheme: com.iti.domain.settings.model.AppThemePreference,
+    onThemeSelected: (com.iti.domain.settings.model.AppThemePreference) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.choose_theme)) },
+        text = {
+            Column {
+                com.iti.domain.settings.model.AppThemePreference.entries.forEach { theme ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = theme == selectedTheme,
+                                onClick = { onThemeSelected(theme) },
+                            )
+                            .padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = theme == selectedTheme,
+                            onClick = { onThemeSelected(theme) },
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(theme.displayName)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.close))
+            }
+        },
+    )
 }
 
 @Composable

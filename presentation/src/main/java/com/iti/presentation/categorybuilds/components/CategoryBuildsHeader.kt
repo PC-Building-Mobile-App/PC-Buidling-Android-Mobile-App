@@ -39,7 +39,6 @@ import com.iti.presentation.mypcs.model.accentColor
 import com.iti.presentation.mypcs.model.gradient
 import com.iti.presentation.mypcs.model.iconRes
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.DeepBlack
 
 @Composable
 fun CategoryBuildsHeader(
@@ -52,7 +51,7 @@ fun CategoryBuildsHeader(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .background(DeepBlack),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         val widthPx = with(density) { maxWidth.toPx() }
         val heightPx = with(density) { maxHeight.toPx() }
@@ -65,7 +64,7 @@ fun CategoryBuildsHeader(
                         colors = listOf(
                             categoryType.accentColor.copy(alpha = 0.55f),
                             categoryType.accentColor.copy(alpha = 0.16f),
-                            DeepBlack,
+                            MaterialTheme.colorScheme.background,
                         ),
                         center = Offset(x = widthPx * 0.22f, y = heightPx * 0.35f),
                         radius = widthPx * 0.75f,
@@ -83,7 +82,7 @@ fun CategoryBuildsHeader(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(DeepBlack.copy(alpha = 0.45f))
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.45f))
                     .clickable(
                         interactionSource = backInteractionSource,
                         indication = null,
@@ -96,7 +95,7 @@ fun CategoryBuildsHeader(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(16.dp),
                 )
             }
@@ -113,7 +112,7 @@ fun CategoryBuildsHeader(
                 Icon(
                     painter = painterResource(id = categoryType.iconRes),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = androidx.compose.ui.graphics.Color.White,
                     modifier = Modifier.size(22.dp),
                 )
             }
@@ -124,12 +123,12 @@ fun CategoryBuildsHeader(
                 Text(
                     text = stringResource(R.string.category_builds_title, stringResource(categoryType.labelRes)),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = stringResource(categoryType.descriptionRes),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -146,3 +145,4 @@ private fun CategoryBuildsHeaderPreview() {
         )
     }
 }
+

@@ -3,6 +3,7 @@ package com.iti.presentation
 import androidx.lifecycle.viewModelScope
 import com.iti.domain.auth.usecase.ObserveAuthStateUseCase
 import com.iti.domain.onboarding.usecase.GetOnboardingStatusUseCase
+import com.iti.domain.settings.usecase.ObserveAppThemeUseCase
 import com.iti.presentation.core.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase,
     private val observeAuthStateUseCase: ObserveAuthStateUseCase,
+    private val observeAppThemeUseCase: ObserveAppThemeUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     init {
@@ -32,11 +34,13 @@ class MainViewModel @Inject constructor(
             combine(
                 getOnboardingStatusUseCase(),
                 observeAuthStateUseCase(),
-            ) { hasSeenOnboarding, isAuthenticated ->
+                observeAppThemeUseCase(),
+            ) { hasSeenOnboarding, isAuthenticated, theme ->
                 MainContract.State(
                     isLoading = false,
                     hasSeenOnboarding = hasSeenOnboarding,
                     isAuthenticated = isAuthenticated,
+                    theme = theme,
                 )
             }.collect { newState ->
                 updateState { newState }

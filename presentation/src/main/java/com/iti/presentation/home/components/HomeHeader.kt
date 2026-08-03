@@ -30,8 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
 import com.iti.presentation.ui.theme.AppTheme
 import com.iti.presentation.ui.theme.PrimaryGradient
-import com.iti.presentation.ui.theme.TextPrimary
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun HomeHeader(
@@ -54,7 +52,7 @@ fun HomeHeader(
                 Icon(
                     imageVector = Icons.Default.Memory,
                     contentDescription = "App Logo",
-                    tint = TextPrimary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -79,7 +77,7 @@ fun HomeHeader(
                 Text(
                     text = "${stringResource(R.string.welcome_greeting)} $userName",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -94,3 +92,4 @@ private fun HomeHeaderPreview() {
         HomeHeader(userName = "Mock User")
     }
 }
+

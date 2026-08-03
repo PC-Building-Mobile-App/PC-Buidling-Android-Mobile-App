@@ -6,6 +6,9 @@ import com.iti.domain.auth.usecase.ObserveCurrentUserUseCase
 import com.iti.domain.builds.usecase.GetBuildCategoriesUseCase
 import com.iti.domain.locale.usecase.GetAppLanguageUseCase
 import com.iti.domain.locale.usecase.SetAppLanguageUseCase
+import com.iti.domain.settings.model.AppThemePreference
+import com.iti.domain.settings.usecase.ObserveAppThemeUseCase
+import com.iti.domain.settings.usecase.SetAppThemeUseCase
 import com.iti.domain.profile.usecase.ObserveAvatarUseCase
 import com.iti.domain.profile.usecase.SaveAvatarUseCase
 import com.iti.presentation.core.BaseViewModel
@@ -25,6 +28,8 @@ class ProfileViewModel @Inject constructor(
     private val getBuildCategoriesUseCase: GetBuildCategoriesUseCase,
     private val getAppLanguageUseCase: GetAppLanguageUseCase,
     private val setAppLanguageUseCase: SetAppLanguageUseCase,
+    private val observeAppThemeUseCase: ObserveAppThemeUseCase,
+    private val setAppThemeUseCase: SetAppThemeUseCase,
     private val observeAvatarUseCase: ObserveAvatarUseCase,
     private val saveAvatarUseCase: SaveAvatarUseCase,
     private val logoutUseCase: LogoutUseCase,
@@ -54,6 +59,10 @@ class ProfileViewModel @Inject constructor(
             it.copy(selectedLanguage = currentAppLanguage())
         }
 
+        observeAppThemeUseCase()
+            .onEach { theme -> updateState { it.copy(selectedTheme = theme) } }
+            .launchIn(viewModelScope)
+
         loadBuildsCount()
     }
 
@@ -66,6 +75,9 @@ class ProfileViewModel @Inject constructor(
             Event.LanguageAndRegionClicked -> updateState { it.copy(isLanguageDialogVisible = true) }
             Event.DismissLanguageDialog -> updateState { it.copy(isLanguageDialogVisible = false) }
             is Event.LanguageSelected -> selectLanguage(event.language)
+            Event.ThemeClicked -> updateState { it.copy(isThemeDialogVisible = true) }
+            Event.DismissThemeDialog -> updateState { it.copy(isThemeDialogVisible = false) }
+            is Event.ThemeSelected -> selectTheme(event.theme)
             Event.SignOutClicked -> signOut()
         }
     }
@@ -94,6 +106,13 @@ class ProfileViewModel @Inject constructor(
     private fun currentAppLanguage(): AppLanguage {
         val currentTag = getAppLanguageUseCase()
         return AppLanguage.entries.firstOrNull { it.tag == currentTag } ?: AppLanguage.ENGLISH
+    }
+
+    private fun selectTheme(theme: AppThemePreference) {
+        updateState { it.copy(isThemeDialogVisible = false) }
+        viewModelScope.launch {
+            setAppThemeUseCase(theme)
+        }
     }
 
     private fun loadBuildsCount() {

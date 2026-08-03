@@ -84,14 +84,14 @@ fun BuildCard(
                 Text(
                     text = build.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = androidx.compose.ui.graphics.Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = build.priceFormatted,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = androidx.compose.ui.graphics.Color.White,
                 )
             }
         }
@@ -169,7 +169,7 @@ private fun BuildStatChip(
         Text(
             text = value,
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             text = label,

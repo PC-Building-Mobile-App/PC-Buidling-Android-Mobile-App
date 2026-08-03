@@ -25,9 +25,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.iti.presentation.home.model.HardwareNewsUiModel
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun NewsCard(
@@ -60,7 +57,7 @@ fun NewsCard(
                                 .fillMaxSize()
                                 .background(
                                     brush = Brush.linearGradient(
-                                        listOf(ElectricBlue.copy(alpha = 0.6f), RoyalPurple.copy(alpha = 0.6f))
+                                        listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.6f), MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f))
                                     )
                                 )
                         )
@@ -109,7 +106,7 @@ fun NewsCard(
             Text(
                 text = article.publishedDate,
                 style = MaterialTheme.typography.labelSmall,
-                color = TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -122,7 +119,7 @@ private fun GradientFallback() {
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
-                    listOf(ElectricBlue.copy(alpha = 0.7f), RoyalPurple.copy(alpha = 0.7f))
+                    listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f), MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f))
                 )
             )
     )
@@ -147,3 +144,4 @@ private fun NewsCardPreview() {
         )
     }
 }
+
