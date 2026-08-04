@@ -27,8 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
 
 @Composable
 fun AiDashboardHeader(
@@ -58,7 +56,7 @@ fun AiDashboardHeader(
                 .clip(RoundedCornerShape(100))
                 .background(
                     brush = Brush.linearGradient(
-                        listOf(ElectricBlue, RoyalPurple),
+                        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary),
                     ),
                 ),
             contentAlignment = Alignment.Center,
@@ -165,3 +163,4 @@ fun ActionCard(
         }
     }
 }
+

@@ -1,18 +1,19 @@
-package com.iti.presentation.shared
+package com.iti.presentation.shared
+import androidx.compose.material3.MaterialTheme
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import com.iti.presentation.R
-import com.iti.presentation.ui.theme.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.iti.presentation.R
+import com.iti.presentation.ui.theme.*
 
 @Composable
 fun SearchBarField(
@@ -27,7 +28,7 @@ fun SearchBarField(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.extraSmall)
-            .background(InputBackground),
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         placeholder = {
             Text(
                 text = stringResource(R.string.search_parts_placeholder),
@@ -65,3 +66,6 @@ fun SearchBarField(
         textStyle = MaterialTheme.typography.bodyLarge
     )
 }
+
+
+

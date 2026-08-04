@@ -1,24 +1,22 @@
-package com.iti.presentation.categorybuilds.utils
+package com.iti.presentation.categorybuilds.utils
+import android.graphics.Color
 
-import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
-import android.graphics.Typeface
-import android.graphics.pdf.PdfDocument
-import androidx.compose.ui.graphics.toArgb
-import com.iti.presentation.R
-import com.iti.presentation.categorybuilds.model.BuildUiModel
-import com.iti.presentation.ui.theme.DeepBlack
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.ErrorRed
-import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.SuccessGreen
-import com.iti.presentation.ui.theme.TextMuted
-import java.io.File
-import java.io.FileOutputStream
-import java.util.Calendar
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+
+import com.iti.presentation.R
+import com.iti.presentation.categorybuilds.model.BuildUiModel
+
+
+
+import java.io.File
+import java.io.FileOutputStream
+import java.util.Calendar
 
 object BuildUtil {
 
@@ -83,15 +81,15 @@ object BuildUtil {
         private var canvas: Canvas = page.canvas
         private var y = marginTop
 
-        private val colorPrimary = ElectricBlue.toArgb()
-        private val colorPrimaryDark = RoyalPurple.toArgb()
-        private val colorSuccess = SuccessGreen.toArgb()
-        private val colorSuccessBg = SuccessGreen.copy(alpha = 0.14f).toArgb()
-        private val colorDanger = ErrorRed.toArgb()
-        private val colorDangerBg = ErrorRed.copy(alpha = 0.12f).toArgb()
-        private val colorTextPrimary = DeepBlack.toArgb()
-        private val colorTextSecondary = TextMuted.toArgb()
-        private val colorDivider = TextMuted.copy(alpha = 0.3f).toArgb()
+        private val colorPrimary = Color.parseColor("#4F8CFF")
+        private val colorPrimaryDark = Color.parseColor("#8B5CF6")
+        private val colorSuccess = Color.parseColor("#4CAF50")
+        private val colorSuccessBg = Color.parseColor("#234CAF50")
+        private val colorDanger = Color.parseColor("#FF3B30")
+        private val colorDangerBg = Color.parseColor("#1EFF3B30")
+        private val colorTextPrimary = Color.parseColor("#0B0B0F")
+        private val colorTextSecondary = Color.parseColor("#64748B")
+        private val colorDivider = Color.parseColor("#4D64748B")
 
         private fun startNewPage(): PdfDocument.Page {
             val info = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
@@ -343,3 +341,9 @@ object BuildUtil {
         }
     }
 }
+
+
+
+
+
+

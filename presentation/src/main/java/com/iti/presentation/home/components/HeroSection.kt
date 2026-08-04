@@ -39,12 +39,8 @@ import com.iti.presentation.R
 import com.iti.presentation.core.uicomponents.shimmerEffect
 import com.iti.presentation.home.model.PlatformStatUiModel
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.ElectricBlue
 import com.iti.presentation.ui.theme.PrimaryGradient
-import com.iti.presentation.ui.theme.RoyalPurple
 import com.iti.presentation.ui.theme.SuccessGreen
-import com.iti.presentation.ui.theme.TextPrimary
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun HeroSection(
@@ -60,9 +56,9 @@ fun HeroSection(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        ElectricBlue.copy(alpha = 0.12f),
-                        RoyalPurple.copy(alpha = 0.12f),
-                        Color(0xFF0B0B10)
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f),
+                        MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
             )
@@ -70,8 +66,8 @@ fun HeroSection(
                 width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        ElectricBlue.copy(alpha = 0.35f),
-                        RoyalPurple.copy(alpha = 0.25f),
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f),
                         Color.Transparent
                     )
                 ),
@@ -83,12 +79,12 @@ fun HeroSection(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Badge(
                     text = stringResource(R.string.ai_powered),
-                    color = ElectricBlue,
+                    color = MaterialTheme.colorScheme.primary,
                     icon = { 
                         Icon(
                             imageVector = Icons.Default.AutoAwesome,
                             contentDescription = null,
-                            tint = ElectricBlue,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(12.dp)
                         )
                     }
@@ -107,7 +103,7 @@ fun HeroSection(
                     withStyle(
                         SpanStyle(
                             brush = Brush.horizontalGradient(
-                                listOf(ElectricBlue, RoyalPurple)
+                                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
                             )
                         )
                     ) {
@@ -116,7 +112,7 @@ fun HeroSection(
                     append("?")
                 },
                 style = MaterialTheme.typography.headlineLarge,
-                color = TextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(Modifier.height(8.dp))
@@ -124,7 +120,7 @@ fun HeroSection(
             Text(
                 text = stringResource(R.string.hero_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(Modifier.height(20.dp))
@@ -153,14 +149,14 @@ fun HeroSection(
                         Text(
                             text = stringResource(R.string.generate_my_build),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                             contentDescription = null,
-                            tint = TextPrimary,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -204,14 +200,14 @@ fun HeroSection(
                             Text(
                                 text = stat.formattedValue,
                                 style = MaterialTheme.typography.titleLarge,
-                                color = TextPrimary,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(Modifier.height(2.dp))
                             Text(
                                 text = stat.label,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         if (index < stats.lastIndex) {
@@ -220,7 +216,7 @@ fun HeroSection(
                                     .width(1.dp)
                                     .height(36.dp)
                                     .background(
-                                        color = TextSecondary.copy(alpha = 0.2f)
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
                                     )
                             )
                         }
@@ -276,3 +272,4 @@ private fun HeroSectionPreview() {
         )
     }
 }
+

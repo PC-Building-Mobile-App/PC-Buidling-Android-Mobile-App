@@ -39,7 +39,6 @@ import com.iti.presentation.mypcs.components.NewBuildButton
 import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 import com.iti.presentation.mypcs.viewmodel.MyPcsViewModel
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun MyPcsScreen(
@@ -96,7 +95,7 @@ private fun MyPcsHeader(
             Text(
                 text = stringResource(R.string.browse_builds_by_category),
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 

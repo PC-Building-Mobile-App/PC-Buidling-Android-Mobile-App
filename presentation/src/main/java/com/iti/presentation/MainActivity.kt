@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.iti.presentation.core.locale.LocaleContextWrapper
 import com.iti.presentation.core.locale.LocaleEntryPoint
+import com.iti.domain.settings.model.AppThemePreference
 import com.iti.presentation.core.navigation.AppNavigation
 import com.iti.presentation.splash.SplashScreen
 import com.iti.presentation.ui.theme.AppTheme
@@ -46,9 +48,15 @@ class MainActivity : ComponentActivity() {
         nativeSplash.setKeepOnScreenCondition { false }
 
         setContent {
-            AppTheme {
-                val state by mainViewModel.state.collectAsStateWithLifecycle()
+            val state by mainViewModel.state.collectAsStateWithLifecycle()
+            val isSystemDark = isSystemInDarkTheme()
+            val isDark = when (state.theme) {
+                AppThemePreference.SYSTEM -> isSystemDark
+                AppThemePreference.LIGHT -> false
+                AppThemePreference.DARK -> true
+            }
 
+            AppTheme(darkTheme = isDark) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     contentWindowInsets = WindowInsets(0, 0, 0, 0),

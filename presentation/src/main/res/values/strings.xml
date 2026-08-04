@@ -187,6 +187,8 @@
 
     <string name="generate_build_purpose_required_message">Select a purpose before generating a build</string>
     <string name="account">ACCOUNT</string>
+    <string name="app_theme">App Theme</string>
+    <string name="choose_theme">Choose Theme</string>
     <string name="saved_builds">Saved Builds</string>
     <string name="language_region"><![CDATA[Language & Region]]></string>
     <string name="sign_out">Sign Out</string>

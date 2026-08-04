@@ -28,9 +28,6 @@ import com.iti.presentation.core.pccomponents.ProductCard
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.uicomponents.shimmerEffect
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun FeaturedComponentsSection(
@@ -119,4 +116,5 @@ private fun FeaturedComponentSkeleton() {
         }
     }
 }
+
 

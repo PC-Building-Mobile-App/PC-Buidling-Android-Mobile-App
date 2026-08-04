@@ -2,7 +2,7 @@ package com.iti.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Brush
 
-val PrimaryGradient = Brush.linearGradient(listOf(ElectricBlue, RoyalPurple))
+val PrimaryGradient = Brush.linearGradient(listOf(AccentPrimary, AccentSecondary))
 val GamingGradient = Brush.linearGradient(listOf(GamingGradientStart, GamingGradientEnd))
 val ProgrammingGradient = Brush.linearGradient(listOf(ProgrammingGradientStart, ProgrammingGradientEnd))
 val ContentCreationGradient = Brush.linearGradient(listOf(ContentCreationGradientStart, ContentCreationGradientEnd))

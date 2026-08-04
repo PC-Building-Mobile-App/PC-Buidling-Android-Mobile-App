@@ -50,8 +50,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.uicomponents.shimmerEffect
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
 import com.iti.presentation.ui.theme.SuccessGreen
 import kotlinx.serialization.json.Json
 
@@ -108,7 +106,7 @@ fun PartDetailsScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Brush.linearGradient(listOf(ElectricBlue, RoyalPurple))),
+                                .background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary))),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
@@ -179,7 +177,7 @@ fun PartDetailsScreen(
                             text = component.formattedPrice,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
-                            color = ElectricBlue,
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
                 }
@@ -194,21 +192,21 @@ fun PartDetailsScreen(
                             .background(
                                 Brush.linearGradient(
                                     listOf(
-                                        ElectricBlue.copy(alpha = 0.14f),
-                                        RoyalPurple.copy(alpha = 0.14f),
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.14f),
                                     ),
                                 ),
                             )
                             .padding(16.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = ElectricBlue)
+                            Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 "AI EXPLANATION",
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 0.5.sp,
-                                color = ElectricBlue,
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
@@ -335,7 +333,7 @@ private fun HeroImageGallery(
                             .padding(horizontal = 4.dp)
                             .size(if (isSelected) 8.dp else 6.dp)
                             .clip(CircleShape)
-                            .background(if (isSelected) ElectricBlue else ElectricBlue.copy(alpha = 0.35f)),
+                            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
                     )
                 }
             }

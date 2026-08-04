@@ -26,8 +26,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
 
 @Composable
 fun ChatInput(
@@ -62,7 +60,7 @@ fun ChatInput(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = ElectricBlue,
+                cursorColor = MaterialTheme.colorScheme.primary,
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = { if (!isLoading) onSend() }),
@@ -76,7 +74,7 @@ fun ChatInput(
                 .size(48.dp)
                 .clip(RoundedCornerShape(100))
                 .background(
-                    brush = Brush.linearGradient(listOf(ElectricBlue, RoyalPurple)),
+                    brush = Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)),
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -102,3 +100,4 @@ fun ChatInput(
         }
     }
 }
+

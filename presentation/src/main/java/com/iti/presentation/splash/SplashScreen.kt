@@ -19,11 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iti.presentation.R
-import com.iti.presentation.ui.theme.DeepBlack
-import com.iti.presentation.ui.theme.ElectricBlue
 import com.iti.presentation.ui.theme.Inter
-import com.iti.presentation.ui.theme.RoyalPurple
-import com.iti.presentation.ui.theme.TextSecondary
 
 @Composable
 fun SplashScreen(
@@ -32,7 +28,7 @@ fun SplashScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(DeepBlack),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -50,8 +46,8 @@ fun SplashScreen(
                         .background(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    RoyalPurple.copy(alpha = 0.5f),
-                                    ElectricBlue.copy(alpha = 0.2f),
+                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                                     Color.Transparent
                                 )
                             ),
@@ -84,7 +80,7 @@ fun SplashScreen(
 
             Text(
                 text = stringResource(R.string.slogan),
-                color = ElectricBlue,
+                color = MaterialTheme.colorScheme.primary,
                 fontFamily = Inter,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -98,8 +94,8 @@ fun SplashScreen(
                     .width(64.dp)
                     .height(3.dp)
                     .clip(MaterialTheme.shapes.extraSmall),
-                color = RoyalPurple,
-                trackColor = TextSecondary.copy(alpha = 0.15f)
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)
             )
         }
     }

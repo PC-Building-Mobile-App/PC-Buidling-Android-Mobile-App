@@ -136,6 +136,8 @@
     <string name="categories">الفئات</string>
     <string name="latest_hardware_news">أحدث أخبار العتاد</string>
     <string name="search_home_placeholder">بحث عن بطاقات شاشة، معالجات، كيسات…</string>
+    <string name="app_theme">مظهر التطبيق</string>
+    <string name="choose_theme">اختر المظهر</string>
     <!-- Hardware News Screen -->
     <string name="hardware_news_title">أخبار العتاد</string>
     <string name="read_full_article">قراءة المقال كاملاً</string>

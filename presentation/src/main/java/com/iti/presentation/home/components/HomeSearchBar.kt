@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.iti.presentation.R
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.InputBackground
 
 @Composable
 fun HomeSearchBar(
@@ -37,7 +36,7 @@ fun HomeSearchBar(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.extraSmall)
-            .background(InputBackground),
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         placeholder = {
             Text(
                 text = stringResource(R.string.search_home_placeholder),
@@ -91,3 +90,4 @@ private fun HomeSearchBarPreview() {
         )
     }
 }
+

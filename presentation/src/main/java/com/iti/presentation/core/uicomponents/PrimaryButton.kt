@@ -1,4 +1,5 @@
-package com.iti.presentation.core.uicomponents
+package com.iti.presentation.core.uicomponents
+import androidx.compose.ui.graphics.Color
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.iti.presentation.ui.theme.IconOnGradient
 import com.iti.presentation.ui.theme.PrimaryGradient
 
 @Composable
@@ -55,7 +55,7 @@ fun PrimaryButton(
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = IconOnGradient,
+                color = Color.White,
                 strokeWidth = 2.5.dp,
                 modifier = Modifier.size(24.dp),
             )
@@ -68,13 +68,13 @@ fun PrimaryButton(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleLarge,
-                    color = IconOnGradient,
+                    color = Color.White,
                 )
                 if (icon != null) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = IconOnGradient,
+                        tint = Color.White,
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 }
@@ -82,3 +82,4 @@ fun PrimaryButton(
         }
     }
 }
+

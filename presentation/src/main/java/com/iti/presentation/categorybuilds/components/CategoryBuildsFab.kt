@@ -1,4 +1,5 @@
-package com.iti.presentation.categorybuilds.components
+package com.iti.presentation.categorybuilds.components
+import androidx.compose.ui.graphics.Color
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +21,6 @@ import com.iti.domain.builds.model.BuildCategoryType
 import com.iti.presentation.R
 import com.iti.presentation.mypcs.model.gradient
 import com.iti.presentation.ui.theme.AppTheme
-import com.iti.presentation.ui.theme.IconOnGradient
 
 @Composable
 fun CategoryBuildsFab(
@@ -40,7 +40,7 @@ fun CategoryBuildsFab(
         Icon(
             imageVector = Icons.Filled.Add,
             contentDescription = stringResource(R.string.new_build),
-            tint = IconOnGradient,
+            tint = Color.White,
         )
     }
 }

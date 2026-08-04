@@ -40,8 +40,6 @@ import com.iti.presentation.R
 import com.iti.presentation.aichat.model.AiChatMessageUiModel
 import com.iti.presentation.buildgeneration.model.iconRes
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
-import com.iti.presentation.ui.theme.ElectricBlue
-import com.iti.presentation.ui.theme.RoyalPurple
 
 @Composable
 fun UserChatBubble(
@@ -65,7 +63,7 @@ fun UserChatBubble(
                     ),
                 )
                 .background(
-                    brush = Brush.linearGradient(listOf(ElectricBlue, RoyalPurple)),
+                    brush = Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)),
                 )
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
@@ -100,8 +98,8 @@ fun AiChatBubble(
                     .background(
                         brush = Brush.linearGradient(
                             listOf(
-                                ElectricBlue.copy(alpha = 0.7f),
-                                RoyalPurple.copy(alpha = 0.7f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                                MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
                             ),
                         ),
                     ),
@@ -236,7 +234,7 @@ private fun MentionedProductCard(
                     .align(Alignment.BottomStart)
                     .padding(6.dp)
                     .background(
-                        color = ElectricBlue,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(6.dp),
                     )
                     .padding(horizontal = 6.dp, vertical = 2.dp),
@@ -268,7 +266,7 @@ private fun MentionedProductCard(
         Text(
             text = product.formattedPrice,
             style = MaterialTheme.typography.bodyMedium,
-            color = ElectricBlue,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 8.dp),
         )
@@ -301,3 +299,4 @@ private fun MentionedProductCard(
         }
     }
 }
+
