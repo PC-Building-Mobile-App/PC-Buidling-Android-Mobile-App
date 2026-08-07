@@ -20,6 +20,9 @@ class BuildsLocalDataSourceImpl @Inject constructor(
     override suspend fun getCachedBuildsByCategory(categoryId: String): List<BuildDto> =
         buildDao.getBuildsByCategory(categoryId).map { it.toDto() }
 
+    override suspend fun getAllCachedBuilds(): List<BuildDto> =
+        buildDao.getAllBuilds().map { it.toDto() }
+
     override suspend fun cacheBuildsForCategory(categoryId: String, builds: List<BuildDto>) {
         appDatabase.withTransaction {
             buildDao.clearCategory(categoryId)
@@ -28,6 +31,15 @@ class BuildsLocalDataSourceImpl @Inject constructor(
             buildDao.insertIssues(builds.flatMap { build -> build.issues.orEmpty().map { it.toEntity(build.id) } })
         }
     }
+
+    override suspend fun saveBuildLocally(build: BuildDto) {
+        appDatabase.withTransaction {
+            buildDao.insertBuilds(listOf(build.toEntity()))
+            buildDao.insertItems(build.items.map { it.toEntity(build.id) })
+            buildDao.insertIssues(build.issues.orEmpty().map { it.toEntity(build.id) })
+        }
+    }
+
     override fun getCachedCategoryCounts(): Flow<List<BuildCategoryDto>> =
         buildDao.getCategoriesCount().map { counted ->
             val byType = counted.associateBy { it.type }

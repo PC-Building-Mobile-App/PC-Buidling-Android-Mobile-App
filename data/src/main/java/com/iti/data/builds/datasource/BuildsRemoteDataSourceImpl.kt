@@ -123,6 +123,16 @@ class BuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-
-
+    override suspend fun getAllBuilds(): Result<List<BuildDto>> = safeCall {
+        val response = apiService.getBundles(type = null, page = 0, size = 100)
+        if (response.status && response.data != null) {
+            response.data.content
+        } else {
+            throw ServerException.Generic(
+                message = response.message,
+                code = 400
+            )
+        }
+    }
 }
+

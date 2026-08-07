@@ -179,6 +179,14 @@ class MockBuildsRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllBuilds(): Result<List<BuildDto>> = safeCall {
+        delay(1000.milliseconds)
+        mutex.withLock {
+            savedBuilds.values.flatten().distinctBy { it.id }
+        }
+    }
+
+
     private fun categoryForSavedItemId(id: Long): String? {
         savedBuilds.values.forEach { builds ->
             builds.forEach { build ->

@@ -19,4 +19,6 @@ interface BuildsRemoteDataSource {
     suspend fun updateBuild(buildId: String, request: SaveBuildRequestDto): Result<BuildDto>
     suspend fun compareBuilds(request: CompareBuildsRequestDto): Result<ComparisonDto>
     suspend fun getBuildById(id: String): Result<BuildDto>
+    suspend fun getAllBuilds(): Result<List<BuildDto>>
 }
+

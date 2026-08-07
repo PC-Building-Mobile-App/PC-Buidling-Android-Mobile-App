@@ -55,8 +55,10 @@ import kotlinx.serialization.json.Json
 
 private val HERO_IMAGE_HEIGHT = 340.dp
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun PartDetailsScreen(
+
     componentJson: String,
     viewModel: PartDetailsViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
@@ -69,16 +71,44 @@ fun PartDetailsScreen(
         viewModel.setComponent(component)
     }
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is PartDetailsContract.Effect.NavigateBack -> onBackClick()
                 is PartDetailsContract.Effect.NavigateToBuildGeneration -> onAddToBuildClick(effect.component)
+                is PartDetailsContract.Effect.ShowToast -> {
+                    android.widget.Toast.makeText(context, effect.message, android.widget.Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
+    if (state.isDrawerOpen) {
+        com.iti.presentation.partdetails.components.AddToBuildBottomSheet(
+            builds = state.builds,
+            isLoading = state.isBuildsLoading,
+            isCheckingCompatibility = state.isCheckingCompatibility,
+            isAddingToBuild = state.isAddingToBuild,
+            selectedBuildId = state.selectedBuildId,
+            compatibilityError = state.compatibilityError,
+            isCreatingNewBuild = state.isCreatingNewBuild,
+            newBuildName = state.newBuildName,
+            selectedCategory = state.selectedCategory,
+            onDismissRequest = { viewModel.onEvent(PartDetailsContract.Event.DismissDrawer) },
+            onBuildSelected = { build -> viewModel.onEvent(PartDetailsContract.Event.BuildSelected(build)) },
+            onCreateNewBuildClicked = { viewModel.onEvent(PartDetailsContract.Event.CreateNewBuildClicked) },
+            onNewBuildNameChanged = { name -> viewModel.onEvent(PartDetailsContract.Event.NewBuildNameChanged(name)) },
+            onCategorySelected = { category -> viewModel.onEvent(PartDetailsContract.Event.CategorySelected(category)) },
+            onConfirmNewBuild = { viewModel.onEvent(PartDetailsContract.Event.ConfirmNewBuild) },
+            onClearError = { viewModel.onEvent(PartDetailsContract.Event.ClearCompatibilityError) },
+        )
+    }
+
+
     Scaffold(
+
         // No TopAppBar — the back button floats over the full-bleed hero
         // image instead, matching the mockup. See BackButtonOverlay below.
         bottomBar = {

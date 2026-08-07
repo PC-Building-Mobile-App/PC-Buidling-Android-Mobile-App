@@ -58,6 +58,7 @@ fun AlternativeDto.toDomain(): AlternativeOption = AlternativeOption(
 fun BuildDto.toDomain(): Build = Build(
     id = id.toString(),
     name = name,
+    category = runCatching { BuildCategoryType.valueOf(type.uppercase()) }.getOrDefault(BuildCategoryType.GAMING),
     totalPrice = totalPrice,
     compatible = compatible,
     items = items.mapNotNull { it.toDomain() },
@@ -65,4 +66,4 @@ fun BuildDto.toDomain(): Build = Build(
     alternatives = alternatives?.mapValues { (_, list) -> list.map { it.toDomain() } }.orEmpty(),
     createdAt = createdAt,
     updatedAt = updatedAt,
-)
+)

@@ -11,9 +11,10 @@ import com.iti.presentation.mypcs.model.BuildCategoryUiModel
 
 object BuildGenerationContract {
 
-    const val MIN_BUDGET = 5_000f
-    const val MAX_BUDGET = 150_000f
-    const val DEFAULT_BUDGET = 65_000f
+    const val MIN_BUDGET = 20_000f
+    const val MAX_BUDGET = 300_000f
+    const val DEFAULT_BUDGET = 75_000f
+
 
     data class State(
         val category: BuildCategoryUiModel? = null,
