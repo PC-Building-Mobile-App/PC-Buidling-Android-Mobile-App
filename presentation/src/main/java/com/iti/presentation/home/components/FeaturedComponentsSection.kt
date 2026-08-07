@@ -14,20 +14,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.iti.presentation.R
 import com.iti.presentation.core.pccomponents.ProductCard
 import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.core.uicomponents.shimmerEffect
-import com.iti.presentation.ui.theme.AppTheme
 
 @Composable
 fun FeaturedComponentsSection(
@@ -37,14 +33,17 @@ fun FeaturedComponentsSection(
     onComponentClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-            SectionHeader(
-                title = stringResource(R.string.featured_components),
-                actionText = stringResource(R.string.see_all),
-                onActionClick = onSeeAll,
-                modifier = Modifier.padding(horizontal = 0.dp)
-            )
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val cardWidth = (screenWidth * 0.48f).coerceAtMost(220.dp)
 
+    Column(modifier = modifier) {
+        SectionHeader(
+            title = stringResource(R.string.featured_components),
+            actionText = stringResource(R.string.see_all),
+            onActionClick = onSeeAll,
+            modifier = Modifier.padding(horizontal = 0.dp)
+        )
 
         Spacer(Modifier.height(16.dp))
 
@@ -54,7 +53,7 @@ fun FeaturedComponentsSection(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(4) {
-                    FeaturedComponentSkeleton()
+                    FeaturedComponentSkeleton(cardWidth = cardWidth)
                 }
             }
         } else {
@@ -66,7 +65,7 @@ fun FeaturedComponentsSection(
                     ProductCard(
                         component = component,
                         onClick = { onComponentClick(component.id) },
-                        modifier = Modifier.width(200.dp)
+                        modifier = Modifier.width(cardWidth)
                     )
                 }
             }
@@ -75,10 +74,10 @@ fun FeaturedComponentsSection(
 }
 
 @Composable
-private fun FeaturedComponentSkeleton() {
+private fun FeaturedComponentSkeleton(cardWidth: androidx.compose.ui.unit.Dp) {
     Column(
         modifier = Modifier
-            .width(200.dp)
+            .width(cardWidth)
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
@@ -96,6 +95,13 @@ private fun FeaturedComponentSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .height(12.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .shimmerEffect()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(14.dp)
                     .clip(RoundedCornerShape(4.dp))
                     .shimmerEffect()
             )
