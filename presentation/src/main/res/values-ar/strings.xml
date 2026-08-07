@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">PCBuilding</string>
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_parts">القطع</string>
+    <string name="nav_ai">الذكاء الاصطناعي</string>
+    <string name="nav_my_pcs">تجميعاتي</string>
+    <string name="nav_profile">الحساب</string>
+    <string name="builds_uppercase">تجميعات</string>
+    <string name="existing_builds_title">التجميعات الحالية</string>
+    <string name="theme_system">تلقائي النظام</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
     <string name="new_build">تجميعة جديدة</string>
+
+
     <string name="my_pcs">أجهزتي</string>
     <string name="browse_builds_by_category">تصفح التجميعات حسب الفئة</string>
     <string name="generic_error_title">حدث خطأ ما!</string>

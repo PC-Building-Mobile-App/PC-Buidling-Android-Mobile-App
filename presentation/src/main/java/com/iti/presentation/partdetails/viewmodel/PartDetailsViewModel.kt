@@ -121,16 +121,11 @@ class PartDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val singleSlotCategories = setOf("CPU", "MOTHERBOARD", "PSU", "CASE", "COOLER")
             val candidateCatName = candidate.category.name.uppercase()
+            val hasExistingItemOfCategory = build.items.any { it.category.name.uppercase() == candidateCatName }
 
-            // If component is single-slot and build already has one, prepare to replace it
-            val isSingleSlot = candidateCatName in singleSlotCategories
-            val remainingItems = if (isSingleSlot) {
-                build.items.filter { it.category.name.uppercase() != candidateCatName }
-            } else {
-                build.items
-            }
+            // Filter out ANY component sharing the candidate's category so it is replaced
+            val remainingItems = build.items.filter { it.category.name.uppercase() != candidateCatName }
 
             val target = CompatibilityCheckTarget.InProgressSelection(
                 existingComponentIds = remainingItems.map { it.id }
@@ -166,7 +161,7 @@ class PartDetailsViewModel @Inject constructor(
 
                         saveBuildUseCase(saveReq).fold(
                             onSuccess = {
-                                val actionText = if (isSingleSlot && build.items.any { it.category.name.uppercase() == candidateCatName }) {
+                                val actionText = if (hasExistingItemOfCategory) {
                                     "Replaced $candidateCatName in '${build.name}' with ${candidate.productName}!"
                                 } else {
                                     "Added ${candidate.productName} to '${build.name}' successfully!"
@@ -192,6 +187,7 @@ class PartDetailsViewModel @Inject constructor(
                         )
                     }
                 },
+
                 onFailure = { err ->
                     updateState {
                         it.copy(

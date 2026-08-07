@@ -38,6 +38,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.res.stringResource
+import com.iti.presentation.R
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -218,8 +221,9 @@ fun AddToBuildBottomSheet(
                 } else if (builds.isNotEmpty()) {
                     item {
                         Text(
-                            text = "EXISTING BUILDS",
+                            text = stringResource(R.string.existing_builds_title),
                             style = MaterialTheme.typography.labelSmall,
+
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
                             letterSpacing = 1.sp,
@@ -404,14 +408,16 @@ private fun NewBuildOptionCard(
                                             tint = if (isSelected) Color.White else inactiveTextColor,
                                             modifier = Modifier.size(18.dp)
                                         )
-                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Spacer(modifier = Modifier.width(4.dp))
                                         Text(
                                             text = title,
-                                            style = MaterialTheme.typography.labelMedium,
+                                            style = MaterialTheme.typography.labelSmall,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                                             color = if (isSelected) Color.White else inactiveTextColor,
                                             maxLines = 1,
+                                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                                         )
+
                                     }
                                 }
                             }

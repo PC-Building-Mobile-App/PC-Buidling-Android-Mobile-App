@@ -88,31 +88,109 @@ class BuildsRepositoryImpl @Inject constructor(
 
         // 3. Fallback to rule engine if remote API fails or incomplete build
         val candidateComp = runCatching { componentDataSource.getComponentById(request.candidateComponentId).firstOrNull() }.getOrNull()
-        val candidateCategory = candidateComp?.category?.uppercase()
-
-        val singleSlotCategories = setOf("CPU", "MOTHERBOARD", "PSU", "CASE", "COOLER")
-        if (candidateCategory != null && candidateCategory in singleSlotCategories) {
-            val hasDuplicateCategory = existingIds.any { existingId ->
-                val existingComp = runCatching { componentDataSource.getComponentById(existingId).firstOrNull() }.getOrNull()
-                existingComp?.category?.equals(candidateCategory, ignoreCase = true) == true
+        if (candidateComp != null) {
+            val existingComps = existingIds.mapNotNull { id ->
+                runCatching { componentDataSource.getComponentById(id).firstOrNull() }.getOrNull()
             }
-            if (hasDuplicateCategory) {
-                return Result.success(
-                    CompatibilityReport(
-                        compatible = false,
-                        issues = listOf(
-                            CompatibilityIssue(
-                                rule = "${candidateCategory}_ALREADY_SELECTED",
-                                message = "A ${candidateCategory.lowercase()} is already part of this build."
-                            )
-                        )
-                    )
-                )
+            val report = evaluateCompatibility(candidateComp, existingComps)
+            if (!report.compatible) {
+                return Result.success(report)
             }
         }
 
         return Result.success(CompatibilityReport(compatible = true, issues = emptyList()))
     }
+
+    private fun evaluateCompatibility(candidate: com.iti.data.components.model.ComponentDataModel, existingComps: List<com.iti.data.components.model.ComponentDataModel>): CompatibilityReport {
+        val issues = mutableListOf<CompatibilityIssue>()
+
+        val candidateCategory = candidate.category.uppercase()
+        val candidateSocket = extractSocket(candidate)
+        val candidateBrand = extractBrand(candidate)
+        val candidateRamType = extractRamType(candidate)
+
+        for (existing in existingComps) {
+            val existingCategory = existing.category.uppercase()
+            val existingSocket = extractSocket(existing)
+            val existingBrand = extractBrand(existing)
+            val existingRamType = extractRamType(existing)
+
+            // CPU vs Motherboard socket/brand mismatch
+            if ((candidateCategory == "CPU" && existingCategory == "MOTHERBOARD") ||
+                (candidateCategory == "MOTHERBOARD" && existingCategory == "CPU")) {
+
+                if (candidateBrand != null && existingBrand != null && candidateBrand != existingBrand) {
+                    issues.add(
+                        CompatibilityIssue(
+                            rule = "BRAND_MISMATCH",
+                            message = "$candidateBrand $candidateCategory is incompatible with $existingBrand $existingCategory (${existing.productName})."
+                        )
+                    )
+                } else if (candidateSocket != null && existingSocket != null && candidateSocket != existingSocket) {
+                    issues.add(
+                        CompatibilityIssue(
+                            rule = "SOCKET_MISMATCH",
+                            message = "Socket mismatch: $candidateCategory ($candidateSocket) does not fit $existingCategory ($existingSocket)."
+                        )
+                    )
+                }
+            }
+
+            // RAM vs Motherboard/CPU DDR type mismatch
+            if (candidateCategory == "MEMORY" && existingRamType != null) {
+                if (existingSocket == "AM5" && candidateRamType == "DDR4") {
+                    issues.add(
+                        CompatibilityIssue(
+                            rule = "RAM_MISMATCH",
+                            message = "DDR4 RAM is incompatible with AM5 motherboard (AM5 requires DDR5)."
+                        )
+                    )
+                } else if (existingRamType != null && candidateRamType != null && existingRamType != candidateRamType) {
+                    issues.add(
+                        CompatibilityIssue(
+                            rule = "RAM_MISMATCH",
+                            message = "$candidateRamType RAM is incompatible with $existingRamType platform (${existing.productName})."
+                        )
+                    )
+                }
+            }
+        }
+
+        return CompatibilityReport(
+            compatible = issues.isEmpty(),
+            issues = issues
+        )
+    }
+
+    private fun extractSocket(comp: com.iti.data.components.model.ComponentDataModel): String? {
+        val text = "${comp.productName} ${comp.specs}".uppercase()
+        return when {
+            text.contains("AM5") || text.contains("B650") || text.contains("X670") || text.contains("7800X3D") || text.contains("7950X") || text.contains("7600X") -> "AM5"
+            text.contains("AM4") || text.contains("B550") || text.contains("X570") || text.contains("5800X") || text.contains("5600X") -> "AM4"
+            text.contains("LGA1700") || text.contains("Z790") || text.contains("B760") || text.contains("Z690") || text.contains("14700K") || text.contains("13600K") || text.contains("12400F") -> "LGA1700"
+            text.contains("LGA1200") || text.contains("Z590") || text.contains("B560") -> "LGA1200"
+            else -> null
+        }
+    }
+
+    private fun extractBrand(comp: com.iti.data.components.model.ComponentDataModel): String? {
+        val text = "${comp.productName} ${comp.specs}".uppercase()
+        return when {
+            text.contains("INTEL") || text.contains("LGA1700") || text.contains("Z790") || text.contains("B760") || text.contains("Z690") || text.contains("14700K") || text.contains("13600K") -> "INTEL"
+            text.contains("AMD") || text.contains("RYZEN") || text.contains("AM5") || text.contains("AM4") || text.contains("B650") || text.contains("X670") -> "AMD"
+            else -> null
+        }
+    }
+
+    private fun extractRamType(comp: com.iti.data.components.model.ComponentDataModel): String? {
+        val text = "${comp.productName} ${comp.specs}".uppercase()
+        return when {
+            text.contains("DDR5") -> "DDR5"
+            text.contains("DDR4") -> "DDR4"
+            else -> null
+        }
+    }
+
 
     override suspend fun saveBuild(request: SaveBuildRequest): Result<Build> {
         val dto = request.toDto()

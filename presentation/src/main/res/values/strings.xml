@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">PCBuilding</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_parts">Parts</string>
+    <string name="nav_ai">AI</string>
+    <string name="nav_my_pcs">My PCs</string>
+    <string name="nav_profile">Profile</string>
+    <string name="builds_uppercase">BUILDS</string>
+    <string name="existing_builds_title">EXISTING BUILDS</string>
+    <string name="theme_system">System Default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="new_build">New Build</string>
+
+
     <string name="my_pcs">My PCs</string>
     <string name="browse_builds_by_category">Browse builds by category</string>
     <string name="generic_error_title">Something went wrong!</string>
