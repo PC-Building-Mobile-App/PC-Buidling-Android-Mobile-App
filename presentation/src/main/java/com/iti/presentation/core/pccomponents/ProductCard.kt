@@ -54,7 +54,6 @@ fun ProductCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(290.dp)
             .shadow(
                 elevation = 4.dp,
                 shape = MaterialTheme.shapes.medium
@@ -158,8 +157,8 @@ fun ProductCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     lineHeight = 18.sp,
-                    maxLines = 4,
-                    minLines = 2,
+                    maxLines = 3,
+                    minLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
 

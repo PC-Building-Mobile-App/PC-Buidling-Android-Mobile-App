@@ -14,7 +14,7 @@ fun ProductCardSkeleton(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
@@ -30,6 +30,7 @@ fun ProductCardSkeleton(
                 modifier = Modifier
                     .padding(12.dp)
                     .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.Start
             ) {
                 Box(
@@ -40,27 +41,29 @@ fun ProductCardSkeleton(
                         .shimmerEffect()
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect()
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect()
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
-                        .height(18.dp)
+                        .height(14.dp)
                         .clip(MaterialTheme.shapes.extraSmall)
                         .shimmerEffect()
                 )
                 
                 Spacer(modifier = Modifier.height(4.dp))
-                
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(18.dp)
-                        .clip(MaterialTheme.shapes.extraSmall)
-                        .shimmerEffect()
-                )
-                
-                Spacer(modifier = Modifier.height(12.dp))
                 
                 Box(
                     modifier = Modifier
