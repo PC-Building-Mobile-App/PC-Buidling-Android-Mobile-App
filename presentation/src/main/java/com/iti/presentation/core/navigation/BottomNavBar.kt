@@ -35,9 +35,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 @Composable
 fun BottomNavBar(
@@ -147,7 +149,7 @@ private fun NavItem(
             painter = painterResource(
                 id = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
             ),
-            contentDescription = tab.label,
+            contentDescription = stringResource(id = tab.labelRes),
             tint = tint,
             modifier = Modifier.size(20.dp),
         )
@@ -155,13 +157,14 @@ private fun NavItem(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = tab.label,
+            text = stringResource(id = tab.labelRes),
             color = tint,
             fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.labelSmall,
             maxLines = 1,
         )
+
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -229,10 +232,11 @@ private fun AiFab(
         ) {
             Icon(
                 painter = painterResource(id = TopLevelRoute.AI.selectedIcon),
-                contentDescription = TopLevelRoute.AI.label,
+                contentDescription = stringResource(id = TopLevelRoute.AI.labelRes),
                 tint = colorScheme.onPrimary,
                 modifier = Modifier.size(22.dp),
             )
+
         }
     }
 }

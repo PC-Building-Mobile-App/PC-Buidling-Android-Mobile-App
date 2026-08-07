@@ -19,6 +19,11 @@ interface BuildDao {
     @Query("SELECT * FROM build_entity WHERE type = :categoryId")
     suspend fun getBuildsByCategory(categoryId: String): List<BuildWithItemsAndIssues>
 
+    @Transaction
+    @Query("SELECT * FROM build_entity")
+    suspend fun getAllBuilds(): List<BuildWithItemsAndIssues>
+
+
     @Query("DELETE FROM build_entity WHERE type = :categoryId")
     suspend fun clearCategory(categoryId: String)
 

@@ -143,9 +143,10 @@ fun ProfileScreenContent(
                 iconTint = colorScheme.secondary,
                 iconBackground = colorScheme.secondary.copy(alpha = 0.18f),
                 label = stringResource(R.string.app_theme),
-                trailingText = state.selectedTheme.displayName,
+                trailingText = stringResource(state.selectedTheme.displayNameRes),
                 onClick = { onEvent(ProfileContract.Event.ThemeClicked) },
             )
+
             RowDivider()
             AccountRow(
                 icon = Icons.AutoMirrored.Filled.Logout,
@@ -203,8 +204,9 @@ private fun ThemePickerDialog(
                             onClick = { onThemeSelected(theme) },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(theme.displayName)
+                        Text(stringResource(theme.displayNameRes))
                     }
+
                 }
             }
         },
@@ -334,14 +336,22 @@ private fun ProfileHeaderCard(
 
         StatChip(
             value = buildsCount,
-            label = "BUILDS",
+            label = stringResource(R.string.builds_uppercase),
             modifier = Modifier.fillMaxWidth(),
         )
     }
 }
 
+private val com.iti.domain.settings.model.AppThemePreference.displayNameRes: Int
+    get() = when (this) {
+        com.iti.domain.settings.model.AppThemePreference.SYSTEM -> R.string.theme_system
+        com.iti.domain.settings.model.AppThemePreference.LIGHT -> R.string.theme_light
+        com.iti.domain.settings.model.AppThemePreference.DARK -> R.string.theme_dark
+    }
+
 @Composable
 private fun StatChip(
+
     value: Int,
     label: String,
     modifier: Modifier = Modifier,

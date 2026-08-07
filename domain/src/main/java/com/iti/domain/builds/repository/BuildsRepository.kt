@@ -18,4 +18,6 @@ interface BuildsRepository {
     suspend fun saveBuild(request: SaveBuildRequest): Result<Build>
     suspend fun compareBuilds(buildIds: List<Int>, buildNames: List<String>): Result<BuildComparison>
     suspend fun getBuildById(id: String): Result<Build>
+    suspend fun getAllBuilds(): Result<List<Build>>
 }
+
