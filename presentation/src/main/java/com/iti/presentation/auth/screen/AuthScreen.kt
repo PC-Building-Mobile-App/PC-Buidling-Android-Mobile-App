@@ -323,18 +323,6 @@ fun AuthScreenContent(
                     )
                 }
 
-                if (state.isLoginMode) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(R.string.forgot_password),
-                        color = colorScheme.primary,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
