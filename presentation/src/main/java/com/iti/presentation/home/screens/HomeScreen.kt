@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.iti.presentation.core.pccomponents.model.ComponentUiModel
 import com.iti.presentation.home.HomeContract.Effect
 import com.iti.presentation.home.HomeContract.Event
 import com.iti.presentation.home.HomeContract.State

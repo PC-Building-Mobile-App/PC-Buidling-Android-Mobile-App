@@ -9,6 +9,7 @@ import com.iti.presentation.auth.AuthContract.Event
 import com.iti.presentation.auth.AuthContract.State
 import com.iti.domain.auth.usecase.EmailValidator
 import com.iti.domain.auth.usecase.PasswordValidator
+import com.iti.domain.auth.usecase.UsernameValidator
 import com.iti.presentation.core.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -26,7 +27,7 @@ class AuthViewModel @Inject constructor(
 
     override fun onEvent(event: Event) {
         when (event) {
-            is Event.NameChanged -> updateState { it.copy(name = event.name, errorMessage = null) }
+            is Event.NameChanged -> onNameChanged(event.name)
             is Event.EmailChanged -> onEmailChanged(event.email)
             is Event.PasswordChanged -> onPasswordChanged(event.password)
             is Event.ConfirmPasswordChanged -> onConfirmPasswordChanged(event.confirmPassword)
@@ -38,6 +39,7 @@ class AuthViewModel @Inject constructor(
                 it.copy(
                     isLoginMode = !it.isLoginMode,
                     errorMessage = null,
+                    nameError = null,
                     passwordError = null,
                     confirmPasswordError = null,
                     confirmPassword = "",
@@ -45,6 +47,16 @@ class AuthViewModel @Inject constructor(
             }
             Event.DismissError -> updateState { it.copy(errorMessage = null) }
             Event.Submit -> submit()
+        }
+    }
+
+    private fun onNameChanged(name: String) {
+        updateState {
+            it.copy(
+                name = name,
+                errorMessage = null,
+                nameError = UsernameValidator.validate(name),
+            )
         }
     }
 
@@ -95,6 +107,12 @@ class AuthViewModel @Inject constructor(
         }
 
         if (!current.isLoginMode) {
+            val nameError = UsernameValidator.validate(current.name)
+            if (nameError != null) {
+                updateState { it.copy(nameError = nameError) }
+                return
+            }
+
             val passwordError = PasswordValidator.validateStrength(current.password)
             val confirmError = PasswordValidator.validateMatch(current.password, current.confirmPassword)
             if (passwordError != null || confirmError != null) {
