@@ -13,6 +13,7 @@ object AuthContract {
         val isConfirmPasswordVisible: Boolean = false,
         val emailError: String? = null,
         val passwordError: String? = null,
+        val nameError: String? = null,
         val confirmPasswordError: String? = null,
         val errorMessage: String? = null,
     ) {
@@ -26,6 +27,7 @@ object AuthContract {
                                     (
                                             name.isNotBlank() &&
                                                     confirmPassword.isNotBlank() &&
+                                                    nameError == null &&
                                                     passwordError == null &&
                                                     confirmPasswordError == null
                                             )

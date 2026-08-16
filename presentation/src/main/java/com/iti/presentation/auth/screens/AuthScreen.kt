@@ -57,17 +57,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.iti.presentation.R
 import com.iti.presentation.auth.AuthContract
 import com.iti.presentation.auth.viewmodel.AuthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 @Composable
 fun AuthScreen(
     onNavigateToHome: () -> Unit,
@@ -187,12 +185,21 @@ fun AuthScreenContent(
                             Icon(Icons.Filled.Person, contentDescription = null)
                         },
                         singleLine = true,
+                        isError = state.nameError != null,
                         shape = RoundedCornerShape(14.dp),
                         colors = fieldColors(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .bringIntoViewOnFocus(),
                     )
+                    if (state.nameError != null) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = state.nameError,
+                            color = colorScheme.error,
+                            fontSize = 12.sp,
+                        )
+                    }
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
